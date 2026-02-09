@@ -35,12 +35,12 @@ export default function CartDrawer() {
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-[#1A1A1A]/10">
               <h2 className="font-serif text-xl font-light tracking-wide text-[#1A1A1A]">
-                Your Bag ({items.length})
+                Din Kurv ({items.length})
               </h2>
               <button
                 onClick={closeCart}
                 className="p-2 -mr-2"
-                aria-label="Close cart"
+                aria-label="Luk kurv"
               >
                 <svg
                   className="w-6 h-6"
@@ -76,10 +76,10 @@ export default function CartDrawer() {
                     />
                   </svg>
                   <p className="text-[#1A1A1A]/60 font-sans mb-6">
-                    Your bag is empty
+                    Din kurv er tom
                   </p>
                   <Button variant="outline" onClick={closeCart}>
-                    Continue Shopping
+                    Fortsæt Shopping
                   </Button>
                 </div>
               ) : (
@@ -109,7 +109,10 @@ export default function CartDrawer() {
                           {item.name}
                         </h3>
                         <p className="text-xs text-[#1A1A1A]/60 font-sans mt-1 capitalize">
-                          {item.category}
+                          {item.category === "rings" && "Ringe"}
+                          {item.category === "necklaces" && "Halskæder"}
+                          {item.category === "earrings" && "Øreringe"}
+                          {item.category === "bracelets" && "Armbånd"}
                         </p>
                         <p className="text-sm font-sans font-medium text-[#1A1A1A] mt-2">
                           {formatPrice(item.price)}
@@ -120,7 +123,7 @@ export default function CartDrawer() {
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
                             className="w-7 h-7 border border-[#1A1A1A]/20 flex items-center justify-center text-sm hover:border-[#1A1A1A] transition-colors"
-                            aria-label="Decrease quantity"
+                            aria-label="Reducer antal"
                           >
                             -
                           </button>
@@ -130,7 +133,7 @@ export default function CartDrawer() {
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             className="w-7 h-7 border border-[#1A1A1A]/20 flex items-center justify-center text-sm hover:border-[#1A1A1A] transition-colors"
-                            aria-label="Increase quantity"
+                            aria-label="Øg antal"
                           >
                             +
                           </button>
@@ -141,7 +144,7 @@ export default function CartDrawer() {
                       <button
                         onClick={() => removeItem(item.id)}
                         className="p-1 text-[#1A1A1A]/40 hover:text-[#1A1A1A] transition-colors self-start"
-                        aria-label="Remove item"
+                        aria-label="Fjern vare"
                       >
                         <svg
                           className="w-5 h-5"
@@ -175,16 +178,16 @@ export default function CartDrawer() {
                   </span>
                 </div>
                 <p className="text-xs text-[#1A1A1A]/50 font-sans">
-                  Shipping calculated at checkout
+                  Fragt beregnes ved checkout
                 </p>
                 <Button fullWidth variant="primary" size="lg">
-                  Checkout
+                  Gå til Kassen
                 </Button>
                 <button
                   onClick={closeCart}
                   className="w-full text-center text-sm font-sans text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition-colors py-2"
                 >
-                  Continue Shopping
+                  Fortsæt Shopping
                 </button>
               </div>
             )}

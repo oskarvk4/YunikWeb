@@ -27,7 +27,7 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
           className="text-center mb-10"
         >
           <h2 className="font-serif text-2xl md:text-3xl font-light text-[#1A1A1A]">
-            You May Also Like
+            Måske Kan Du Også Lide
           </h2>
         </motion.div>
 
@@ -64,7 +64,7 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
                       }}
                       className="w-full py-2.5 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.1em] hover:bg-[#333] transition-colors"
                     >
-                      Quick Add
+                      Tilføj Hurtigt
                     </button>
                   </div>
                 </Link>

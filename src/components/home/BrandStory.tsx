@@ -22,7 +22,7 @@ export default function BrandStory() {
             <div className="relative aspect-[4/5] overflow-hidden">
               <Image
                 src="/jewelry-collection.jpeg"
-                alt="Yunik jewelry collection"
+                alt="Yunik smykkekollektion"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -42,28 +42,28 @@ export default function BrandStory() {
             className="lg:pl-8"
           >
             <p className="text-sm font-sans uppercase tracking-[0.3em] text-[#8D6553] mb-4">
-              Our Story
+              Vores Historie
             </p>
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light text-[#1A1A1A] leading-tight mb-6">
-              Celebrating
+              Fejrer
               <br />
-              Individuality
+              Individualitet
             </h2>
             <div className="space-y-4 text-[#1A1A1A]/70 font-sans leading-relaxed mb-8">
               <p>
-                At Yunik, we believe that true beauty lies in the details. Each
-                piece in our collection is thoughtfully designed and meticulously
-                crafted to capture the essence of modern elegance.
+                Hos Yunik tror vi på, at sand skønhed ligger i detaljerne. Hvert
+                smykke i vores kollektion er omhyggeligt designet og
+                fremstillet for at fange essensen af moderne elegance.
               </p>
               <p>
-                Our jewelry is more than adornment—it&apos;s an expression of your
-                unique story, a celebration of the moments that matter, and a
-                testament to timeless style.
+                Vores smykker er mere end pynt — det er et udtryk for din
+                unikke historie, en fejring af de øjeblikke der betyder noget,
+                og et vidnesbyrd om tidløs stil.
               </p>
             </div>
             <Link href="/about">
               <Button variant="outline">
-                Discover Our Story
+                Opdag Vores Historie
               </Button>
             </Link>
           </motion.div>

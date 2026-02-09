@@ -41,7 +41,7 @@ export default function MobileMenu({ isOpen, onClose, links }: MobileMenuProps) 
                 <button
                   onClick={onClose}
                   className="p-2 -mr-2"
-                  aria-label="Close menu"
+                  aria-label="Luk menu"
                 >
                   <svg
                     className="w-6 h-6"
@@ -82,7 +82,7 @@ export default function MobileMenu({ isOpen, onClose, links }: MobileMenuProps) 
               {/* Footer info */}
               <div className="mt-12 pt-8 border-t border-[#1A1A1A]/10">
                 <p className="text-sm font-sans text-[#1A1A1A]/60 mb-4">
-                  Timeless elegance, crafted for you.
+                  Tidløs elegance, skabt til dig.
                 </p>
                 <div className="flex space-x-4">
                   <a

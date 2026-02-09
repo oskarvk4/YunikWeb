@@ -24,17 +24,17 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
   const accordionItems = [
     {
-      title: "Description",
+      title: "Beskrivelse",
       content: product.description,
     },
     {
-      title: "Materials & Care",
+      title: "Materialer & Pleje",
       content: product.materials,
     },
     {
-      title: "Shipping",
+      title: "Levering",
       content:
-        "Free shipping on orders over 500 DKK. Standard delivery takes 3-5 business days within Denmark. International shipping available to select countries.",
+        "Gratis fragt på ordrer over 500 DKK. Standardlevering tager 3-5 hverdage i Danmark. International forsendelse er tilgængelig til udvalgte lande.",
     },
   ];
 
@@ -47,7 +47,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     >
       {/* Badges */}
       <div className="flex gap-2 mb-4">
-        {product.newArrival && <Badge variant="new">New Arrival</Badge>}
+        {product.newArrival && <Badge variant="new">Nyhed</Badge>}
         {product.featured && <Badge variant="bestseller">Bestseller</Badge>}
       </div>
 
@@ -74,13 +74,13 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       {/* Quantity Selector */}
       <div className="mb-6">
         <label className="block text-xs font-sans uppercase tracking-[0.1em] text-[#1A1A1A]/60 mb-3">
-          Quantity
+          Antal
         </label>
         <div className="flex items-center gap-4">
           <button
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
             className="w-10 h-10 border border-[#1A1A1A]/20 flex items-center justify-center text-lg hover:border-[#1A1A1A] transition-colors"
-            aria-label="Decrease quantity"
+            aria-label="Reducer antal"
           >
             -
           </button>
@@ -90,7 +90,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           <button
             onClick={() => setQuantity(quantity + 1)}
             className="w-10 h-10 border border-[#1A1A1A]/20 flex items-center justify-center text-lg hover:border-[#1A1A1A] transition-colors"
-            aria-label="Increase quantity"
+            aria-label="Øg antal"
           >
             +
           </button>
@@ -105,7 +105,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         onClick={handleAddToCart}
         className="mb-8"
       >
-        Add to Bag — {formatPrice(product.price * quantity)}
+        Læg i Kurv — {formatPrice(product.price * quantity)}
       </Button>
 
       {/* Accordion Sections */}

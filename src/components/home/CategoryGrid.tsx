@@ -18,10 +18,10 @@ export default function CategoryGrid() {
           className="text-center mb-12 md:mb-16"
         >
           <h2 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A] mb-4">
-            Shop by Category
+            Shop efter Kategori
           </h2>
           <p className="text-[#1A1A1A]/60 font-sans max-w-md mx-auto">
-            Explore our curated collections of timeless jewelry pieces
+            Udforsk vores kuraterede kollektioner af tidløse smykker
           </p>
         </motion.div>
 
@@ -56,7 +56,7 @@ export default function CategoryGrid() {
                     {category.name}
                   </h3>
                   <span className="text-xs font-sans uppercase tracking-[0.2em] text-white/80 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">
-                    Explore
+                    Udforsk
                   </span>
                 </div>
               </Link>

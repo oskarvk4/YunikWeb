@@ -29,7 +29,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       >
         {/* Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-          {product.newArrival && <Badge variant="new">New</Badge>}
+          {product.newArrival && <Badge variant="new">Nyhed</Badge>}
           {product.featured && !product.newArrival && (
             <Badge variant="bestseller">Bestseller</Badge>
           )}
@@ -64,7 +64,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             }}
             className="w-full py-3 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.15em] hover:bg-[#333] transition-colors"
           >
-            Quick Add
+            Tilføj Hurtigt
           </button>
         </div>
       </Link>

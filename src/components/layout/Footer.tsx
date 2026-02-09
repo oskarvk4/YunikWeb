@@ -6,21 +6,21 @@ export default function Footer() {
 
   const footerLinks = {
     shop: [
-      { label: "All Jewelry", href: "/shop" },
-      { label: "Rings", href: "/shop?category=rings" },
-      { label: "Necklaces", href: "/shop?category=necklaces" },
-      { label: "Earrings", href: "/shop?category=earrings" },
-      { label: "Bracelets", href: "/shop?category=bracelets" },
+      { label: "Alle Smykker", href: "/shop" },
+      { label: "Ringe", href: "/shop?category=rings" },
+      { label: "Halskæder", href: "/shop?category=necklaces" },
+      { label: "Øreringe", href: "/shop?category=earrings" },
+      { label: "Armbånd", href: "/shop?category=bracelets" },
     ],
     about: [
-      { label: "Our Story", href: "/about" },
-      { label: "Materials", href: "/about#materials" },
-      { label: "Sustainability", href: "/about#sustainability" },
+      { label: "Vores Historie", href: "/about" },
+      { label: "Materialer", href: "/about#materials" },
+      { label: "Bæredygtighed", href: "/about#sustainability" },
     ],
     help: [
-      { label: "Contact Us", href: "/contact" },
-      { label: "Shipping", href: "/shipping" },
-      { label: "Returns", href: "/returns" },
+      { label: "Kontakt Os", href: "/contact" },
+      { label: "Levering", href: "/shipping" },
+      { label: "Returnering", href: "/returns" },
     ],
   };
 
@@ -38,8 +38,9 @@ export default function Footer() {
                 </h2>
               </Link>
               <p className="text-sm text-white/60 font-sans leading-relaxed max-w-xs">
-                Timeless elegance, crafted for the modern woman. Each piece tells
-                a story of refined beauty and individual expression.
+                Tidløs elegance, skabt til den moderne kvinde. Hvert smykke
+                fortæller en historie om raffineret skønhed og individuel
+                udtryk.
               </p>
               {/* Social Links */}
               <div className="flex space-x-4 mt-6">
@@ -90,7 +91,7 @@ export default function Footer() {
             {/* About Links */}
             <div>
               <h3 className="text-xs font-sans font-medium uppercase tracking-[0.15em] mb-6">
-                About
+                Om Yunik
               </h3>
               <ul className="space-y-3">
                 {footerLinks.about.map((link) => (
@@ -109,7 +110,7 @@ export default function Footer() {
             {/* Help Links */}
             <div>
               <h3 className="text-xs font-sans font-medium uppercase tracking-[0.15em] mb-6">
-                Help
+                Kundeservice
               </h3>
               <ul className="space-y-3">
                 {footerLinks.help.map((link) => (
@@ -129,20 +130,20 @@ export default function Footer() {
           {/* Bottom Bar */}
           <div className="border-t border-white/10 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-xs text-white/40 font-sans">
-              &copy; {currentYear} Yunik. All rights reserved.
+              &copy; {currentYear} Yunik. Alle rettigheder forbeholdes.
             </p>
             <div className="flex space-x-6">
               <Link
                 href="/privacy"
                 className="text-xs text-white/40 hover:text-white transition-colors font-sans"
               >
-                Privacy Policy
+                Privatlivspolitik
               </Link>
               <Link
                 href="/terms"
                 className="text-xs text-white/40 hover:text-white transition-colors font-sans"
               >
-                Terms of Service
+                Handelsbetingelser
               </Link>
             </div>
           </div>

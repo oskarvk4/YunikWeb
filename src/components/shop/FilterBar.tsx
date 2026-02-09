@@ -4,17 +4,17 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { ProductCategory } from "@/types";
 
 const categories: { label: string; value: string }[] = [
-  { label: "All", value: "all" },
-  { label: "Rings", value: "rings" },
-  { label: "Necklaces", value: "necklaces" },
-  { label: "Earrings", value: "earrings" },
-  { label: "Bracelets", value: "bracelets" },
+  { label: "Alle", value: "all" },
+  { label: "Ringe", value: "rings" },
+  { label: "Halskæder", value: "necklaces" },
+  { label: "Øreringe", value: "earrings" },
+  { label: "Armbånd", value: "bracelets" },
 ];
 
 const sortOptions: { label: string; value: string }[] = [
-  { label: "Newest", value: "newest" },
-  { label: "Price: Low to High", value: "price-asc" },
-  { label: "Price: High to Low", value: "price-desc" },
+  { label: "Nyeste", value: "newest" },
+  { label: "Pris: Lav til Høj", value: "price-asc" },
+  { label: "Pris: Høj til Lav", value: "price-desc" },
 ];
 
 interface FilterBarProps {

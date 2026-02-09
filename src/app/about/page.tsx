@@ -6,19 +6,19 @@ import Container from "@/components/ui/Container";
 
 const values = [
   {
-    title: "Quality Craftsmanship",
+    title: "Kvalitetshåndværk",
     description:
-      "Every piece is meticulously crafted using traditional techniques and the finest materials, ensuring lasting beauty and durability.",
+      "Hvert smykke er omhyggeligt fremstillet ved hjælp af traditionelle teknikker og de fineste materialer, hvilket sikrer varig skønhed og holdbarhed.",
   },
   {
-    title: "Timeless Design",
+    title: "Tidløst Design",
     description:
-      "Our designs transcend trends, creating pieces that become cherished parts of your jewelry collection for years to come.",
+      "Vores designs transcenderer trends og skaber stykker, der bliver elskede dele af din smykkesamling i mange år fremover.",
   },
   {
-    title: "Sustainable Practices",
+    title: "Bæredygtig Praksis",
     description:
-      "We're committed to ethical sourcing and sustainable production methods, because beautiful jewelry shouldn't come at the earth's expense.",
+      "Vi er engagerede i etisk sourcing og bæredygtige produktionsmetoder, fordi smukke smykker ikke skal koste jorden.",
   },
 ];
 
@@ -29,7 +29,7 @@ export default function AboutPage() {
       <section className="relative h-[60vh] min-h-[400px] max-h-[600px] overflow-hidden">
         <Image
           src="/yunik-1.jpeg"
-          alt="Yunik jewelry collection"
+          alt="Yunik smykkekollektion"
           fill
           priority
           className="object-cover"
@@ -44,10 +44,10 @@ export default function AboutPage() {
             className="text-center px-4"
           >
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light text-white mb-4">
-              Our Story
+              Vores Historie
             </h1>
             <p className="text-white/80 font-sans text-lg max-w-md mx-auto">
-              Crafting timeless elegance since the beginning
+              Skaber tidløs elegance fra begyndelsen
             </p>
           </motion.div>
         </div>
@@ -64,23 +64,23 @@ export default function AboutPage() {
             className="text-center mb-16"
           >
             <p className="text-sm font-sans uppercase tracking-[0.3em] text-[#8D6553] mb-4">
-              About Yunik
+              Om Yunik
             </p>
             <h2 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A] mb-8">
-              Celebrating Individuality
+              Fejrer Individualitet
             </h2>
             <div className="space-y-6 text-[#1A1A1A]/70 font-sans leading-relaxed text-lg">
               <p>
-                Yunik was born from a simple belief: that every person deserves
-                jewelry as unique as they are. Our name—derived from
-                &quot;unique&quot;—reflects our commitment to creating pieces that
-                celebrate individuality and personal expression.
+                Yunik blev født af en simpel overbevisning: at alle fortjener
+                smykker lige så unikke som dem selv. Vores navn—afledt af
+                &quot;unique&quot;—afspejler vores engagement i at skabe stykker, der
+                fejrer individualitet og personligt udtryk.
               </p>
               <p>
-                Founded in Denmark, we draw inspiration from Scandinavian design
-                principles: clean lines, thoughtful craftsmanship, and a deep
-                respect for materials. Each piece in our collection tells a story
-                of careful consideration and artistic vision.
+                Grundlagt i Danmark trækker vi inspiration fra skandinaviske design
+                principper: rene linjer, omhyggeligt håndværk og en dyb
+                respekt for materialer. Hvert smykke i vores kollektion fortæller en historie
+                om nøje overvejelse og kunstnerisk vision.
               </p>
             </div>
           </motion.div>
@@ -99,7 +99,7 @@ export default function AboutPage() {
           >
             <Image
               src="/yunik-11.jpg"
-              alt="Yunik jewelry craftsmanship"
+              alt="Yunik smykkehåndværk"
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -114,7 +114,7 @@ export default function AboutPage() {
           >
             <Image
               src="/yunik-12.jpg"
-              alt="Yunik jewelry details"
+              alt="Yunik smykkedetaljer"
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -134,7 +134,7 @@ export default function AboutPage() {
             className="text-center mb-16"
           >
             <h2 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A]">
-              Our Values
+              Vores Værdier
             </h2>
           </motion.div>
 
@@ -171,27 +171,27 @@ export default function AboutPage() {
               transition={{ duration: 0.8 }}
             >
               <p className="text-sm font-sans uppercase tracking-[0.3em] text-[#8D6553] mb-4">
-                Materials
+                Materialer
               </p>
               <h2 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A] mb-6">
-                Crafted with Care
+                Skabt med Omhu
               </h2>
               <div className="space-y-4 text-[#1A1A1A]/70 font-sans leading-relaxed">
                 <p>
-                  We work exclusively with high-quality materials that stand the
-                  test of time. Our sterling silver pieces are crafted from
-                  92.5% pure silver, while our gold jewelry features 14k and 18k
-                  gold vermeil over a sterling silver base.
+                  Vi arbejder udelukkende med materialer af høj kvalitet, der tåler
+                  tidens tand. Vores sterlingsølv-stykker er fremstillet af
+                  92,5% rent sølv, mens vores guldsmykker indeholder 14 karat og 18 karat
+                  guldforgyldning over en sterlingsølv-base.
                 </p>
                 <p>
-                  Every gemstone is carefully selected for its quality and
-                  brilliance. We source freshwater pearls from sustainable farms
-                  and use conflict-free precious stones throughout our
-                  collections.
+                  Hver ædelsten er omhyggeligt udvalgt for sin kvalitet og
+                  brillans. Vi sourcer ferskvandsperler fra bæredygtige dambrug
+                  og bruger konfliktfrie ædelstene i hele vores
+                  kollektioner.
                 </p>
                 <p>
-                  All our pieces are hypoallergenic and nickel-free, making them
-                  perfect for even the most sensitive skin.
+                  Alle vores smykker er hypoallergene og nikkelfri, hvilket gør dem
+                  perfekte selv til den mest følsomme hud.
                 </p>
               </div>
             </motion.div>
@@ -205,7 +205,7 @@ export default function AboutPage() {
             >
               <Image
                 src="/yunik-17.jpeg"
-                alt="Yunik jewelry materials"
+                alt="Yunik smykkematerialer"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -226,26 +226,26 @@ export default function AboutPage() {
             className="text-center"
           >
             <p className="text-sm font-sans uppercase tracking-[0.3em] text-[#D4A9A5] mb-4">
-              Sustainability
+              Bæredygtighed
             </p>
             <h2 className="font-serif text-3xl md:text-4xl font-light text-white mb-8">
-              Our Commitment
+              Vores Løfte
             </h2>
             <div className="space-y-6 text-white/70 font-sans leading-relaxed text-lg">
               <p>
-                We believe that beautiful jewelry shouldn&apos;t come at the
-                cost of our planet. That&apos;s why we&apos;re committed to
-                sustainable practices at every step of our process.
+                Vi tror på, at smukke smykker ikke skal koste vores planet.
+                Derfor er vi engagerede i bæredygtige praksisser i hvert trin
+                af vores proces.
               </p>
               <p>
-                From recycled packaging materials to ethically sourced gems, we
-                strive to minimize our environmental footprint while maximizing
-                the beauty and quality of our pieces.
+                Fra genbrugelige emballagematerialer til etisk sourcede ædelstene bestræber
+                vi os på at minimere vores miljøaftryk, samtidig med at vi maksimerer
+                skønheden og kvaliteten af vores smykker.
               </p>
               <p>
-                Our jewelry is designed to last a lifetime, reducing the need
-                for constant replacement and contributing to a more sustainable
-                fashion industry.
+                Vores smykker er designet til at holde livet ud, hvilket reducerer behovet
+                for konstant udskiftning og bidrager til en mere bæredygtig
+                modeindustri.
               </p>
             </div>
           </motion.div>

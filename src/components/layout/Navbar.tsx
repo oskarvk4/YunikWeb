@@ -24,11 +24,11 @@ export default function Navbar() {
 
   const navLinks = [
     { href: "/shop", label: "Shop" },
-    { href: "/shop?category=rings", label: "Rings" },
-    { href: "/shop?category=necklaces", label: "Necklaces" },
-    { href: "/shop?category=earrings", label: "Earrings" },
-    { href: "/shop?category=bracelets", label: "Bracelets" },
-    { href: "/about", label: "About" },
+    { href: "/shop?category=rings", label: "Ringe" },
+    { href: "/shop?category=necklaces", label: "Halskæder" },
+    { href: "/shop?category=earrings", label: "Øreringe" },
+    { href: "/shop?category=bracelets", label: "Armbånd" },
+    { href: "/about", label: "Om Yunik" },
   ];
 
   return (
@@ -49,7 +49,7 @@ export default function Navbar() {
             <button
               onClick={() => setIsMobileMenuOpen(true)}
               className="lg:hidden p-2 -ml-2"
-              aria-label="Open menu"
+              aria-label="Åbn menu"
             >
               <svg
                 className="w-6 h-6"
@@ -106,7 +106,7 @@ export default function Navbar() {
             <button
               onClick={openCart}
               className="relative p-2 -mr-2 lg:mr-0"
-              aria-label="Open cart"
+              aria-label="Åbn kurv"
             >
               <svg
                 className="w-6 h-6"

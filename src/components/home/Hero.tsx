@@ -12,7 +12,7 @@ export default function Hero() {
       <div className="absolute inset-0">
         <Image
           src="/hero-bracelet.webp"
-          alt="Yunik tanzanite gold bracelet"
+          alt="Yunik tanzanit guld armbånd"
           fill
           priority
           className="object-cover object-center"
@@ -37,7 +37,7 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-white/80 text-sm font-sans uppercase tracking-[0.3em] mb-4"
             >
-              Handcrafted with Love
+              Håndlavet med Kærlighed
             </motion.p>
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
@@ -45,7 +45,7 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.6 }}
               className="font-serif text-5xl md:text-6xl lg:text-7xl font-light text-white leading-tight mb-6"
             >
-              Timeless
+              Tidløs
               <br />
               Elegance
             </motion.h1>
@@ -55,8 +55,8 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.8 }}
               className="text-white/80 text-lg font-sans font-light leading-relaxed mb-8 max-w-md"
             >
-              Discover jewelry that celebrates your unique story. Each piece is
-              crafted to become a cherished part of your journey.
+              Opdag smykker der fejrer din unikke historie. Hvert stykke er
+              skabt til at blive en værdsat del af din rejse.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -65,7 +65,7 @@ export default function Hero() {
             >
               <Link href="/shop">
                 <Button variant="primary" size="lg">
-                  Shop Collection
+                  Se Kollektionen
                 </Button>
               </Link>
             </motion.div>

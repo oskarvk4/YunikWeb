@@ -30,11 +30,11 @@ export default function Newsletter() {
           className="text-center"
         >
           <h2 className="font-serif text-3xl md:text-4xl font-light text-white mb-4">
-            Stay Connected
+            Hold Dig Opdateret
           </h2>
           <p className="text-white/60 font-sans max-w-md mx-auto mb-8">
-            Be the first to know about new arrivals, exclusive offers, and
-            styling inspiration.
+            Vær den første til at høre om nye ankomster, eksklusive tilbud og
+            stylinginspiration.
           </p>
 
           <form
@@ -45,12 +45,12 @@ export default function Newsletter() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder="Indtast din email"
               required
               className="flex-1 px-6 py-4 bg-white/10 border border-white/20 text-white placeholder:text-white/40 font-sans text-sm focus:outline-none focus:border-white/40 transition-colors"
             />
             <Button type="submit" variant="primary" size="lg">
-              Subscribe
+              Tilmeld
             </Button>
           </form>
 
@@ -60,13 +60,13 @@ export default function Newsletter() {
               animate={{ opacity: 1, y: 0 }}
               className="mt-4 text-sm text-[#D4A9A5] font-sans"
             >
-              Thank you for subscribing!
+              Tak for din tilmelding!
             </motion.p>
           )}
 
           <p className="mt-6 text-xs text-white/40 font-sans">
-            By subscribing, you agree to our Privacy Policy and consent to receive
-            updates from Yunik.
+            Ved at tilmelde dig accepterer du vores privatlivspolitik og giver
+            samtykke til at modtage opdateringer fra Yunik.
           </p>
         </motion.div>
       </Container>

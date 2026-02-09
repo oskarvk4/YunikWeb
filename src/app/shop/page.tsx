@@ -99,10 +99,10 @@ export default function ShopPage() {
             className="text-center"
           >
             <h1 className="font-serif text-4xl md:text-5xl font-light text-[#1A1A1A] mb-4">
-              Shop All
+              Alle Smykker
             </h1>
             <p className="text-[#1A1A1A]/60 font-sans max-w-md mx-auto">
-              Explore our complete collection of handcrafted jewelry
+              Udforsk vores komplette kollektion af håndlavede smykker
             </p>
           </motion.div>
         </Container>
@@ -114,7 +114,7 @@ export default function ShopPage() {
           <Suspense
             fallback={
               <div className="text-center py-20">
-                <p className="text-[#1A1A1A]/60 font-sans">Loading products...</p>
+                <p className="text-[#1A1A1A]/60 font-sans">Indlæser produkter...</p>
               </div>
             }
           >
