@@ -7,10 +7,19 @@ import { useCart } from "@/lib/cart";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import Accordion from "./Accordion";
+import SizeGuide from "./SizeGuide";
+import TrustBadges from "./TrustBadges";
 
 interface ProductInfoProps {
   product: Product;
 }
+
+const categoryNames: Record<string, string> = {
+  rings: "Ringe",
+  necklaces: "Halskæder",
+  earrings: "Øreringe",
+  bracelets: "Armbånd",
+};
 
 export default function ProductInfo({ product }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(1);
@@ -32,9 +41,12 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       content: product.materials,
     },
     {
-      title: "Levering",
-      content:
-        "Gratis fragt på ordrer over 500 DKK. Standardlevering tager 3-5 hverdage i Danmark. International forsendelse er tilgængelig til udvalgte lande.",
+      title: "Hvad er i æsken",
+      content: "Dit smykke leveres i en elegant Yunik-smykkeboks med silkeforet interiør. Inkluderet er også et plejekort med vedligeholdelsesinstruktioner, så dit smykke bevarer sin skønhed i mange år.",
+    },
+    {
+      title: "Levering & Retur",
+      content: "Gratis fragt på ordrer over 500 DKK. Standardlevering tager 3-5 hverdage i Danmark. Du har 14 dages fuld returret. Se vores leveringspolitik for mere information.",
     },
   ];
 
@@ -58,7 +70,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       {/* Category */}
       <p className="text-sm font-sans text-[#1A1A1A]/50 uppercase tracking-[0.15em] mb-4">
-        {product.category}
+        {categoryNames[product.category] || product.category}
       </p>
 
       {/* Price */}
@@ -67,9 +79,14 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       </p>
 
       {/* Short Description */}
-      <p className="text-[#1A1A1A]/70 font-sans leading-relaxed mb-8">
+      <p className="text-[#1A1A1A]/70 font-sans leading-relaxed mb-6">
         {product.description}
       </p>
+
+      {/* Size Guide (for rings) */}
+      <div className="mb-6">
+        <SizeGuide category={product.category} />
+      </div>
 
       {/* Quantity Selector */}
       <div className="mb-6">
@@ -79,7 +96,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         <div className="flex items-center gap-4">
           <button
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="w-10 h-10 border border-[#1A1A1A]/20 flex items-center justify-center text-lg hover:border-[#1A1A1A] transition-colors"
+            className="w-10 h-10 border border-[#1A1A1A]/20 flex items-center justify-center text-lg hover:border-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2"
             aria-label="Reducer antal"
           >
             -
@@ -89,7 +106,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           </span>
           <button
             onClick={() => setQuantity(quantity + 1)}
-            className="w-10 h-10 border border-[#1A1A1A]/20 flex items-center justify-center text-lg hover:border-[#1A1A1A] transition-colors"
+            className="w-10 h-10 border border-[#1A1A1A]/20 flex items-center justify-center text-lg hover:border-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2"
             aria-label="Øg antal"
           >
             +
@@ -103,13 +120,18 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         size="lg"
         fullWidth
         onClick={handleAddToCart}
-        className="mb-8"
+        className="mb-6"
       >
         Læg i Kurv — {formatPrice(product.price * quantity)}
       </Button>
 
+      {/* Trust Badges */}
+      <TrustBadges />
+
       {/* Accordion Sections */}
-      <Accordion items={accordionItems} />
+      <div className="mt-8">
+        <Accordion items={accordionItems} />
+      </div>
     </motion.div>
   );
 }

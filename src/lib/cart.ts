@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Product, CartItem } from "@/types";
+import { trackAddToCart, trackRemoveFromCart } from "./analytics";
 
 interface CartStore {
   items: CartItem[];
@@ -40,11 +41,30 @@ export const useCart = create<CartStore>()(
           set({ items: [...items, { ...product, quantity: 1 }] });
         }
 
+        // Track add to cart event
+        trackAddToCart({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          category: product.category,
+          quantity: 1,
+        });
+
         // Open cart when item is added
         set({ isOpen: true });
       },
 
       removeItem: (id: string) => {
+        const item = get().items.find((i) => i.id === id);
+        if (item) {
+          // Track remove from cart event
+          trackRemoveFromCart({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            category: item.category,
+          });
+        }
         set({ items: get().items.filter((item) => item.id !== id) });
       },
 

@@ -39,7 +39,7 @@ export default function CartDrawer() {
               </h2>
               <button
                 onClick={closeCart}
-                className="p-2 -mr-2"
+                className="p-2 -mr-2 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm"
                 aria-label="Luk kurv"
               >
                 <svg
@@ -122,7 +122,7 @@ export default function CartDrawer() {
                         <div className="flex items-center gap-3 mt-3">
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="w-7 h-7 border border-[#1A1A1A]/20 flex items-center justify-center text-sm hover:border-[#1A1A1A] transition-colors"
+                            className="w-7 h-7 border border-[#1A1A1A]/20 flex items-center justify-center text-sm hover:border-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-1"
                             aria-label="Reducer antal"
                           >
                             -
@@ -132,7 +132,7 @@ export default function CartDrawer() {
                           </span>
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="w-7 h-7 border border-[#1A1A1A]/20 flex items-center justify-center text-sm hover:border-[#1A1A1A] transition-colors"
+                            className="w-7 h-7 border border-[#1A1A1A]/20 flex items-center justify-center text-sm hover:border-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-1"
                             aria-label="Øg antal"
                           >
                             +
@@ -143,7 +143,7 @@ export default function CartDrawer() {
                       {/* Remove Button */}
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="p-1 text-[#1A1A1A]/40 hover:text-[#1A1A1A] transition-colors self-start"
+                        className="p-1 text-[#1A1A1A]/40 hover:text-[#1A1A1A] transition-colors self-start cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-1 rounded-sm"
                         aria-label="Fjern vare"
                       >
                         <svg
@@ -180,12 +180,14 @@ export default function CartDrawer() {
                 <p className="text-xs text-[#1A1A1A]/50 font-sans">
                   Fragt beregnes ved checkout
                 </p>
-                <Button fullWidth variant="primary" size="lg">
-                  Gå til Kassen
-                </Button>
+                <Link href="/checkout" onClick={closeCart}>
+                  <Button fullWidth variant="primary" size="lg">
+                    Gå til Kassen
+                  </Button>
+                </Link>
                 <button
                   onClick={closeCart}
-                  className="w-full text-center text-sm font-sans text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition-colors py-2"
+                  className="w-full text-center text-sm font-sans text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition-colors py-2 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm"
                 >
                   Fortsæt Shopping
                 </button>

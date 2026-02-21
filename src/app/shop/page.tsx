@@ -109,7 +109,7 @@ export default function ShopPage() {
       </section>
 
       {/* Products Section */}
-      <section className="py-12 md:py-16">
+      <section className="py-12 md:py-16 min-h-[60vh]">
         <Container>
           <Suspense
             fallback={

@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -10,6 +11,12 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ isOpen, onClose, links }: MobileMenuProps) {
+  const { user, isAdmin, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    onClose();
+  };
   return (
     <AnimatePresence>
       {isOpen && (
@@ -40,7 +47,7 @@ export default function MobileMenu({ isOpen, onClose, links }: MobileMenuProps) 
                 </h2>
                 <button
                   onClick={onClose}
-                  className="p-2 -mr-2"
+                  className="p-2 -mr-2 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm"
                   aria-label="Luk menu"
                 >
                   <svg
@@ -71,13 +78,108 @@ export default function MobileMenu({ isOpen, onClose, links }: MobileMenuProps) 
                     <Link
                       href={link.href}
                       onClick={onClose}
-                      className="block py-4 text-lg font-sans font-light tracking-wide text-[#1A1A1A] hover:text-[#8D6553] transition-colors border-b border-[#1A1A1A]/10"
+                      className="block py-4 text-lg font-sans font-light tracking-wide text-[#1A1A1A] hover:text-[#8D6553] transition-colors border-b border-[#1A1A1A]/10 focus:outline-none focus-visible:text-[#8D6553]"
                     >
                       {link.label}
                     </Link>
                   </motion.div>
                 ))}
               </nav>
+
+              {/* Auth Links */}
+              <div className="mt-8 pt-8 border-t border-[#1A1A1A]/10">
+                <h3 className="text-xs font-sans uppercase tracking-[0.15em] text-[#1A1A1A]/60 mb-4">
+                  Konto
+                </h3>
+                <nav className="space-y-1">
+                  {user ? (
+                    <>
+                      {isAdmin && (
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.1 }}
+                        >
+                          <Link
+                            href="/admin"
+                            onClick={onClose}
+                            className="block py-3 text-lg font-sans font-light tracking-wide text-[#8D6553] hover:text-[#8D6553]/80 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#8D6553] focus-visible:ring-offset-2 rounded-sm"
+                          >
+                            Admin Panel
+                          </Link>
+                        </motion.div>
+                      )}
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <Link
+                          href="/account"
+                          onClick={onClose}
+                          className="block py-3 text-lg font-sans font-light tracking-wide text-[#1A1A1A] hover:text-[#8D6553] transition-colors focus:outline-none focus-visible:text-[#8D6553]"
+                        >
+                          Min Konto
+                        </Link>
+                      </motion.div>
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 }}
+                      >
+                        <Link
+                          href="/account/orders"
+                          onClick={onClose}
+                          className="block py-3 text-lg font-sans font-light tracking-wide text-[#1A1A1A] hover:text-[#8D6553] transition-colors focus:outline-none focus-visible:text-[#8D6553]"
+                        >
+                          Mine Ordrer
+                        </Link>
+                      </motion.div>
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4 }}
+                      >
+                        <button
+                          onClick={handleSignOut}
+                          className="block py-3 text-lg font-sans font-light tracking-wide text-red-600 hover:text-red-500 transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 rounded-sm"
+                        >
+                          Log ud
+                        </button>
+                      </motion.div>
+                    </>
+                  ) : (
+                    <>
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 }}
+                      >
+                        <Link
+                          href="/auth/login"
+                          onClick={onClose}
+                          className="block py-3 text-lg font-sans font-light tracking-wide text-[#1A1A1A] hover:text-[#8D6553] transition-colors focus:outline-none focus-visible:text-[#8D6553]"
+                        >
+                          Log ind
+                        </Link>
+                      </motion.div>
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <Link
+                          href="/auth/signup"
+                          onClick={onClose}
+                          className="block py-3 text-lg font-sans font-light tracking-wide text-[#8D6553] hover:text-[#8D6553]/80 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#8D6553] focus-visible:ring-offset-2 rounded-sm"
+                        >
+                          Opret konto
+                        </Link>
+                      </motion.div>
+                    </>
+                  )}
+                </nav>
+              </div>
 
               {/* Footer info */}
               <div className="mt-12 pt-8 border-t border-[#1A1A1A]/10">
@@ -89,7 +191,7 @@ export default function MobileMenu({ isOpen, onClose, links }: MobileMenuProps) 
                     href="https://instagram.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#1A1A1A]/60 hover:text-[#8D6553] transition-colors"
+                    className="text-[#1A1A1A]/60 hover:text-[#8D6553] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#8D6553] focus-visible:ring-offset-2 rounded-sm"
                     aria-label="Instagram"
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -100,7 +202,7 @@ export default function MobileMenu({ isOpen, onClose, links }: MobileMenuProps) 
                     href="https://facebook.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#1A1A1A]/60 hover:text-[#8D6553] transition-colors"
+                    className="text-[#1A1A1A]/60 hover:text-[#8D6553] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#8D6553] focus-visible:ring-offset-2 rounded-sm"
                     aria-label="Facebook"
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

@@ -32,3 +32,37 @@ export const formatPrice = (price: number): string => {
     maximumFractionDigits: 0,
   }).format(price) + " DKK";
 };
+
+// Re-export Supabase types
+export type { UserProfile, Order, DbProduct } from "./supabase";
+
+// Import Order for local use
+import type { Order as OrderType } from "./supabase";
+
+// User type with profile
+export type User = {
+  id: string;
+  email: string;
+  profile: {
+    role: "user" | "admin";
+    created_at: string;
+  } | null;
+};
+
+// Order item type for storing in orders
+export type OrderItem = {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+};
+
+// Admin dashboard stats
+export type AdminStats = {
+  totalOrders: number;
+  totalRevenue: number;
+  totalUsers: number;
+  totalProducts: number;
+  recentOrders: OrderType[];
+};

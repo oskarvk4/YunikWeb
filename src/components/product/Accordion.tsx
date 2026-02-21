@@ -21,7 +21,7 @@ export default function Accordion({ items }: AccordionProps) {
         <div key={index} className="py-4">
           <button
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
-            className="w-full flex items-center justify-between text-left"
+            className="w-full flex items-center justify-between text-left cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm py-1"
           >
             <span className="text-sm font-sans font-medium text-[#1A1A1A] uppercase tracking-[0.1em]">
               {item.title}

@@ -45,6 +45,8 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
               alt={`${productName} - Image ${selectedIndex + 1}`}
               fill
               priority
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAgEDBAMBAAAAAAAAAAAAAQIDAAQRBRIhMQYTQWH/xAAVAQEBAAAAAAAAAAAAAAAAAAADBP/EABkRAAIDAQAAAAAAAAAAAAAAAAECAAMRIf/aAAwDAQACEQMRAD8AzrTtYvdOvI7m2upIZ0yFkQ4Iz3/eanXvnGv3t3NcTalM0kzl3Y9kkk/aUpOiupFCx2I8mf/Z"
               className="object-cover transition-transform duration-300"
               style={
                 isZoomed
@@ -67,10 +69,10 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
             <button
               key={index}
               onClick={() => setSelectedIndex(index)}
-              className={`relative w-20 h-20 bg-[#F5F0EB] overflow-hidden transition-all duration-300 ${
+              className={`relative w-20 h-20 bg-[#F5F0EB] overflow-hidden transition-all duration-300 cursor-pointer outline-none ${
                 selectedIndex === index
                   ? "ring-2 ring-[#1A1A1A] ring-offset-2"
-                  : "opacity-60 hover:opacity-100"
+                  : "opacity-60 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 focus-visible:opacity-100"
               }`}
             >
               <Image

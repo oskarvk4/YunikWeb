@@ -1,0 +1,10 @@
+# Yunik.dk Robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://yunik.dk/sitemap.xml
+
+# Disallow admin/private paths (if any in future)
+# Disallow: /admin/
+# Disallow: /api/

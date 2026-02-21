@@ -19,8 +19,10 @@ export default function Footer() {
     ],
     help: [
       { label: "Kontakt Os", href: "/contact" },
+      { label: "FAQ", href: "/faq" },
       { label: "Levering", href: "/shipping" },
       { label: "Returnering", href: "/returns" },
+      { label: "Plejeguide", href: "/care" },
     ],
   };
 
@@ -32,23 +34,28 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
             {/* Brand */}
             <div className="lg:col-span-1">
-              <Link href="/" className="inline-block mb-6">
+              <Link href="/" className="inline-block mb-6 outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus:ring-offset-[#1A1A1A] rounded-sm">
                 <h2 className="font-serif text-2xl font-light tracking-[0.2em]">
                   YUNIK
                 </h2>
               </Link>
-              <p className="text-sm text-white/60 font-sans leading-relaxed max-w-xs">
+              <p className="text-sm text-white/60 font-sans leading-relaxed max-w-xs mb-4">
                 Tidløs elegance, skabt til den moderne kvinde. Hvert smykke
                 fortæller en historie om raffineret skønhed og individuel
                 udtryk.
               </p>
+              <div className="text-xs text-white/40 font-sans space-y-1">
+                <p>CVR: [UDFYLD CVR-NUMMER]</p>
+                <p>[UDFYLD ADRESSE], Danmark</p>
+                <p>kontakt@yunik.dk</p>
+              </div>
               {/* Social Links */}
               <div className="flex space-x-4 mt-6">
                 <a
                   href="https://instagram.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-white/60 hover:text-white transition-colors"
+                  className="text-white/60 hover:text-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/40 rounded-sm"
                   aria-label="Instagram"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -59,7 +66,7 @@ export default function Footer() {
                   href="https://facebook.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-white/60 hover:text-white transition-colors"
+                  className="text-white/60 hover:text-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/40 rounded-sm"
                   aria-label="Facebook"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -79,7 +86,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-white/60 hover:text-white transition-colors font-sans"
+                      className="text-sm text-white/60 hover:text-white transition-colors font-sans outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus:ring-offset-[#1A1A1A] rounded-sm"
                     >
                       {link.label}
                     </Link>
@@ -98,7 +105,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-white/60 hover:text-white transition-colors font-sans"
+                      className="text-sm text-white/60 hover:text-white transition-colors font-sans outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus:ring-offset-[#1A1A1A] rounded-sm"
                     >
                       {link.label}
                     </Link>
@@ -117,7 +124,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-white/60 hover:text-white transition-colors font-sans"
+                      className="text-sm text-white/60 hover:text-white transition-colors font-sans outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus:ring-offset-[#1A1A1A] rounded-sm"
                     >
                       {link.label}
                     </Link>
@@ -135,13 +142,13 @@ export default function Footer() {
             <div className="flex space-x-6">
               <Link
                 href="/privacy"
-                className="text-xs text-white/40 hover:text-white transition-colors font-sans"
+                className="text-xs text-white/40 hover:text-white transition-colors font-sans outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus:ring-offset-[#1A1A1A] rounded-sm"
               >
                 Privatlivspolitik
               </Link>
               <Link
                 href="/terms"
-                className="text-xs text-white/40 hover:text-white transition-colors font-sans"
+                className="text-xs text-white/40 hover:text-white transition-colors font-sans outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus:ring-offset-[#1A1A1A] rounded-sm"
               >
                 Handelsbetingelser
               </Link>

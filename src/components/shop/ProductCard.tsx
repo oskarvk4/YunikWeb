@@ -25,7 +25,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       {/* Product Image */}
       <Link
         href={`/product/${product.slug}`}
-        className="block relative aspect-square overflow-hidden bg-[#F5F0EB] mb-4"
+        className="block relative aspect-square overflow-hidden bg-[#F5F0EB] mb-4 outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2"
       >
         {/* Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
@@ -40,6 +40,9 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           src={product.images[0]}
           alt={product.name}
           fill
+          priority={index < 4}
+          placeholder="blur"
+          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAgEDBAMBAAAAAAAAAAAAAQIDAAQRBRIhMQYTQWH/xAAVAQEBAAAAAAAAAAAAAAAAAAADBP/EABkRAAIDAQAAAAAAAAAAAAAAAAECAAMRIf/aAAwDAQACEQMRAD8AzrTtYvdOvI7m2upIZ0yFkQ4Iz3/eanXvnGv3t3NcTalM0kzl3Y9kkk/aUpOiupFCx2I8mf/Z"
           className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
@@ -62,7 +65,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               e.preventDefault();
               addItem(product);
             }}
-            className="w-full py-3 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.15em] hover:bg-[#333] transition-colors"
+            className="w-full py-3 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.15em] hover:bg-[#333] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white focus:ring-inset"
           >
             Tilføj Hurtigt
           </button>
@@ -72,7 +75,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       {/* Product Info */}
       <div className="text-center">
         <Link href={`/product/${product.slug}`}>
-          <h3 className="font-serif text-sm md:text-base font-medium text-[#1A1A1A] hover:text-[#8D6553] transition-colors">
+          <h3 className="font-serif text-sm md:text-base font-medium text-[#1A1A1A] hover:text-[#8D6553] transition-colors focus-visible:text-[#8D6553]">
             {product.name}
           </h3>
         </Link>
