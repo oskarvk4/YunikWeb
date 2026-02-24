@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/server";
 import Stripe from "stripe";
-import { products } from "@/data/products";
+import { getAllProducts } from "@/data/products";
 
 export async function POST(request: NextRequest) {
   const body = await request.text();
@@ -17,15 +17,18 @@ export async function POST(request: NextRequest) {
 
   let event: Stripe.Event;
 
-  try {
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-    if (!webhookSecret) {
-      // In development without webhook secret, parse the event directly
-      event = JSON.parse(body) as Stripe.Event;
-    } else {
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-    }
+  if (!webhookSecret) {
+    console.error("STRIPE_WEBHOOK_SECRET is not configured");
+    return NextResponse.json(
+      { error: "Webhook not configured" },
+      { status: 500 }
+    );
+  }
+
+  try {
+    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (error) {
     console.error("Webhook signature verification failed:", error);
     return NextResponse.json(
@@ -41,6 +44,7 @@ export async function POST(request: NextRequest) {
       try {
         // Use admin client to bypass RLS
         const supabase = await createAdminClient();
+        const products = await getAllProducts();
 
         // Parse cart items from metadata and expand with product details
         const rawItems = session.metadata?.items
@@ -116,6 +120,7 @@ export async function POST(request: NextRequest) {
       // Optionally save expired sessions for analytics
       try {
         const supabase = await createAdminClient();
+        const products = await getAllProducts();
         const rawItems = session.metadata?.items
           ? JSON.parse(session.metadata.items)
           : [];

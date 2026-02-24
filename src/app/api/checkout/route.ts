@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { createClient } from "@/lib/supabase/server";
+import { getAllProducts } from "@/data/products";
 
 interface CartItem {
   id: string;
@@ -25,6 +26,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Fetch products from database and validate prices server-side
+    const products = await getAllProducts();
+    const productMap = new Map(products.map((p) => [p.id, p]));
+
+    const validatedItems: CartItem[] = [];
+    for (const item of items) {
+      const product = productMap.get(item.id);
+      if (!product) {
+        return NextResponse.json(
+          { error: `Produkt ikke fundet: ${item.id}` },
+          { status: 400 }
+        );
+      }
+      // Use server-side price and name to prevent manipulation
+      validatedItems.push({
+        ...item,
+        price: product.price,
+        name: product.name,
+        images: product.images,
+      });
+    }
+
     const origin = request.headers.get("origin") || "http://localhost:3000";
 
     const session = await stripe.checkout.sessions.create({
@@ -40,7 +63,7 @@ export async function POST(request: NextRequest) {
       metadata: {
         user_id: user?.id || "",
         items: JSON.stringify(
-          items.map((item) => ({
+          validatedItems.map((item) => ({
             id: item.id,
             qty: item.quantity,
             price: item.price,
@@ -89,7 +112,7 @@ export async function POST(request: NextRequest) {
           },
         },
       ],
-      line_items: items.map((item) => ({
+      line_items: validatedItems.map((item) => ({
         price_data: {
           currency: "dkk",
           product_data: {
@@ -98,7 +121,7 @@ export async function POST(request: NextRequest) {
               img.startsWith("http") ? img : `${origin}${img}`
             ),
           },
-          unit_amount: item.price * 100, // Convert to øre
+          unit_amount: item.price * 100, // Convert to øre (price validated server-side)
         },
         quantity: item.quantity,
       })),
