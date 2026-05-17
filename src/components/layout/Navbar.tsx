@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/components/auth/AuthProvider";
@@ -17,6 +18,9 @@ export default function Navbar() {
   const { user, isLoading, isAdmin, signOut } = useAuth();
   const itemCount = getItemCount();
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
+  const isSolid = !isHomePage || isScrolled;
 
   useEffect(() => {
     setHasMounted(true);
@@ -64,7 +68,7 @@ export default function Navbar() {
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isScrolled
+          isSolid
             ? "bg-white/95 backdrop-blur-md shadow-sm"
             : "bg-transparent"
         }`}
@@ -74,7 +78,9 @@ export default function Navbar() {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="lg:hidden p-2 -ml-2 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm"
+              className={`lg:hidden p-2 -ml-2 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm transition-colors duration-300 ${
+                isSolid ? "text-[#1A1A1A]" : "text-white"
+              }`}
               aria-label="Åbn menu"
             >
               <svg
@@ -98,7 +104,9 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-xs font-sans uppercase tracking-[0.15em] text-[#1A1A1A] hover:text-[#8D6553] transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm"
+                  className={`text-xs font-sans uppercase tracking-[0.15em] hover:text-[#8D6553] transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm ${
+                    isSolid ? "text-[#1A1A1A]" : "text-white"
+                  }`}
                 >
                   {link.label}
                 </Link>
@@ -110,7 +118,11 @@ export default function Navbar() {
               href="/"
               className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0"
             >
-              <h1 className="font-serif text-2xl md:text-3xl font-light tracking-[0.2em] text-[#1A1A1A]">
+              <h1
+                className={`font-serif text-2xl md:text-3xl font-light tracking-[0.2em] transition-colors duration-300 ${
+                  isSolid ? "text-[#1A1A1A]" : "text-white"
+                }`}
+              >
                 YUNIK
               </h1>
             </Link>
@@ -121,7 +133,9 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-xs font-sans uppercase tracking-[0.15em] text-[#1A1A1A] hover:text-[#8D6553] transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm"
+                  className={`text-xs font-sans uppercase tracking-[0.15em] hover:text-[#8D6553] transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm ${
+                    isSolid ? "text-[#1A1A1A]" : "text-white"
+                  }`}
                 >
                   {link.label}
                 </Link>
@@ -130,6 +144,40 @@ export default function Navbar() {
 
             {/* User menu and Cart */}
             <div className="flex items-center space-x-2 lg:space-x-4">
+              {/* Admin quick-access button */}
+              {hasMounted && !isLoading && isAdmin && (
+                <Link
+                  href="/admin"
+                  className={`hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-sans uppercase tracking-[0.15em] border rounded-sm transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 ${
+                    isSolid
+                      ? "border-[#8D6553] text-[#8D6553] hover:bg-[#8D6553] hover:text-white"
+                      : "border-white text-white hover:bg-white hover:text-[#1A1A1A]"
+                  }`}
+                  aria-label="Gå til admin panel"
+                >
+                  <svg
+                    className="w-3.5 h-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                  Admin
+                </Link>
+              )}
+
               {/* User button/dropdown */}
               {hasMounted && !isLoading && (
                 <div className="relative" ref={userMenuRef}>
@@ -137,7 +185,9 @@ export default function Navbar() {
                     <>
                       <button
                         onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                        className="p-2 hover:text-[#8D6553] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm"
+                        className={`p-2 hover:text-[#8D6553] transition-colors duration-300 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm ${
+                          isSolid ? "text-[#1A1A1A]" : "text-white"
+                        }`}
                         aria-label="Brugermenu"
                       >
                         <svg
@@ -203,7 +253,9 @@ export default function Navbar() {
                   ) : (
                     <Link
                       href="/auth/login"
-                      className="hidden lg:block text-xs font-sans uppercase tracking-[0.15em] text-[#1A1A1A] hover:text-[#8D6553] transition-colors duration-300"
+                      className={`hidden lg:block text-xs font-sans uppercase tracking-[0.15em] hover:text-[#8D6553] transition-colors duration-300 ${
+                        isSolid ? "text-[#1A1A1A]" : "text-white"
+                      }`}
                     >
                       Log ind
                     </Link>
@@ -214,7 +266,9 @@ export default function Navbar() {
               {/* Cart button */}
               <button
                 onClick={openCart}
-                className="relative p-2 -mr-2 lg:mr-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm"
+                className={`relative p-2 -mr-2 lg:mr-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm transition-colors duration-300 ${
+                  isSolid ? "text-[#1A1A1A]" : "text-white"
+                }`}
                 aria-label="Åbn kurv"
               >
                 <svg

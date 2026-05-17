@@ -31,7 +31,7 @@ export default function FilterBar({
   onSortChange,
 }: FilterBarProps) {
   return (
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 md:mb-12">
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
       {/* Category Filters */}
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => (

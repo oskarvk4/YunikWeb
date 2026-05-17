@@ -26,9 +26,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   const { addItem } = useCart();
 
   const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) {
-      addItem(product);
-    }
+    addItem(product, quantity);
   };
 
   const accordionItems = [

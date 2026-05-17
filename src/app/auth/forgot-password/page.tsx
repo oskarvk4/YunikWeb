@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 
 export default function ForgotPasswordPage() {
+  const searchParams = useSearchParams();
+  const initialError = searchParams.get("error");
   const [email, setEmail] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(initialError);
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 

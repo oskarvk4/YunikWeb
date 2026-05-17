@@ -8,7 +8,7 @@ import { trackAddToCart, trackRemoveFromCart } from "./analytics";
 interface CartStore {
   items: CartItem[];
   isOpen: boolean;
-  addItem: (product: Product) => void;
+  addItem: (product: Product, quantity?: number) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
@@ -25,7 +25,7 @@ export const useCart = create<CartStore>()(
       items: [],
       isOpen: false,
 
-      addItem: (product: Product) => {
+      addItem: (product: Product, quantity: number = 1) => {
         const items = get().items;
         const existingItem = items.find((item) => item.id === product.id);
 
@@ -33,12 +33,12 @@ export const useCart = create<CartStore>()(
           set({
             items: items.map((item) =>
               item.id === product.id
-                ? { ...item, quantity: item.quantity + 1 }
+                ? { ...item, quantity: item.quantity + quantity }
                 : item
             ),
           });
         } else {
-          set({ items: [...items, { ...product, quantity: 1 }] });
+          set({ items: [...items, { ...product, quantity }] });
         }
 
         // Track add to cart event
@@ -47,7 +47,7 @@ export const useCart = create<CartStore>()(
           name: product.name,
           price: product.price,
           category: product.category,
-          quantity: 1,
+          quantity,
         });
 
         // Open cart when item is added

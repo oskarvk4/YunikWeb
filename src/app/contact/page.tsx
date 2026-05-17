@@ -113,8 +113,8 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-serif text-lg text-[#1A1A1A] mb-1">Adresse</h3>
                     <p className="text-[#1A1A1A]/70 font-sans">
-                      [UDFYLD ADRESSE]<br />
-                      Danmark
+                      Silkeborgvej 226<br />
+                      8320 Åbyhøj, Danmark
                     </p>
                   </div>
                 </div>

@@ -11,7 +11,7 @@ export default function BrandStory() {
     <section className="py-20 md:py-28 bg-white overflow-hidden">
       <Container>
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Image */}
+          {/* Images */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -19,14 +19,27 @@ export default function BrandStory() {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <div className="relative aspect-[4/5] overflow-hidden">
-              <Image
-                src="/jewelry-collection.jpeg"
-                alt="Yunik smykkekollektion"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
+            <div className="grid grid-cols-12 gap-4">
+              {/* Main image */}
+              <div className="col-span-7 relative aspect-[3/4] overflow-hidden">
+                <Image
+                  src="/97f780c9-11de-42a1-8e1a-7d8a29fde05a.jpeg"
+                  alt="Yunik håndlavede guldringe"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 60vw, 30vw"
+                />
+              </div>
+              {/* Secondary image */}
+              <div className="col-span-5 relative aspect-[3/4] overflow-hidden mt-12">
+                <Image
+                  src="/5ee239d6-847d-4d36-b6f2-6ac15c1ed909.jpeg"
+                  alt="Yunik smykker i hverdagen"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 40vw, 20vw"
+                />
+              </div>
             </div>
             {/* Decorative element */}
             <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-[#D4A9A5]/20 -z-10" />

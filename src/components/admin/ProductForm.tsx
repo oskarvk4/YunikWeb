@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import type { DbProduct } from "@/types/supabase";
+import type { DbProduct, Database } from "@/types/supabase";
+import ImageUploader from "./ImageUploader";
+
+type ProductInsert = Database["public"]["Tables"]["products"]["Insert"];
+type ProductUpdate = Database["public"]["Tables"]["products"]["Update"];
 
 interface ProductFormProps {
   product?: DbProduct;
@@ -30,7 +34,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
     category: product?.category || "rings",
     description: product?.description || "",
     materials: product?.materials || "",
-    images: product?.images?.join("\n") || "",
+    images: product?.images || [] as string[],
     featured: product?.featured || false,
     new_arrival: product?.new_arrival || false,
     stock_quantity: product?.stock_quantity || 100,
@@ -63,37 +67,40 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
 
     const supabase = createClient();
 
-    const images = formData.images
-      .split("\n")
-      .map((url) => url.trim())
-      .filter(Boolean);
-
-    const productData = {
-      id: formData.id,
-      slug: formData.slug,
-      name: formData.name,
-      price: Number(formData.price),
-      category: formData.category,
-      description: formData.description,
-      materials: formData.materials,
-      images,
-      featured: formData.featured,
-      new_arrival: formData.new_arrival,
-      stock_quantity: Number(formData.stock_quantity),
-      currency: "DKK",
-    };
-
     let result;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const supabaseAny = supabase as any;
-
     if (mode === "create") {
-      result = await supabaseAny.from("products").insert(productData);
+      const insertData: ProductInsert = {
+        id: formData.id,
+        slug: formData.slug,
+        name: formData.name,
+        price: Number(formData.price),
+        category: formData.category,
+        description: formData.description,
+        materials: formData.materials,
+        images: formData.images,
+        featured: formData.featured,
+        new_arrival: formData.new_arrival,
+        stock_quantity: Number(formData.stock_quantity),
+        currency: "DKK",
+      };
+      result = await supabase.from("products").insert(insertData);
     } else {
-      result = await supabaseAny
+      const updateData: ProductUpdate = {
+        slug: formData.slug,
+        name: formData.name,
+        price: Number(formData.price),
+        category: formData.category,
+        description: formData.description,
+        materials: formData.materials,
+        images: formData.images,
+        featured: formData.featured,
+        new_arrival: formData.new_arrival,
+        stock_quantity: Number(formData.stock_quantity),
+      };
+      result = await supabase
         .from("products")
-        .update(productData)
+        .update(updateData)
         .eq("id", product!.id);
     }
 
@@ -115,8 +122,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
     setIsLoading(true);
     const supabase = createClient();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { error } = await (supabase as any)
+    const { error } = await supabase
       .from("products")
       .delete()
       .eq("id", product!.id);
@@ -260,16 +266,14 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
 
         <div className="mt-6">
           <label className="block text-sm font-medium text-dark mb-2">
-            Billede URLs (én per linje)
+            Billeder
           </label>
-          <textarea
-            value={formData.images}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, images: e.target.value }))
+          <ImageUploader
+            images={formData.images}
+            onChange={(images) =>
+              setFormData((prev) => ({ ...prev, images }))
             }
-            rows={3}
-            className="w-full px-4 py-3 border border-dark/20 focus:border-accent focus:outline-none font-mono text-sm"
-            placeholder="/ring-1.jpg&#10;/ring-2.jpg"
+            maxImages={10}
           />
         </div>
 

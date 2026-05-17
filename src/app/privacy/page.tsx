@@ -41,9 +41,9 @@ export default function PrivacyPage() {
               Yunik er dataansvarlig for behandlingen af de personoplysninger, som vi modtager om dig.
             </p>
             <p>
-              <strong>Virksomhed:</strong> Yunik<br />
-              <strong>CVR:</strong> [UDFYLD CVR-NUMMER]<br />
-              <strong>Adresse:</strong> [UDFYLD ADRESSE]<br />
+              <strong>Virksomhed:</strong> Yunik Jewelry<br />
+              <strong>CVR:</strong> 46331060<br />
+              <strong>Adresse:</strong> Silkeborgvej 226, 8320 Åbyhøj<br />
               <strong>Email:</strong> kontakt@yunik.dk
             </p>
 

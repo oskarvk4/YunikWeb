@@ -1,25 +1,22 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Script from "next/script";
-import dynamic from "next/dynamic";
 import Container from "@/components/ui/Container";
 import ImageGallery from "@/components/product/ImageGallery";
 import ProductInfo from "@/components/product/ProductInfo";
 import StickyAddToCart from "@/components/product/StickyAddToCart";
-import { products, getProductBySlug, getRelatedProducts } from "@/data/products";
-
-// Dynamic import for below-fold component
-const RelatedProducts = dynamic(
-  () => import("@/components/product/RelatedProducts")
-);
+import RelatedProductsLoader from "@/components/product/RelatedProductsLoader";
+import { getProductBySlug, getAllProductSlugs } from "@/data/products";
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return products.map((product) => ({
-    slug: product.slug,
+  const slugs = await getAllProductSlugs();
+  return slugs.map((slug) => ({
+    slug,
   }));
 }
 
@@ -27,7 +24,7 @@ export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     return {
@@ -81,13 +78,11 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();
   }
-
-  const relatedProducts = getRelatedProducts(product);
 
   // Product JSON-LD Schema
   const productSchema = {
@@ -204,8 +199,27 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </Container>
       </section>
 
-      {/* Related Products */}
-      <RelatedProducts products={relatedProducts} />
+      {/* Related Products - Streams in separately */}
+      <Suspense
+        fallback={
+          <section className="py-12 bg-[#F5F0EB]">
+            <Container>
+              <div className="h-6 bg-gray-200 rounded w-48 mb-6 animate-pulse" />
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="aspect-square bg-gray-200 rounded-lg mb-3" />
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
+                    <div className="h-4 bg-gray-200 rounded w-1/4" />
+                  </div>
+                ))}
+              </div>
+            </Container>
+          </section>
+        }
+      >
+        <RelatedProductsLoader product={product} />
+      </Suspense>
 
       {/* Sticky Add to Cart (Mobile) */}
       <StickyAddToCart product={product} />

@@ -53,3 +53,13 @@ export async function createAdminClient() {
     }
   );
 }
+
+// Standalone admin client for webhooks/API routes (no cookie dependency)
+import { createClient as createSupabaseClient, SupabaseClient } from "@supabase/supabase-js";
+
+export function createStandaloneAdminClient(): SupabaseClient<Database> {
+  return createSupabaseClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}

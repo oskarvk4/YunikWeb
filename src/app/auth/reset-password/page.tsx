@@ -12,21 +12,37 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
   const [isValidSession, setIsValidSession] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    // Check if we have a valid recovery session
-    const checkSession = async () => {
+    const establishSession = async () => {
       const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
 
-      if (session) {
-        setIsValidSession(true);
+      // PKCE flow: Supabase appends ?code=... after verifying the email link.
+      // Exchange it for a recovery session before checking getSession().
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+
+      if (code) {
+        const { error: exchangeError } =
+          await supabase.auth.exchangeCodeForSession(code);
+        if (!exchangeError) {
+          url.searchParams.delete("code");
+          window.history.replaceState({}, "", url.pathname + url.search);
+        }
       }
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      setIsValidSession(!!session);
+      setIsCheckingSession(false);
     };
 
-    checkSession();
+    establishSession();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -98,6 +114,14 @@ export default function ResetPasswordPage() {
             </p>
           </div>
         </motion.div>
+      </div>
+    );
+  }
+
+  if (isCheckingSession) {
+    return (
+      <div className="min-h-screen bg-light flex items-center justify-center px-4 py-16">
+        <p className="text-dark/60">Indlæser...</p>
       </div>
     );
   }

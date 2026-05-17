@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import Script from "next/script";
+import { headers } from "next/headers";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import AuthErrorHandler from "@/components/auth/AuthErrorHandler";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import MetaPixel from "@/components/analytics/MetaPixel";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -117,7 +120,8 @@ export default function RootLayout({
     <html lang="da" data-scroll-behavior="smooth">
       <head>
         {/* Preload hero image for LCP optimization */}
-        <link rel="preload" as="image" href="/hero-bracelet.webp" type="image/webp" />
+        <link rel="preload" as="image" href="/yunik-17.jpeg" type="image/jpeg" media="(max-width: 767px)" />
+        <link rel="preload" as="image" href="/hero-rings.jpg" type="image/jpeg" media="(min-width: 768px)" />
 
         {/* Preconnect to external domains for performance */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
@@ -145,9 +149,12 @@ export default function RootLayout({
         className={`${cormorant.variable} ${dmSans.variable} antialiased`}
       >
         <AuthProvider>
+          <AuthErrorHandler />
           <Navbar />
           <main className="min-h-screen">
-            {children}
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
           </main>
           <Footer />
         </AuthProvider>

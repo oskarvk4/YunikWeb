@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { createAdminClient } from "@/lib/supabase/server";
+import { createStandaloneAdminClient } from "@/lib/supabase/server";
 import Stripe from "stripe";
 import { getAllProducts } from "@/data/products";
+import { sendOrderConfirmationEmail } from "@/lib/email/transactional";
+import type { Database, Json } from "@/types/supabase";
+
+type OrderInsert = Database["public"]["Tables"]["orders"]["Insert"];
 
 export async function POST(request: NextRequest) {
   const body = await request.text();
@@ -43,7 +47,7 @@ export async function POST(request: NextRequest) {
 
       try {
         // Use admin client to bypass RLS
-        const supabase = await createAdminClient();
+        const supabase = createStandaloneAdminClient();
         const products = await getAllProducts();
 
         // Parse cart items from metadata and expand with product details
@@ -76,27 +80,44 @@ export async function POST(request: NextRequest) {
         }
 
         // Save order to database
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { data: order, error } = await (supabase as any).from("orders").insert({
+        // shipping_details is available on Session but TypeScript types may not expose it
+        const sessionWithShipping = session as Stripe.Checkout.Session & {
+          shipping_details?: { address?: Record<string, unknown> };
+        };
+        const shippingAddress = sessionWithShipping.shipping_details?.address as Json | undefined;
+
+        const orderData: OrderInsert = {
           user_id: userId || null,
           stripe_session_id: session.id,
           customer_email: session.customer_details?.email || "",
-          items: items,
+          items: items as Json,
           total_amount: totalAmount,
           currency: session.currency?.toUpperCase() || "DKK",
-          shipping_address: (session as unknown as { shipping_details?: { address?: unknown } }).shipping_details?.address || null,
-          billing_address: session.customer_details?.address || null,
+          shipping_address: shippingAddress || null,
+          billing_address: (session.customer_details?.address as Json) || null,
           shipping_option: shippingOption,
           status: "completed",
-        }).select().single();
+        };
+
+        const { data: order, error } = await supabase
+          .from("orders")
+          .insert(orderData)
+          .select()
+          .single();
 
         if (error) {
           console.error("Failed to save order:", error);
         } else {
           console.log("Order saved successfully:", order.id);
 
-          // TODO: Send order confirmation email
-          // await sendOrderConfirmationEmail(order);
+          const emailResult = await sendOrderConfirmationEmail(order);
+          if (!emailResult.success) {
+            console.error(
+              "Order confirmation email failed for",
+              order.id,
+              emailResult.error
+            );
+          }
 
           // TODO: Update inventory
           // for (const item of items) {
@@ -119,7 +140,7 @@ export async function POST(request: NextRequest) {
 
       // Optionally save expired sessions for analytics
       try {
-        const supabase = await createAdminClient();
+        const supabase = createStandaloneAdminClient();
         const products = await getAllProducts();
         const rawItems = session.metadata?.items
           ? JSON.parse(session.metadata.items)
@@ -135,18 +156,19 @@ export async function POST(request: NextRequest) {
         });
         const userId = session.metadata?.user_id || null;
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (supabase as any).from("orders").insert({
+        const expiredOrderData: OrderInsert = {
           user_id: userId || null,
           stripe_session_id: session.id,
           customer_email: session.customer_details?.email || "unknown",
-          items: items,
+          items: items as Json,
           total_amount: session.amount_total
             ? Math.round(session.amount_total / 100)
             : 0,
           currency: session.currency?.toUpperCase() || "DKK",
           status: "expired",
-        });
+        };
+
+        await supabase.from("orders").insert(expiredOrderData);
       } catch (error) {
         console.error("Error saving expired session:", error);
       }

@@ -5,12 +5,15 @@ import Link from "next/link";
 import Image from "next/image";
 import Container from "@/components/ui/Container";
 import Badge from "@/components/ui/Badge";
-import { getFeaturedProducts } from "@/data/products";
-import { formatPrice } from "@/types";
+import { formatPrice, Product } from "@/types";
 import { useCart } from "@/lib/cart";
 
-export default function FeaturedProducts() {
-  const featuredProducts = getFeaturedProducts().slice(0, 4);
+interface FeaturedProductsProps {
+  products: Product[];
+}
+
+export default function FeaturedProducts({ products }: FeaturedProductsProps) {
+  const featuredProducts = products.slice(0, 4);
   const { addItem } = useCart();
 
   return (

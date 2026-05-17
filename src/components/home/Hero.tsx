@@ -11,17 +11,25 @@ export default function Hero() {
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src="/hero-bracelet.webp"
-          alt="Yunik tanzanit guld armbånd"
+          src="/yunik-1.jpeg"
+          alt="Yunik håndlavede guldsmykker"
           fill
           priority
-          placeholder="blur"
-          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAgEDBAMBAAAAAAAAAAAAAQIDAAQRBRIhMQYTQWH/xAAVAQEBAAAAAAAAAAAAAAAAAAADBP/EABkRAAIDAQAAAAAAAAAAAAAAAAECAAMRIf/aAAwDAQACEQMRAD8AzrTtYvdOvI7m2upIZ0yFkQ4Iz3/eanXvnGv3t3NcTalM0kzl3Y9kkk/aUpOiupFCx2I8mf/Z"
-          className="object-cover object-center"
+          quality={90}
+          className="object-cover object-[50%_60%] md:hidden"
           sizes="100vw"
         />
-        {/* Gradient Overlay - adjusted for lighter image */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#1A1A1A]/70 via-[#1A1A1A]/40 to-transparent" />
+        <Image
+          src="/hero-rings.jpg"
+          alt="Yunik håndlavede guldsmykker"
+          fill
+          priority
+          quality={90}
+          className="hidden object-cover object-center md:block"
+          sizes="100vw"
+        />
+        {/* Gradient Overlay - lighter for better image visibility */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1A1A1A]/70 via-[#1A1A1A]/35 to-[#1A1A1A]/20 md:bg-gradient-to-r md:from-[#1A1A1A]/50 md:via-[#1A1A1A]/20 md:to-transparent" />
       </div>
 
       {/* Content */}

@@ -45,9 +45,9 @@ export default function Footer() {
                 udtryk.
               </p>
               <div className="text-xs text-white/40 font-sans space-y-1">
-                <p>CVR: [UDFYLD CVR-NUMMER]</p>
-                <p>[UDFYLD ADRESSE], Danmark</p>
-                <p>kontakt@yunik.dk</p>
+                <p>Yunik Jewelry · CVR: 46331060</p>
+                <p>Silkeborgvej 226, 8320 Åbyhøj, Danmark</p>
+                <p>kontakt@yunik.dk · +45 28 57 61 57</p>
               </div>
               {/* Social Links */}
               <div className="flex space-x-4 mt-6">

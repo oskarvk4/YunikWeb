@@ -83,6 +83,24 @@ export default function AdminSidebar() {
         </Link>
       </div>
 
+      {/* Quick Action Button */}
+      <div className="px-4 mb-4">
+        <Link
+          href="/admin/products/new"
+          className="flex items-center justify-center space-x-2 w-full px-4 py-3 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          <span>Nyt Produkt</span>
+        </Link>
+      </div>
+
       <nav className="px-4 py-2">
         {navItems.map((item) => (
           <Link

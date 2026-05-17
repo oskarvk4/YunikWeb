@@ -2,6 +2,11 @@
 // Currently supports Mailchimp via JSONP for static sites
 // Can be extended to support other services (Klaviyo, SendGrid, etc.)
 
+import { z } from "zod";
+
+// Email validation schema using Zod
+const emailSchema = z.string().email("Ugyldig email adresse");
+
 export interface SubscribeResult {
   success: boolean;
   message: string;
@@ -63,11 +68,22 @@ export async function subscribeToNewsletter(email: string): Promise<SubscribeRes
 }
 
 /**
- * Validate email format
+ * Validate email format using Zod
  */
 export function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  const result = emailSchema.safeParse(email);
+  return result.success;
+}
+
+/**
+ * Validate and parse email, returning error message if invalid
+ */
+export function validateEmail(email: string): { valid: boolean; error?: string } {
+  const result = emailSchema.safeParse(email);
+  if (result.success) {
+    return { valid: true };
+  }
+  return { valid: false, error: result.error.issues[0]?.message || "Ugyldig email" };
 }
 
 /**

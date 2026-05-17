@@ -4,7 +4,14 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/components/ui/Container";
-import { categories } from "@/data/products";
+import { CategoryInfo, ProductCategory } from "@/types";
+import categoriesData from "@/data/products.json";
+
+// Load categories directly from JSON (client-safe)
+const categories: CategoryInfo[] = categoriesData.categories.map((c) => ({
+  ...c,
+  slug: c.slug as ProductCategory,
+}));
 
 export default function CategoryGrid() {
   return (
