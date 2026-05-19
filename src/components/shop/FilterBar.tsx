@@ -1,8 +1,5 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
-import { ProductCategory } from "@/types";
-
 const categories: { label: string; value: string }[] = [
   { label: "Alle", value: "all" },
   { label: "Ringe", value: "rings" },
@@ -17,23 +14,32 @@ const sortOptions: { label: string; value: string }[] = [
   { label: "Pris: Høj til Lav", value: "price-desc" },
 ];
 
+const metals: { label: string; value: string }[] = [
+  { label: "Sølv", value: "silver" },
+  { label: "Guld", value: "gold" },
+];
+
 interface FilterBarProps {
   activeCategory: string;
   activeSort: string;
+  activeMetals: string[];
   onCategoryChange: (category: string) => void;
   onSortChange: (sort: string) => void;
+  onMetalToggle: (metal: string) => void;
 }
 
 export default function FilterBar({
   activeCategory,
   activeSort,
+  activeMetals,
   onCategoryChange,
   onSortChange,
+  onMetalToggle,
 }: FilterBarProps) {
   return (
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
       {/* Category Filters */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {categories.map((category) => (
           <button
             key={category.value}
@@ -47,6 +53,34 @@ export default function FilterBar({
             {category.label}
           </button>
         ))}
+
+        <span className="hidden md:inline-block h-5 w-px bg-[#1A1A1A]/15 mx-1" />
+
+        {metals.map((metal) => {
+          const isActive = activeMetals.includes(metal.value);
+          return (
+            <button
+              key={metal.value}
+              type="button"
+              onClick={() => onMetalToggle(metal.value)}
+              aria-pressed={isActive}
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-sans uppercase tracking-[0.15em] border transition-all duration-300 ${
+                isActive
+                  ? "bg-[#1A1A1A] text-white border-[#1A1A1A]"
+                  : "bg-transparent text-[#1A1A1A] border-[#1A1A1A]/20 hover:border-[#1A1A1A]/40"
+              }`}
+            >
+              <span
+                className={`w-3 h-3 rounded-full border ${
+                  metal.value === "gold"
+                    ? "bg-[#D4AF37] border-[#a88a25]"
+                    : "bg-[#C0C0C0] border-[#7d7d7d]"
+                }`}
+              />
+              {metal.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Sort Dropdown */}

@@ -6,8 +6,9 @@ import productsData from "./products.json";
 
 type DbProduct = Database["public"]["Tables"]["products"]["Row"];
 
-// Cache duration in seconds (60 seconds for development, increase for production)
-const CACHE_REVALIDATE = 60;
+// Cache duration in seconds. On-demand invalidation via revalidateTag("products")
+// is triggered from admin product mutations, so this can be long.
+const CACHE_REVALIDATE = 3600;
 
 // Create a direct Supabase client without cookies (for cached queries)
 function getSupabaseClient() {

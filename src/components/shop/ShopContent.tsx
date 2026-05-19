@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import FilterBar from "@/components/shop/FilterBar";
 import ProductGrid from "@/components/shop/ProductGrid";
@@ -10,38 +10,60 @@ interface ShopContentProps {
   products: Product[];
 }
 
+const VALID_METALS = ["gold", "silver"] as const;
+type Metal = (typeof VALID_METALS)[number];
+
+function parseMetals(value: string | null): Metal[] {
+  if (!value) return [];
+  return value
+    .split(",")
+    .map((m) => m.trim().toLowerCase())
+    .filter((m): m is Metal => (VALID_METALS as readonly string[]).includes(m));
+}
+
+function productMatchesMetal(materials: string, metal: Metal): boolean {
+  const m = materials.toLowerCase();
+  if (metal === "gold") return m.includes("guld");
+  return m.includes("sølv");
+}
+
 export default function ShopContent({ products }: ShopContentProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const categoryParam = searchParams.get("category") || "all";
-  const sortParam = searchParams.get("sort") || "newest";
+  const activeCategory = searchParams.get("category") || "all";
+  const activeSort = searchParams.get("sort") || "newest";
+  const activeMetals = useMemo(
+    () => parseMetals(searchParams.get("metal")),
+    [searchParams]
+  );
 
-  const [activeCategory, setActiveCategory] = useState(categoryParam);
-  const [activeSort, setActiveSort] = useState(sortParam);
-
-  // Sync state with URL params
-  useEffect(() => {
-    setActiveCategory(categoryParam);
-    setActiveSort(sortParam);
-  }, [categoryParam, sortParam]);
-
-  const updateURL = (category: string, sort: string) => {
+  const updateURL = (category: string, sort: string, metals: Metal[]) => {
     const params = new URLSearchParams();
     if (category !== "all") params.set("category", category);
     if (sort !== "newest") params.set("sort", sort);
+    if (metals.length > 0) params.set("metal", metals.join(","));
     const queryString = params.toString();
-    router.push(`/shop${queryString ? `?${queryString}` : ""}`, { scroll: false });
+    router.push(`/shop${queryString ? `?${queryString}` : ""}`, {
+      scroll: false,
+    });
   };
 
   const handleCategoryChange = (category: string) => {
-    setActiveCategory(category);
-    updateURL(category, activeSort);
+    updateURL(category, activeSort, activeMetals);
   };
 
   const handleSortChange = (sort: string) => {
-    setActiveSort(sort);
-    updateURL(activeCategory, sort);
+    updateURL(activeCategory, sort, activeMetals);
+  };
+
+  const handleMetalToggle = (metal: string) => {
+    if (!(VALID_METALS as readonly string[]).includes(metal)) return;
+    const m = metal as Metal;
+    const next = activeMetals.includes(m)
+      ? activeMetals.filter((x) => x !== m)
+      : [...activeMetals, m];
+    updateURL(activeCategory, activeSort, next);
   };
 
   const filteredAndSortedProducts = useMemo(() => {
@@ -50,6 +72,15 @@ export default function ShopContent({ products }: ShopContentProps) {
     // Filter by category
     if (activeCategory !== "all") {
       result = result.filter((p) => p.category === activeCategory);
+    }
+
+    // Filter by metal (OR within selected metals)
+    if (activeMetals.length > 0) {
+      result = result.filter((p) =>
+        activeMetals.some((metal) =>
+          productMatchesMetal(p.materials || "", metal)
+        )
+      );
     }
 
     // Sort
@@ -72,15 +103,17 @@ export default function ShopContent({ products }: ShopContentProps) {
     }
 
     return result;
-  }, [products, activeCategory, activeSort]);
+  }, [products, activeCategory, activeSort, activeMetals]);
 
   return (
     <>
       <FilterBar
         activeCategory={activeCategory}
         activeSort={activeSort}
+        activeMetals={activeMetals}
         onCategoryChange={handleCategoryChange}
         onSortChange={handleSortChange}
+        onMetalToggle={handleMetalToggle}
       />
       <ProductGrid products={filteredAndSortedProducts} />
     </>

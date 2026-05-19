@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import ProductForm from "@/components/admin/ProductForm";
 
@@ -20,7 +21,9 @@ export default function NewProductPage() {
         <p className="text-dark/60">Opret et nyt produkt til din butik</p>
       </div>
 
-      <ProductForm mode="create" />
+      <Suspense fallback={null}>
+        <ProductForm mode="create" />
+      </Suspense>
     </div>
   );
 }

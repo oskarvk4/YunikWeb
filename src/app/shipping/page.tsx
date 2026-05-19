@@ -1,7 +1,5 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Container from "@/components/ui/Container";
+import FadeIn from "@/components/ui/FadeIn";
 
 export default function ShippingPage() {
   return (
@@ -9,31 +7,21 @@ export default function ShippingPage() {
       {/* Header */}
       <section className="bg-[#F5F0EB] py-16 md:py-20">
         <Container size="narrow">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
-          >
+          <FadeIn inView={false} duration={0.6} className="text-center">
             <h1 className="font-serif text-4xl md:text-5xl font-light text-[#1A1A1A] mb-4">
               Levering
             </h1>
             <p className="text-[#1A1A1A]/60 font-sans">
               Alt du behøver at vide om fragt og levering
             </p>
-          </motion.div>
+          </FadeIn>
         </Container>
       </section>
 
       {/* Content */}
       <section className="py-16 md:py-20">
         <Container size="narrow">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="space-y-12"
-          >
+          <FadeIn inView={false} duration={0.6} delay={0.2} className="space-y-12">
             {/* Shipping Options */}
             <div>
               <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mb-6">
@@ -160,7 +148,7 @@ export default function ShippingPage() {
                 Gå til kontaktsiden →
               </a>
             </div>
-          </motion.div>
+          </FadeIn>
         </Container>
       </section>
     </div>

@@ -18,10 +18,10 @@
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-easy-crop": "^5.5.7",
     "resend": "^6.12.3",
     "server-only": "^0.0.1",
     "stripe": "^20.3.1",
-    "swiper": "^12.1.0",
     "zustand": "^5.0.11"
   },
   "devDependencies": {

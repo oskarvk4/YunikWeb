@@ -4,6 +4,7 @@ import Script from "next/script";
 import { headers } from "next/headers";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { HideOnAdmin } from "@/components/layout/SiteChrome";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import AuthErrorHandler from "@/components/auth/AuthErrorHandler";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
@@ -120,17 +121,17 @@ export default function RootLayout({
     <html lang="da" data-scroll-behavior="smooth">
       <head>
         {/* Preload hero image for LCP optimization */}
-        <link rel="preload" as="image" href="/yunik-17.jpeg" type="image/jpeg" media="(max-width: 767px)" />
-        <link rel="preload" as="image" href="/hero-rings.jpg" type="image/jpeg" media="(min-width: 768px)" />
+        <link rel="preload" as="image" href="/yunik-16.webp" type="image/webp" media="(max-width: 767px)" />
+        <link rel="preload" as="image" href="/hero-rings.webp" type="image/webp" media="(min-width: 768px)" />
 
         {/* Preconnect to external domains for performance */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://www.google-analytics.com" />
         <link rel="preconnect" href="https://connect.facebook.net" />
-        <link rel="preconnect" href="https://js.stripe.com" />
+        <link rel="preconnect" href="https://dqieqdaisfahomevryvg.supabase.co" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://connect.facebook.net" />
-        <link rel="dns-prefetch" href="https://js.stripe.com" />
+        <link rel="dns-prefetch" href="https://dqieqdaisfahomevryvg.supabase.co" />
 
         <Script
           id="organization-schema"
@@ -156,7 +157,9 @@ export default function RootLayout({
               {children}
             </ErrorBoundary>
           </main>
-          <Footer />
+          <HideOnAdmin>
+            <Footer />
+          </HideOnAdmin>
         </AuthProvider>
       </body>
     </html>

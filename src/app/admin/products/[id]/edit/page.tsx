@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
@@ -42,7 +43,9 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
         <p className="text-dark/60">{product.name}</p>
       </div>
 
-      <ProductForm product={product} mode="edit" />
+      <Suspense fallback={null}>
+        <ProductForm product={product} mode="edit" />
+      </Suspense>
     </div>
   );
 }

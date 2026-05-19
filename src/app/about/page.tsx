@@ -1,8 +1,6 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Image from "next/image";
 import Container from "@/components/ui/Container";
+import FadeIn from "@/components/ui/FadeIn";
 
 const values = [
   {
@@ -37,32 +35,21 @@ export default function AboutPage() {
         />
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center px-4"
-          >
+          <FadeIn inView={false} className="text-center px-4">
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light text-white mb-4">
               Vores Historie
             </h1>
             <p className="text-white/80 font-sans text-lg max-w-md mx-auto">
               Skaber tidløs elegance fra begyndelsen
             </p>
-          </motion.div>
+          </FadeIn>
         </div>
       </section>
 
       {/* Story Section */}
       <section className="py-20 md:py-28 bg-white">
         <Container size="narrow">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
+          <FadeIn className="text-center mb-16">
             <p className="text-sm font-sans uppercase tracking-[0.3em] text-[#8D6553] mb-4">
               Om Yunik
             </p>
@@ -83,20 +70,36 @@ export default function AboutPage() {
                 om nøje overvejelse og kunstnerisk vision.
               </p>
             </div>
-          </motion.div>
+          </FadeIn>
         </Container>
+      </section>
+
+      {/* Heritage band — collected through decades */}
+      <section className="relative h-[70vh] min-h-[480px] max-h-[720px] overflow-hidden">
+        <Image
+          src="/StoryPics/travel.webp"
+          alt="Pas, telefon og smykker — samlet over årtiers rejser"
+          fill
+          className="object-cover"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 flex items-center justify-center px-6">
+          <FadeIn className="text-center max-w-2xl">
+            <p className="text-xs font-sans uppercase tracking-[0.4em] text-white/70 mb-5">
+              Et familiearkiv
+            </p>
+            <p className="font-serif text-2xl md:text-3xl lg:text-4xl font-light text-white leading-snug">
+              Samlet gennem 30 år af rejser mellem Danmark, Indien og Thailand.
+            </p>
+          </FadeIn>
+        </div>
       </section>
 
       {/* Image Break */}
       <section className="relative">
         <div className="grid md:grid-cols-2">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative aspect-square md:aspect-auto"
-          >
+          <FadeIn direction="left" className="relative aspect-square md:aspect-auto">
             <Image
               src="/yunik-11.jpg"
               alt="Yunik smykkehåndværk"
@@ -104,14 +107,8 @@ export default function AboutPage() {
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative aspect-square md:aspect-auto"
-          >
+          </FadeIn>
+          <FadeIn direction="right" delay={0.2} className="relative aspect-square md:aspect-auto">
             <Image
               src="/yunik-12.jpg"
               alt="Yunik smykkedetaljer"
@@ -119,33 +116,25 @@ export default function AboutPage() {
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
-          </motion.div>
+          </FadeIn>
         </div>
       </section>
 
       {/* Values Section */}
       <section className="py-20 md:py-28 bg-[#F5F0EB]">
         <Container>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
+          <FadeIn duration={0.6} className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A]">
               Vores Værdier
             </h2>
-          </motion.div>
+          </FadeIn>
 
           <div className="grid md:grid-cols-3 gap-8 md:gap-12">
             {values.map((value, index) => (
-              <motion.div
+              <FadeIn
                 key={value.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
+                duration={0.6}
+                delay={index * 0.1}
                 className="text-center"
               >
                 <h3 className="font-serif text-xl font-medium text-[#1A1A1A] mb-4">
@@ -154,7 +143,7 @@ export default function AboutPage() {
                 <p className="text-[#1A1A1A]/70 font-sans leading-relaxed">
                   {value.description}
                 </p>
-              </motion.div>
+              </FadeIn>
             ))}
           </div>
         </Container>
@@ -164,12 +153,7 @@ export default function AboutPage() {
       <section id="materials" className="py-20 md:py-28 bg-white">
         <Container>
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
+            <FadeIn direction="left">
               <p className="text-sm font-sans uppercase tracking-[0.3em] text-[#8D6553] mb-4">
                 Materialer
               </p>
@@ -194,23 +178,17 @@ export default function AboutPage() {
                   perfekte selv til den mest følsomme hud.
                 </p>
               </div>
-            </motion.div>
+            </FadeIn>
 
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative aspect-square"
-            >
+            <FadeIn direction="right" delay={0.2} className="relative aspect-square">
               <Image
-                src="/yunik-17.jpeg"
+                src="/yunik-17.webp"
                 alt="Yunik smykkematerialer"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
-            </motion.div>
+            </FadeIn>
           </div>
         </Container>
       </section>
@@ -218,13 +196,7 @@ export default function AboutPage() {
       {/* Sustainability Section */}
       <section id="sustainability" className="py-20 md:py-28 bg-[#1A1A1A]">
         <Container size="narrow">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
+          <FadeIn className="text-center">
             <p className="text-sm font-sans uppercase tracking-[0.3em] text-[#D4A9A5] mb-4">
               Bæredygtighed
             </p>
@@ -248,7 +220,7 @@ export default function AboutPage() {
                 modeindustri.
               </p>
             </div>
-          </motion.div>
+          </FadeIn>
         </Container>
       </section>
     </div>

@@ -169,7 +169,32 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Link
+          href="/admin/products"
+          className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow flex items-center space-x-4"
+        >
+          <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
+            <svg
+              className="w-6 h-6 text-accent"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+              />
+            </svg>
+          </div>
+          <div>
+            <p className="font-medium text-dark">Administrer Produkter</p>
+            <p className="text-sm text-dark/60">Se og rediger produkter</p>
+          </div>
+        </Link>
+
         <Link
           href="/admin/products/new"
           className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow flex items-center space-x-4"

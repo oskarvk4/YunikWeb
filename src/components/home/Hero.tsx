@@ -11,7 +11,7 @@ export default function Hero() {
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src="/yunik-1.jpeg"
+          src="/yunik-16.webp"
           alt="Yunik håndlavede guldsmykker"
           fill
           priority
@@ -20,7 +20,7 @@ export default function Hero() {
           sizes="100vw"
         />
         <Image
-          src="/hero-rings.jpg"
+          src="/hero-rings.webp"
           alt="Yunik håndlavede guldsmykker"
           fill
           priority

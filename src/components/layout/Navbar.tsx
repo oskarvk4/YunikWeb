@@ -61,6 +61,10 @@ export default function Navbar() {
     { href: "/about", label: "Om Yunik" },
   ];
 
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
+
   return (
     <>
       <motion.header
