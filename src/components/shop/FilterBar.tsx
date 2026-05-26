@@ -38,8 +38,8 @@ export default function FilterBar({
 }: FilterBarProps) {
   return (
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4 mb-6">
-      {/* Category Filters */}
-      <div className="flex flex-nowrap md:flex-wrap items-center gap-2 overflow-x-auto md:overflow-visible -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+      {/* Category + Metal Filters */}
+      <div className="flex flex-wrap items-center gap-2">
         {categories.map((category) => (
           <button
             key={category.value}
@@ -54,6 +54,7 @@ export default function FilterBar({
           </button>
         ))}
 
+        <span className="basis-full md:hidden" aria-hidden="true" />
         <span className="hidden md:inline-block h-5 w-px bg-[#1A1A1A]/15 mx-1" />
 
         {metals.map((metal) => {
