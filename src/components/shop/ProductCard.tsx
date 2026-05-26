@@ -29,8 +29,9 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       >
         {/* Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-          {product.newArrival && <Badge variant="new">Nyhed</Badge>}
-          {product.featured && !product.newArrival && (
+          {product.oneOfOne && <Badge variant="unique">Unik</Badge>}
+          {product.newArrival && !product.oneOfOne && <Badge variant="new">Nyhed</Badge>}
+          {product.featured && !product.newArrival && !product.oneOfOne && (
             <Badge variant="bestseller">Bestseller</Badge>
           )}
         </div>

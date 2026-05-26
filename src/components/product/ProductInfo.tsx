@@ -57,6 +57,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     >
       {/* Badges */}
       <div className="flex gap-2 mb-4">
+        {product.oneOfOne && <Badge variant="unique">Unik</Badge>}
         {product.newArrival && <Badge variant="new">Nyhed</Badge>}
         {product.featured && <Badge variant="bestseller">Bestseller</Badge>}
       </div>
@@ -65,6 +66,13 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       <h1 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A] mb-2">
         {product.name}
       </h1>
+
+      {/* One-of-one provenance line */}
+      {product.oneOfOne && (
+        <p className="font-serif italic text-base text-[#8D6553] mb-3">
+          Et af ét eksemplar — kan ikke gentages.
+        </p>
+      )}
 
       {/* Category */}
       <p className="text-sm font-sans text-[#1A1A1A]/50 uppercase tracking-[0.15em] mb-4">

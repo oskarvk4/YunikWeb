@@ -29,11 +29,13 @@ type FormState = {
   name: string;
   price: number;
   category: string;
+  metal: "gold" | "silver";
   description: string;
   materials: string;
   images: string[];
   featured: boolean;
   new_arrival: boolean;
+  one_of_one: boolean;
   stock_quantity: number;
 };
 
@@ -44,11 +46,13 @@ function buildInitialState(product?: DbProduct): FormState {
     name: product?.name || "",
     price: product?.price ?? 0,
     category: product?.category || "rings",
+    metal: product?.metal || "silver",
     description: product?.description || "",
     materials: product?.materials || "",
     images: product?.images || [],
     featured: product?.featured ?? false,
     new_arrival: product?.new_arrival ?? false,
+    one_of_one: product?.one_of_one ?? false,
     stock_quantity: product?.stock_quantity ?? 100,
   };
 }
@@ -157,11 +161,13 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
         name: formData.name,
         price: Number(formData.price),
         category: formData.category,
+        metal: formData.metal,
         description: formData.description,
         materials: formData.materials,
         images: formData.images,
         featured: formData.featured,
         new_arrival: formData.new_arrival,
+        one_of_one: formData.one_of_one,
         stock_quantity: Number(formData.stock_quantity),
         currency: "DKK",
       };
@@ -187,11 +193,13 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
       name: formData.name,
       price: Number(formData.price),
       category: formData.category,
+      metal: formData.metal,
       description: formData.description,
       materials: formData.materials,
       images: formData.images,
       featured: formData.featured,
       new_arrival: formData.new_arrival,
+      one_of_one: formData.one_of_one,
       stock_quantity: Number(formData.stock_quantity),
     };
     const { error: updateError } = await supabase
@@ -473,6 +481,44 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
 
           <div>
             <label className="block text-sm font-medium text-dark mb-2">
+              Metal <span className="text-red-500">*</span>
+            </label>
+            <div className="flex gap-2">
+              {(["silver", "gold"] as const).map((m) => {
+                const isActive = formData.metal === m;
+                return (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, metal: m }))
+                    }
+                    aria-pressed={isActive}
+                    className={`flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded border text-sm font-medium transition-colors ${
+                      isActive
+                        ? "border-accent bg-accent/10 text-dark"
+                        : "border-dark/20 bg-white text-dark hover:border-dark/40"
+                    }`}
+                  >
+                    <span
+                      className={`w-3.5 h-3.5 rounded-full border ${
+                        m === "gold"
+                          ? "bg-[#D4AF37] border-[#a88a25]"
+                          : "bg-[#C0C0C0] border-[#7d7d7d]"
+                      }`}
+                    />
+                    {m === "gold" ? "Guld" : "Sølv"}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-1 text-xs text-dark/50">
+              Bruges af shop-filteret.
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-dark mb-2">
               Materialer
             </label>
             <input
@@ -589,6 +635,21 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
               className="w-5 h-5 rounded border-dark/20 text-accent focus:ring-accent"
             />
             <span className="text-sm font-medium text-dark">Ny ankomst</span>
+          </label>
+
+          <label className="flex items-center space-x-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={formData.one_of_one}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  one_of_one: e.target.checked,
+                }))
+              }
+              className="w-5 h-5 rounded border-dark/20 text-accent focus:ring-accent"
+            />
+            <span className="text-sm font-medium text-dark">Unikt stykke (1 af 1)</span>
           </label>
         </div>
       </div>

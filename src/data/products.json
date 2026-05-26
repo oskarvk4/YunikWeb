@@ -3,7 +3,7 @@
     {
       "name": "Ringe",
       "slug": "rings",
-      "image": "/yunik-5.jpg",
+      "image": "/yunik-6.jpg",
       "description": "Elegante ringe til enhver lejlighed"
     },
     {
@@ -32,9 +32,13 @@
       "name": "Aurora Signet Ring",
       "price": 1299,
       "category": "rings",
+      "metal": "gold",
       "description": "En moderne fortolkning af den klassiske signetring. Aurora har en subtilt hvælvet overflade, der fanger lyset smukt og skaber en æterisk glød på din finger.",
       "materials": "18 karat guldbelagt sterlingsølv. Nikkelfri og hypoallergenisk.",
-      "images": ["/yunik-5.jpg", "/yunik-6.jpg"],
+      "images": [
+        "/yunik-5.jpg",
+        "/yunik-6.jpg"
+      ],
       "featured": true,
       "newArrival": false
     },
@@ -44,9 +48,13 @@
       "name": "Celestine Bånd",
       "price": 899,
       "category": "rings",
+      "metal": "silver",
       "description": "En delikat stablering med hamret tekstur, der tilføjer dybde og karakter. Perfekt alene eller kombineret med dine favoritsmykker.",
       "materials": "Sterlingsølv med rhodiumbelægning for langvarig glans.",
-      "images": ["/yunik-6.jpg", "/yunik-7.jpg"],
+      "images": [
+        "/yunik-6.jpg",
+        "/yunik-7.jpg"
+      ],
       "featured": false,
       "newArrival": true
     },
@@ -56,9 +64,13 @@
       "name": "Solstice Dome Ring",
       "price": 1599,
       "category": "rings",
+      "metal": "gold",
       "description": "Markant men raffineret. Solstice har et skulpturelt kuppeldesign inspireret af midterhundredetallets arkitektur. Et statement-smykke til den moderne kvinde.",
       "materials": "14 karat guld vermeil over sterlingsølv.",
-      "images": ["/yunik-7.jpg", "/yunik-5.jpg"],
+      "images": [
+        "/yunik-7.jpg",
+        "/yunik-5.jpg"
+      ],
       "featured": true,
       "newArrival": false
     },
@@ -68,9 +80,13 @@
       "name": "Luna Vedhæng",
       "price": 1499,
       "category": "necklaces",
+      "metal": "gold",
       "description": "Inspireret af månens blide skær. Luna-vedhænget har et lysende perlemorscenter indfattet i en delikat guldramme.",
       "materials": "18 karat guldbelagt sterlingsølv med ægte perlemor.",
-      "images": ["/yunik-14.jpg", "/yunik-15.jpg"],
+      "images": [
+        "/yunik-14.jpg",
+        "/yunik-15.jpg"
+      ],
       "featured": true,
       "newArrival": false
     },
@@ -80,9 +96,13 @@
       "name": "Whisper Kæde",
       "price": 799,
       "category": "necklaces",
+      "metal": "silver",
       "description": "En ultrafin kæde der ligger elegant på kravebenet. Simpel, elegant og uendeligt alsidig.",
       "materials": "Sterlingsølv. Fås i 40 cm og 45 cm længder.",
-      "images": ["/yunik-15.jpg", "/yunik-16.jpg"],
+      "images": [
+        "/yunik-15.jpg",
+        "/yunik-16.jpg"
+      ],
       "featured": false,
       "newArrival": true
     },
@@ -92,9 +112,13 @@
       "name": "Ophelia Lagdelt Halskæde",
       "price": 1899,
       "category": "necklaces",
+      "metal": "gold",
       "description": "Tre delikate kæder i forskellige længder samlet i ét ubesværet elegant smykke. Den perfekte genvej til et kurateret lagdelt look.",
       "materials": "14 karat guld vermeil med justerbar lås.",
-      "images": ["/yunik-16.jpg", "/yunik-14.jpg"],
+      "images": [
+        "/yunik-16.jpg",
+        "/yunik-14.jpg"
+      ],
       "featured": true,
       "newArrival": true
     },
@@ -104,9 +128,12 @@
       "name": "Flora Sølv Drop Øreringe",
       "price": 1299,
       "category": "earrings",
+      "metal": "silver",
       "description": "Elegante blomsterøreringe i børstet sølv. De fem delikate kronblade og fine støvdragere skaber et naturinspireret look, der er både feminint og tidløst.",
       "materials": "Sterlingsølv med børstet finish. Lange ørekroge for sikker og behagelig pasform.",
-      "images": ["/ProductsV2/silver-flower-drops.webp"],
+      "images": [
+        "/ProductsV2/silver-flower-drops.webp"
+      ],
       "featured": true,
       "newArrival": true
     },
@@ -116,9 +143,12 @@
       "name": "Luna Sølv Hoops",
       "price": 999,
       "category": "earrings",
+      "metal": "silver",
       "description": "Bløde, hamrede hoops i poleret sølv. Den let uregelmæssige overflade fanger lyset smukt og giver et moderne, organisk udtryk.",
       "materials": "Sterlingsølv med poleret finish og sikker klik-top lukning.",
-      "images": ["/ProductsV2/silver-hammered-hoops.webp"],
+      "images": [
+        "/ProductsV2/silver-hammered-hoops.webp"
+      ],
       "featured": false,
       "newArrival": true
     },
@@ -128,9 +158,12 @@
       "name": "Aurora Guld Hoops",
       "price": 1099,
       "category": "earrings",
+      "metal": "gold",
       "description": "Tidløse hoops i varmt, poleret guld. Den klassiske form gør dem til en daglig favorit, der passer til både hverdag og fest.",
       "materials": "18 karat guldbelagt sterlingsølv med klik-top lukning.",
-      "images": ["/ProductsV2/gold-classic-hoops.webp"],
+      "images": [
+        "/ProductsV2/gold-classic-hoops.webp"
+      ],
       "featured": true,
       "newArrival": false
     },
@@ -140,9 +173,12 @@
       "name": "Flora Guld Drop Øreringe",
       "price": 1499,
       "category": "earrings",
+      "metal": "gold",
       "description": "Skulpturelle blomsterøreringe i børstet guld. De rige kronblade og fine støvdragere skaber et romantisk, naturinspireret statement.",
       "materials": "18 karat guld vermeil over sterlingsølv. Lange ørekroge for sikker pasform.",
-      "images": ["/ProductsV2/gold-flower-drops.webp"],
+      "images": [
+        "/ProductsV2/gold-flower-drops.webp"
+      ],
       "featured": true,
       "newArrival": true
     },
@@ -152,9 +188,12 @@
       "name": "Crinkle Guld Hoops",
       "price": 1399,
       "category": "earrings",
+      "metal": "gold",
       "description": "Organiske, krøllede hoops i råt guld. Den skulpturelle, uregelmæssige form gør hvert par unikt – et moderne statement med skulpturel karakter.",
       "materials": "18 karat guldbelagt sterlingsølv med ørestikker-lukning.",
-      "images": ["/ProductsV2/gold-crinkle-hoops.webp"],
+      "images": [
+        "/ProductsV2/gold-crinkle-hoops.webp"
+      ],
       "featured": true,
       "newArrival": true
     },
@@ -164,9 +203,12 @@
       "name": "Cascade Guld Øreringe",
       "price": 1599,
       "category": "earrings",
+      "metal": "gold",
       "description": "Dramatiske men delikate. Disse lange drop-øreringe består af flere bløde, hamrede guldstave, der bevæger sig yndefuldt og fanger lyset fra alle vinkler.",
       "materials": "18 karat guldbelagt sterlingsølv med fransk ørekrog.",
-      "images": ["/ProductsV2/gold-cascade-drops.webp"],
+      "images": [
+        "/ProductsV2/gold-cascade-drops.webp"
+      ],
       "featured": true,
       "newArrival": false
     },
@@ -176,9 +218,13 @@
       "name": "Tanzanit Sten Armbånd",
       "price": 1399,
       "category": "bracelets",
+      "metal": "gold",
       "description": "Rå tanzanitsten indfattet i gyldne griffer skaber et fantastisk statement-smykke. Hver sten er unik, hvilket gør hvert armbånd til et original.",
       "materials": "18 karat guldbelagt messing med naturlige tanzanitsten.",
-      "images": ["/hero-bracelet.webp", "/yunik-8.jpg"],
+      "images": [
+        "/hero-bracelet.webp",
+        "/yunik-8.jpg"
+      ],
       "featured": true,
       "newArrival": false
     },
@@ -188,9 +234,13 @@
       "name": "Nova Kæde Armbånd",
       "price": 1099,
       "category": "bracelets",
+      "metal": "gold",
       "description": "Et raffineret kædearmbånd med et unikt led-design, der skaber smuk bevægelse på håndleddet.",
       "materials": "18 karat guldbelagt sterlingsølv med hummerlås.",
-      "images": ["/yunik-8.jpg", "/yunik-9.jpg"],
+      "images": [
+        "/yunik-8.jpg",
+        "/yunik-9.jpg"
+      ],
       "featured": false,
       "newArrival": true
     },
@@ -200,9 +250,13 @@
       "name": "Bloom Armring",
       "price": 1699,
       "category": "bracelets",
+      "metal": "gold",
       "description": "En elegant armring med et delikat blomstermotiv. Det hængslede design sikrer en sikker og behagelig pasform.",
       "materials": "14 karat guld vermeil over sterlingsølv.",
-      "images": ["/yunik-9.jpg", "/yunik-10.jpg"],
+      "images": [
+        "/yunik-9.jpg",
+        "/yunik-10.jpg"
+      ],
       "featured": true,
       "newArrival": true
     }

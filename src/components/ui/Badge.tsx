@@ -1,5 +1,5 @@
 interface BadgeProps {
-  variant?: "new" | "bestseller" | "sale";
+  variant?: "new" | "bestseller" | "sale" | "unique";
   children: React.ReactNode;
   className?: string;
 }
@@ -13,6 +13,7 @@ export default function Badge({
     new: "bg-[#1A1A1A] text-white",
     bestseller: "bg-[#D4A9A5] text-white",
     sale: "bg-red-500 text-white",
+    unique: "bg-[#8D6553] text-white",
   };
 
   return (

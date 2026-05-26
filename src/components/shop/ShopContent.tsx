@@ -21,12 +21,6 @@ function parseMetals(value: string | null): Metal[] {
     .filter((m): m is Metal => (VALID_METALS as readonly string[]).includes(m));
 }
 
-function productMatchesMetal(materials: string, metal: Metal): boolean {
-  const m = materials.toLowerCase();
-  if (metal === "gold") return m.includes("guld");
-  return m.includes("sølv");
-}
-
 export default function ShopContent({ products }: ShopContentProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -76,11 +70,7 @@ export default function ShopContent({ products }: ShopContentProps) {
 
     // Filter by metal (OR within selected metals)
     if (activeMetals.length > 0) {
-      result = result.filter((p) =>
-        activeMetals.some((metal) =>
-          productMatchesMetal(p.materials || "", metal)
-        )
-      );
+      result = result.filter((p) => activeMetals.includes(p.metal));
     }
 
     // Sort

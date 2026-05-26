@@ -37,11 +37,13 @@ function mapDbProductToProduct(dbProduct: DbProduct): Product {
     price: dbProduct.price,
     currency: "DKK",
     category: dbProduct.category as ProductCategory,
+    metal: dbProduct.metal,
     description: dbProduct.description || "",
     materials: dbProduct.materials || "",
     images: dbProduct.images || [],
     featured: dbProduct.featured,
     newArrival: dbProduct.new_arrival,
+    oneOfOne: dbProduct.one_of_one ?? false,
   };
 }
 

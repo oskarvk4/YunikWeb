@@ -23,6 +23,8 @@
   --color-brand-brown: var(--brand-brown);
   --color-brand-caramel: var(--brand-caramel);
   --color-brand-sand: var(--brand-sand);
+  --color-dark: var(--brand-black);
+  --color-accent: var(--brand-brown);
   --font-serif: var(--font-cormorant);
   --font-sans: var(--font-dm-sans);
 }

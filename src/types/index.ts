@@ -1,5 +1,7 @@
 export type ProductCategory = "rings" | "necklaces" | "earrings" | "bracelets";
 
+export type ProductMetal = "gold" | "silver";
+
 export type Product = {
   id: string;
   slug: string;
@@ -7,11 +9,13 @@ export type Product = {
   price: number;
   currency: "DKK";
   category: ProductCategory;
+  metal: ProductMetal;
   description: string;
   materials: string;
   images: string[];
   featured: boolean;
   newArrival: boolean;
+  oneOfOne: boolean;
 };
 
 export type CartItem = Product & {

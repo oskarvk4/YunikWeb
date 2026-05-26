@@ -52,13 +52,25 @@ export default function Navbar() {
     setIsUserMenuOpen(false);
   };
 
-  const navLinks = [
+  const desktopLeftLinks = [
+    { href: "/shop", label: "Shop" },
+    { href: "/about", label: "Om Yunik" },
+  ];
+
+  const desktopRightLinks = [
+    { href: "/care", label: "Pleje" },
+    { href: "/contact", label: "Kontakt" },
+  ];
+
+  const mobileLinks = [
     { href: "/shop", label: "Shop" },
     { href: "/shop?category=rings", label: "Ringe" },
     { href: "/shop?category=necklaces", label: "Halskæder" },
     { href: "/shop?category=earrings", label: "Øreringe" },
     { href: "/shop?category=bracelets", label: "Armbånd" },
     { href: "/about", label: "Om Yunik" },
+    { href: "/care", label: "Pleje" },
+    { href: "/contact", label: "Kontakt" },
   ];
 
   if (pathname?.startsWith("/admin")) {
@@ -104,7 +116,7 @@ export default function Navbar() {
 
             {/* Desktop nav links - left */}
             <div className="hidden lg:flex items-center space-x-8">
-              {navLinks.slice(0, 3).map((link) => (
+              {desktopLeftLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -133,7 +145,7 @@ export default function Navbar() {
 
             {/* Desktop nav links - right */}
             <div className="hidden lg:flex items-center space-x-8">
-              {navLinks.slice(3).map((link) => (
+              {desktopRightLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -310,7 +322,7 @@ export default function Navbar() {
       <MobileMenu
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
-        links={navLinks}
+        links={mobileLinks}
       />
 
       {/* Cart Drawer */}
