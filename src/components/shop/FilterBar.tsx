@@ -37,14 +37,14 @@ export default function FilterBar({
   onMetalToggle,
 }: FilterBarProps) {
   return (
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4 mb-6">
       {/* Category Filters */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-nowrap md:flex-wrap items-center gap-2 overflow-x-auto md:overflow-visible -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
         {categories.map((category) => (
           <button
             key={category.value}
             onClick={() => onCategoryChange(category.value)}
-            className={`px-4 py-2 text-xs font-sans uppercase tracking-[0.15em] transition-all duration-300 ${
+            className={`shrink-0 px-4 py-2 text-xs font-sans uppercase tracking-[0.15em] transition-all duration-300 ${
               activeCategory === category.value
                 ? "bg-[#1A1A1A] text-white"
                 : "bg-transparent text-[#1A1A1A] hover:bg-[#1A1A1A]/5"
@@ -64,7 +64,7 @@ export default function FilterBar({
               type="button"
               onClick={() => onMetalToggle(metal.value)}
               aria-pressed={isActive}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-sans uppercase tracking-[0.15em] border transition-all duration-300 ${
+              className={`shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-sans uppercase tracking-[0.15em] border transition-all duration-300 ${
                 isActive
                   ? "bg-[#1A1A1A] text-white border-[#1A1A1A]"
                   : "bg-transparent text-[#1A1A1A] border-[#1A1A1A]/20 hover:border-[#1A1A1A]/40"
@@ -84,7 +84,7 @@ export default function FilterBar({
       </div>
 
       {/* Sort Dropdown */}
-      <div className="relative">
+      <div className="relative self-end md:self-auto">
         <select
           value={activeSort}
           onChange={(e) => onSortChange(e.target.value)}

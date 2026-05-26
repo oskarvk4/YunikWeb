@@ -19,25 +19,25 @@ export default function BrandStory() {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <div className="grid grid-cols-12 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4">
               {/* Main image — gemstones */}
-              <div className="col-span-7 relative aspect-[3/4] overflow-hidden">
+              <div className="lg:col-span-7 relative aspect-[3/4] overflow-hidden">
                 <Image
                   src="/StoryPics/gemstones.webp"
                   alt="Håndplukkede blågrønne ædelsten med pincet"
                   fill
                   className="object-cover"
-                  sizes="(max-width: 1024px) 60vw, 30vw"
+                  sizes="(max-width: 1024px) 50vw, 30vw"
                 />
               </div>
               {/* Secondary image — workbench */}
-              <div className="col-span-5 relative aspect-[3/4] overflow-hidden mt-12">
+              <div className="lg:col-span-5 relative aspect-[3/4] overflow-hidden lg:mt-12">
                 <Image
                   src="/StoryPics/workbench.webp"
                   alt="Perler, sten og værktøj på arbejdsbordet"
                   fill
                   className="object-cover"
-                  sizes="(max-width: 1024px) 40vw, 20vw"
+                  sizes="(max-width: 1024px) 50vw, 20vw"
                 />
               </div>
             </div>

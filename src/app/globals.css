@@ -80,3 +80,12 @@ body {
 * {
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Hide scrollbars on horizontal scroll regions (chips, carousels) */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
