@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { motion } from "framer-motion";
 import Container from "@/components/ui/Container";
 import ShopContent from "@/components/shop/ShopContent";
 import { getAllProducts } from "@/data/products";

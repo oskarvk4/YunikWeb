@@ -36,6 +36,9 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {featuredProducts.map((product, index) => (
+            (() => {
+              const isOutOfStock = product.stockQuantity <= 0;
+              return (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 30 }}
@@ -84,9 +87,10 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                       e.preventDefault();
                       addItem(product);
                     }}
-                    className="w-full py-3 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.15em] hover:bg-[#333] transition-colors"
+                    disabled={isOutOfStock}
+                    className="w-full py-3 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.15em] hover:bg-[#333] transition-colors disabled:cursor-not-allowed disabled:bg-[#1A1A1A]/45"
                   >
-                    Tilføj til Kurv
+                    {isOutOfStock ? "Udsolgt" : "Tilføj til Kurv"}
                   </button>
                 </div>
               </Link>
@@ -103,6 +107,8 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                 </p>
               </div>
             </motion.div>
+              );
+            })()
           ))}
         </div>
 

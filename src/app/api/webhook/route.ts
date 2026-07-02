@@ -119,13 +119,24 @@ export async function POST(request: NextRequest) {
             );
           }
 
-          // TODO: Update inventory
-          // for (const item of items) {
-          //   await supabase
-          //     .from("products")
-          //     .update({ stock_quantity: supabase.sql`stock_quantity - ${item.quantity}` })
-          //     .eq("id", item.id);
-          // }
+          for (const item of items) {
+            const product = products.find((entry) => entry.id === item.id);
+            if (!product) continue;
+
+            const nextStock = Math.max(
+              0,
+              product.stockQuantity - item.quantity
+            );
+
+            const { error: stockError } = await supabase
+              .from("products")
+              .update({ stock_quantity: nextStock })
+              .eq("id", item.id);
+
+            if (stockError) {
+              console.error("Failed to update inventory:", item.id, stockError);
+            }
+          }
         }
       } catch (error) {
         console.error("Error processing completed checkout:", error);

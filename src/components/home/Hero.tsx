@@ -5,13 +5,17 @@ import Link from "next/link";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 
-export default function Hero() {
+interface HeroProps {
+  mobileImageSrc?: string;
+}
+
+export default function Hero({ mobileImageSrc = "/yunik-16.webp" }: HeroProps = {}) {
   return (
     <section className="relative h-screen min-h-[600px] max-h-[900px] w-full overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src="/yunik-16.webp"
+          src={mobileImageSrc}
           alt="Yunik håndlavede guldsmykker"
           fill
           priority

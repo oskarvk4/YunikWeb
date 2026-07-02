@@ -25,14 +25,32 @@ export default function ContactPage() {
 
     setStatus("loading");
 
-    // Simulate form submission
-    // TODO: Connect to actual email service
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    setStatus("success");
-    setFormData({ name: "", email: "", subject: "", message: "", honeypot: "" });
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error || "Der opstod en fejl ved afsendelse");
+      }
 
-    setTimeout(() => setStatus("idle"), 5000);
+      setStatus("success");
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+        honeypot: "",
+      });
+      setTimeout(() => setStatus("idle"), 5000);
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (

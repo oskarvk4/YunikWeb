@@ -24,8 +24,11 @@ const categoryNames: Record<string, string> = {
 export default function ProductInfo({ product }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
+  const maxQuantity = Math.max(0, product.stockQuantity);
+  const isOutOfStock = maxQuantity === 0;
 
   const handleAddToCart = () => {
+    if (isOutOfStock) return;
     addItem(product, quantity);
   };
 
@@ -84,6 +87,14 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         {formatPrice(product.price)}
       </p>
 
+      <p className="text-sm font-sans text-[#1A1A1A]/60 mb-6">
+        {isOutOfStock
+          ? "Udsolgt"
+          : maxQuantity <= 3
+          ? `Kun ${maxQuantity} tilbage`
+          : `${maxQuantity} på lager`}
+      </p>
+
       {/* Short Description */}
       <p className="text-[#1A1A1A]/70 font-sans leading-relaxed mb-6">
         {product.description}
@@ -102,6 +113,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         <div className="flex items-center gap-4">
           <button
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
+            disabled={isOutOfStock}
             className="w-10 h-10 border border-[#1A1A1A]/20 flex items-center justify-center text-lg hover:border-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2"
             aria-label="Reducer antal"
           >
@@ -111,8 +123,9 @@ export default function ProductInfo({ product }: ProductInfoProps) {
             {quantity}
           </span>
           <button
-            onClick={() => setQuantity(quantity + 1)}
-            className="w-10 h-10 border border-[#1A1A1A]/20 flex items-center justify-center text-lg hover:border-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2"
+            onClick={() => setQuantity(Math.min(maxQuantity, quantity + 1))}
+            disabled={isOutOfStock || quantity >= maxQuantity}
+            className="w-10 h-10 border border-[#1A1A1A]/20 flex items-center justify-center text-lg hover:border-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40"
             aria-label="Øg antal"
           >
             +
@@ -127,8 +140,11 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         fullWidth
         onClick={handleAddToCart}
         className="mb-6"
+        disabled={isOutOfStock}
       >
-        Læg i Kurv — {formatPrice(product.price * quantity)}
+        {isOutOfStock
+          ? "Udsolgt"
+          : `Læg i Kurv — ${formatPrice(product.price * quantity)}`}
       </Button>
 
       {/* Trust Badges */}

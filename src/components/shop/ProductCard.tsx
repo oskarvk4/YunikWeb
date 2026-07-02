@@ -14,6 +14,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
   const { addItem } = useCart();
+  const isOutOfStock = product.stockQuantity <= 0;
 
   return (
     <motion.div
@@ -66,9 +67,10 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               e.preventDefault();
               addItem(product);
             }}
-            className="w-full py-3 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.15em] hover:bg-[#333] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white focus:ring-inset"
+            disabled={isOutOfStock}
+            className="w-full py-3 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.15em] hover:bg-[#333] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white focus:ring-inset disabled:cursor-not-allowed disabled:bg-[#1A1A1A]/45"
           >
-            Tilføj Hurtigt
+            {isOutOfStock ? "Udsolgt" : "Tilføj Hurtigt"}
           </button>
         </div>
       </Link>

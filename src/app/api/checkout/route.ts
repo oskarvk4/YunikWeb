@@ -39,6 +39,28 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
+
+      if (item.quantity <= 0) {
+        return NextResponse.json(
+          { error: `Ugyldigt antal for ${product.name}` },
+          { status: 400 }
+        );
+      }
+
+      if (product.stockQuantity <= 0) {
+        return NextResponse.json(
+          { error: `${product.name} er udsolgt` },
+          { status: 400 }
+        );
+      }
+
+      if (item.quantity > product.stockQuantity) {
+        return NextResponse.json(
+          { error: `Kun ${product.stockQuantity} stk. tilbage af ${product.name}` },
+          { status: 400 }
+        );
+      }
+
       // Use server-side price and name to prevent manipulation
       validatedItems.push({
         ...item,

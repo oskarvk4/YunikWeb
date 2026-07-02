@@ -13,18 +13,13 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [hasMounted, setHasMounted] = useState(false);
-  const { openCart, getItemCount } = useCart();
+  const { openCart, getItemCount, hasHydrated } = useCart();
   const { user, isLoading, isAdmin, signOut } = useAuth();
   const itemCount = getItemCount();
   const userMenuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const isHomePage = pathname === "/";
   const isSolid = !isHomePage || isScrolled;
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -161,7 +156,7 @@ export default function Navbar() {
             {/* User menu and Cart */}
             <div className="flex items-center space-x-2 lg:space-x-4">
               {/* Admin quick-access button */}
-              {hasMounted && !isLoading && isAdmin && (
+              {!isLoading && isAdmin && (
                 <Link
                   href="/admin"
                   className={`hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-sans uppercase tracking-[0.15em] border rounded-sm transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 ${
@@ -195,7 +190,7 @@ export default function Navbar() {
               )}
 
               {/* User button/dropdown */}
-              {hasMounted && !isLoading && (
+              {!isLoading && (
                 <div className="relative" ref={userMenuRef}>
                   {user ? (
                     <>
@@ -301,7 +296,7 @@ export default function Navbar() {
                   />
                 </svg>
                 <AnimatePresence>
-                  {hasMounted && itemCount > 0 && (
+                  {hasHydrated && itemCount > 0 && (
                     <motion.span
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}

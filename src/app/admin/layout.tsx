@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import AdminSidebar from "@/components/admin/Sidebar";
 import type { UserProfile } from "@/types/supabase";
@@ -51,36 +52,36 @@ export default async function AdminLayout({
               </h1>
               <p className="text-white/60 text-xs">Admin Panel</p>
             </div>
-            <a href="/" className="text-white/60 hover:text-white text-sm">
+            <Link href="/" className="text-white/60 hover:text-white text-sm">
               Tilbage til butik
-            </a>
+            </Link>
           </div>
           {/* Mobile navigation */}
           <div className="px-4 pb-4 flex flex-wrap gap-2">
-            <a
+            <Link
               href="/admin"
               className="px-3 py-2 bg-white/10 rounded text-sm hover:bg-white/20"
             >
               Dashboard
-            </a>
-            <a
+            </Link>
+            <Link
               href="/admin/products"
               className="px-3 py-2 bg-white/10 rounded text-sm hover:bg-white/20"
             >
               Produkter
-            </a>
-            <a
+            </Link>
+            <Link
               href="/admin/orders"
               className="px-3 py-2 bg-white/10 rounded text-sm hover:bg-white/20"
             >
               Ordrer
-            </a>
-            <a
+            </Link>
+            <Link
               href="/admin/products/new"
               className="px-3 py-2 bg-accent rounded text-sm font-medium hover:bg-accent/90"
             >
               + Nyt Produkt
-            </a>
+            </Link>
           </div>
         </div>
         <div className="p-6 lg:p-8">{children}</div>

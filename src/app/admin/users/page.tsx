@@ -14,25 +14,33 @@ export default function AdminUsersPage() {
   const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchUsers();
+    let cancelled = false;
+
+    const loadUsers = async () => {
+      const supabase = createClient();
+
+      const { data: profiles } = await supabase
+        .from("user_profiles")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (cancelled) return;
+
+      if (profiles) {
+        // For now, we just show the profiles without emails
+        // In a production app, you'd use a server action or API to get emails
+        setUsers(profiles as UserProfile[]);
+      }
+
+      setIsLoading(false);
+    };
+
+    void loadUsers();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
-
-  const fetchUsers = async () => {
-    const supabase = createClient();
-
-    const { data: profiles } = await supabase
-      .from("user_profiles")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (profiles) {
-      // For now, we just show the profiles without emails
-      // In a production app, you'd use a server action or API to get emails
-      setUsers(profiles as UserProfile[]);
-    }
-
-    setIsLoading(false);
-  };
 
   const toggleUserRole = async (userId: string, currentRole: string) => {
     const newRole = currentRole === "admin" ? "user" : "admin";

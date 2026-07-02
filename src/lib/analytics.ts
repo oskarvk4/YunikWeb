@@ -188,7 +188,9 @@ export const trackSearch = (searchTerm: string) => {
   }
 };
 
-export const trackNewsletterSignup = (email: string) => {
+export const trackNewsletterSignup = (_email?: string) => {
+  void _email;
+
   event("newsletter_signup", {
     method: "footer_form",
   });

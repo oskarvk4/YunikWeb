@@ -44,6 +44,7 @@ function mapDbProductToProduct(dbProduct: DbProduct): Product {
     featured: dbProduct.featured,
     newArrival: dbProduct.new_arrival,
     oneOfOne: dbProduct.one_of_one ?? false,
+    stockQuantity: dbProduct.stock_quantity ?? 0,
   };
 }
 

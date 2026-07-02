@@ -35,6 +35,9 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
         <div className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
           <div className="flex gap-4 md:gap-6" style={{ minWidth: "max-content" }}>
             {products.map((product, index) => (
+              (() => {
+                const isOutOfStock = product.stockQuantity <= 0;
+                return (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -62,9 +65,10 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
                         e.preventDefault();
                         addItem(product);
                       }}
-                      className="w-full py-2.5 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.1em] hover:bg-[#333] transition-colors"
+                      disabled={isOutOfStock}
+                      className="w-full py-2.5 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.1em] hover:bg-[#333] transition-colors disabled:cursor-not-allowed disabled:bg-[#1A1A1A]/45"
                     >
-                      Tilføj Hurtigt
+                      {isOutOfStock ? "Udsolgt" : "Tilføj Hurtigt"}
                     </button>
                   </div>
                 </Link>
@@ -80,6 +84,8 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
                   </p>
                 </div>
               </motion.div>
+                );
+              })()
             ))}
           </div>
         </div>
