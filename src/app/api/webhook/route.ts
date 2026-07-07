@@ -8,9 +8,18 @@ import type { Database, Json } from "@/types/supabase";
 
 type OrderInsert = Database["public"]["Tables"]["orders"]["Insert"];
 
+function getWebhookSecrets(): string[] {
+  return [
+    process.env.STRIPE_WEBHOOK_SECRET,
+    process.env.STRIPE_WEBHOOK_SECRET_LIVE,
+    process.env.STRIPE_WEBHOOK_SECRET_TEST,
+  ].filter((secret): secret is string => Boolean(secret));
+}
+
 export async function POST(request: NextRequest) {
   const body = await request.text();
   const signature = request.headers.get("stripe-signature");
+  let processingFailed = false;
 
   if (!signature) {
     return NextResponse.json(
@@ -21,10 +30,10 @@ export async function POST(request: NextRequest) {
 
   let event: Stripe.Event;
 
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const webhookSecrets = getWebhookSecrets();
 
-  if (!webhookSecret) {
-    console.error("STRIPE_WEBHOOK_SECRET is not configured");
+  if (webhookSecrets.length === 0) {
+    console.error("No Stripe webhook signing secret is configured");
     return NextResponse.json(
       { error: "Webhook not configured" },
       { status: 500 }
@@ -32,7 +41,24 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+    const verifiedEvent = webhookSecrets.reduce<Stripe.Event | null>(
+      (currentEvent, secret) => {
+        if (currentEvent) return currentEvent;
+
+        try {
+          return stripe.webhooks.constructEvent(body, signature, secret);
+        } catch {
+          return null;
+        }
+      },
+      null
+    );
+
+    if (!verifiedEvent) {
+      throw new Error("No configured webhook signing secret matched");
+    }
+
+    event = verifiedEvent;
   } catch (error) {
     console.error("Webhook signature verification failed:", error);
     return NextResponse.json(
@@ -41,11 +67,18 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  console.log("Stripe webhook received:", {
+    type: event.type,
+    livemode: event.livemode,
+  });
+
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
 
       try {
+        console.log("Webhook received checkout.session.completed:", session.id);
+
         // Use admin client to bypass RLS
         const supabase = createStandaloneAdminClient();
         const products = await getAllProducts();
@@ -106,9 +139,20 @@ export async function POST(request: NextRequest) {
           .single();
 
         if (error) {
-          console.error("Failed to save order:", error);
+          processingFailed = true;
+          console.error("Failed to save order:", {
+            sessionId: session.id,
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code,
+            orderData,
+          });
         } else {
-          console.log("Order saved successfully:", order.id);
+          console.log("Order saved successfully:", {
+            orderId: order.id,
+            sessionId: session.id,
+          });
 
           const emailResult = await sendOrderConfirmationEmail(order);
           if (!emailResult.success) {
@@ -117,6 +161,11 @@ export async function POST(request: NextRequest) {
               order.id,
               emailResult.error
             );
+          } else {
+            console.log("Order confirmation email sent:", {
+              orderId: order.id,
+              resendMessageId: emailResult.id,
+            });
           }
 
           for (const item of items) {
@@ -134,11 +183,13 @@ export async function POST(request: NextRequest) {
               .eq("id", item.id);
 
             if (stockError) {
+              processingFailed = true;
               console.error("Failed to update inventory:", item.id, stockError);
             }
           }
         }
       } catch (error) {
+        processingFailed = true;
         console.error("Error processing completed checkout:", error);
       }
 
@@ -181,6 +232,7 @@ export async function POST(request: NextRequest) {
 
         await supabase.from("orders").insert(expiredOrderData);
       } catch (error) {
+        processingFailed = true;
         console.error("Error saving expired session:", error);
       }
 
@@ -189,6 +241,13 @@ export async function POST(request: NextRequest) {
 
     default:
       console.log(`Unhandled event type: ${event.type}`);
+  }
+
+  if (processingFailed) {
+    return NextResponse.json(
+      { error: "Webhook processing failed" },
+      { status: 500 }
+    );
   }
 
   return NextResponse.json({ received: true });
