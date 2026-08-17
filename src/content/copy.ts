@@ -66,6 +66,53 @@ export const defaultCopy = {
         "Vores smykker er designet til at holde livet ud, hvilket reducerer behovet for konstant udskiftning og bidrager til en mere bæredygtig modeindustri.",
     },
   },
+  contact: {
+    header: {
+      headline: "Kontakt Os",
+      subhead: "Vi svarer typisk inden for 24 timer",
+    },
+    info: {
+      headline: "Kom i kontakt",
+      body: "Har du spørgsmål om en ordre, et produkt eller noget helt tredje? Vi er her for at hjælpe dig.",
+      emailLabel: "Email",
+      email: "kontakt@yunik.dk",
+      responseLabel: "Svartid",
+      responseBody: "Vi svarer inden for 24 timer på hverdage",
+      addressLabel: "Adresse",
+      addressLine1: "Silkeborgvej 226",
+      addressLine2: "8320 Åbyhøj, Danmark",
+    },
+    faqBox: {
+      title: "Hurtige svar",
+      body: "Find måske svaret i vores FAQ",
+      cta: "Gå til FAQ →",
+    },
+    form: {
+      kicker: "Kontaktformular",
+      headline: "Skriv direkte til os",
+      body: "Din besked bliver sendt direkte til vores indbakke. Brug gerne så mange detaljer som muligt.",
+      nameLabel: "Navn",
+      namePlaceholder: "Dit fulde navn",
+      emailLabel: "Email",
+      emailPlaceholder: "din@email.dk",
+      subjectLabel: "Emne",
+      subjectPlaceholder: "Vælg et emne",
+      subjectOrder: "Spørgsmål om ordre",
+      subjectProduct: "Spørgsmål om produkt",
+      subjectReturn: "Returnering/bytte",
+      subjectOther: "Andet",
+      messageLabel: "Besked",
+      messagePlaceholder:
+        "Fortæl os gerne om ordrenummer, produktnavn eller andre detaljer...",
+      privacyNote:
+        "Vi bruger oplysningerne til at besvare din henvendelse og deler dem ikke med tredjepart uden grund.",
+      submit: "Send Besked",
+      submitting: "Sender...",
+      successMessage: "Tak for din besked! Vi vender tilbage hurtigst muligt.",
+      defaultError:
+        "Der opstod en fejl. Prøv igen eller send en email direkte.",
+    },
+  },
 } as const;
 
 export type Copy = {
