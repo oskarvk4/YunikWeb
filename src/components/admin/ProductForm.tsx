@@ -156,7 +156,6 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
 
     if (mode === "create") {
       const insertData: ProductInsert = {
-        id: formData.id,
         slug: formData.slug,
         name: formData.name,
         price: Number(formData.price),
@@ -171,19 +170,21 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
         stock_quantity: Number(formData.stock_quantity),
         currency: "DKK",
       };
-      const { error: insertError } = await supabase
+      const { data: inserted, error: insertError } = await supabase
         .from("products")
-        .insert(insertData);
+        .insert(insertData)
+        .select("id")
+        .single();
 
-      if (insertError) {
-        setError(humanizeError(insertError.message));
+      if (insertError || !inserted) {
+        setError(humanizeError(insertError?.message ?? "Kunne ikke oprette produkt."));
         setIsLoading(false);
         return;
       }
 
       await revalidateProducts();
-      setSavedSnapshot(formData);
-      router.push(`/admin/products/${formData.id}/edit?saved=created`);
+      setSavedSnapshot({ ...formData, id: inserted.id });
+      router.push(`/admin/products/${inserted.id}/edit?saved=created`);
       router.refresh();
       return;
     }
@@ -446,13 +447,16 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
             </label>
             <input
               type="number"
-              value={formData.price}
-              onChange={(e) =>
+              inputMode="decimal"
+              value={formData.price === 0 ? "" : formData.price}
+              onChange={(e) => {
+                const v = e.target.value;
                 setFormData((prev) => ({
                   ...prev,
-                  price: Number(e.target.value),
-                }))
-              }
+                  price: v === "" ? 0 : Number(v),
+                }));
+              }}
+              onWheel={(e) => e.currentTarget.blur()}
               required
               min="0"
               className="w-full px-4 py-3 border border-dark/20 focus:border-accent focus:outline-none rounded"
@@ -552,15 +556,19 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
               </button>
               <input
                 type="number"
-                value={formData.stock_quantity}
-                onChange={(e) =>
+                inputMode="numeric"
+                value={formData.stock_quantity === 0 ? "" : formData.stock_quantity}
+                onChange={(e) => {
+                  const v = e.target.value;
                   setFormData((prev) => ({
                     ...prev,
-                    stock_quantity: Number(e.target.value),
-                  }))
-                }
+                    stock_quantity: v === "" ? 0 : Number(v),
+                  }));
+                }}
+                onWheel={(e) => e.currentTarget.blur()}
                 min="0"
                 className="flex-1 px-4 py-3 border-y border-dark/20 focus:border-accent focus:outline-none text-center"
+                placeholder="0"
               />
               <button
                 type="button"

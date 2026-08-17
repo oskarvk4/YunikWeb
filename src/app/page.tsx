@@ -1,7 +1,8 @@
 import dynamic from "next/dynamic";
-import Hero from "@/components/home/Hero";
+import HeroCarousel from "@/components/home/HeroCarousel";
 import CategoryGrid from "@/components/home/CategoryGrid";
 import { getFeaturedProducts } from "@/data/products";
+import { getCopy } from "@/lib/copy";
 
 // Dynamic imports for below-fold components
 const FeaturedProducts = dynamic(() => import("@/components/home/FeaturedProducts"), {
@@ -15,11 +16,14 @@ const Newsletter = dynamic(() => import("@/components/home/Newsletter"), {
 });
 
 export default async function Home() {
-  const featuredProducts = await getFeaturedProducts();
+  const [featuredProducts, copy] = await Promise.all([
+    getFeaturedProducts(),
+    getCopy(),
+  ]);
 
   return (
     <>
-      <Hero />
+      <HeroCarousel content={copy.home.hero} />
       <CategoryGrid />
       <FeaturedProducts products={featuredProducts} />
       <BrandStory />

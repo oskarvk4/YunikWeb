@@ -46,11 +46,12 @@ export type Database = {
           new_arrival: boolean;
           one_of_one: boolean;
           stock_quantity: number;
+          published: boolean;
           created_at: string;
           updated_at: string;
         };
         Insert: {
-          id: string;
+          id?: string;
           slug: string;
           name: string;
           price: number;
@@ -64,6 +65,7 @@ export type Database = {
           new_arrival?: boolean;
           one_of_one?: boolean;
           stock_quantity?: number;
+          published?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -82,6 +84,7 @@ export type Database = {
           new_arrival?: boolean;
           one_of_one?: boolean;
           stock_quantity?: number;
+          published?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -132,6 +135,27 @@ export type Database = {
           status?: string;
           created_at?: string;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      site_copy: {
+        Row: {
+          key: string;
+          value: string;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        Insert: {
+          key: string;
+          value: string;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: {
+          key?: string;
+          value?: string;
+          updated_at?: string;
+          updated_by?: string | null;
         };
         Relationships: [];
       };
