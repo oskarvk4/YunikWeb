@@ -7,22 +7,10 @@
       "description": "Elegante ringe til enhver lejlighed"
     },
     {
-      "name": "Halskæder",
-      "slug": "necklaces",
-      "image": "/yunik-14.jpg",
-      "description": "Tidløse halskæder og vedhæng"
-    },
-    {
       "name": "Øreringe",
       "slug": "earrings",
       "image": "/yunik-2.jpg",
       "description": "Smukke øreringe der fuldender dit look"
-    },
-    {
-      "name": "Armbånd",
-      "slug": "bracelets",
-      "image": "/hero-bracelet.webp",
-      "description": "Smukke armbånd og armringe"
     }
   ],
   "products": [
