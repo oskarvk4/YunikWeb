@@ -132,11 +132,17 @@ export async function POST(request: NextRequest) {
           status: "completed",
         };
 
-        const { data: order, error } = await supabase
+        // Idempotent insert: if a row with this stripe_session_id already
+        // exists we treat the delivery as a duplicate and skip the email so
+        // Stripe retries and dual endpoints (prod + `stripe listen`) don't
+        // produce duplicate orders/emails.
+        const { data: insertedRows, error } = await supabase
           .from("orders")
-          .insert(orderData)
-          .select()
-          .single();
+          .upsert(orderData, {
+            onConflict: "stripe_session_id",
+            ignoreDuplicates: true,
+          })
+          .select();
 
         if (error) {
           processingFailed = true;
@@ -148,7 +154,12 @@ export async function POST(request: NextRequest) {
             code: error.code,
             orderData,
           });
+        } else if (!insertedRows || insertedRows.length === 0) {
+          console.log("Duplicate webhook delivery — order already saved:", {
+            sessionId: session.id,
+          });
         } else {
+          const order = insertedRows[0];
           console.log("Order saved successfully:", {
             orderId: order.id,
             sessionId: session.id,
