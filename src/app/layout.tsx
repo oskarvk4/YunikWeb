@@ -8,6 +8,7 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 import AuthErrorHandler from "@/components/auth/AuthErrorHandler";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import MetaPixel from "@/components/analytics/MetaPixel";
+import CookieConsent from "@/components/layout/CookieConsent";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import "./globals.css";
 
@@ -80,7 +81,7 @@ const organizationSchema = {
   "@type": "Organization",
   name: "Yunik",
   url: "https://yunik.dk",
-  logo: "https://yunik.dk/logo.png",
+  logo: "https://yunik.dk/hero-bracelet.webp",
   description: "Håndlavede smykker med tidløs elegance. Ringe, halskæder, øreringe og armbånd.",
   address: {
     "@type": "PostalAddress",
@@ -98,17 +99,12 @@ const organizationSchema = {
   ],
 };
 
-// WebSite JSON-LD Schema for search
+// WebSite JSON-LD Schema
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "Yunik",
   url: "https://yunik.dk",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: "https://yunik.dk/shop?q={search_term_string}",
-    "query-input": "required name=search_term_string",
-  },
 };
 
 export default function RootLayout({
@@ -158,6 +154,7 @@ export default function RootLayout({
           </main>
           <HideOnAdmin>
             <Footer />
+            <CookieConsent />
           </HideOnAdmin>
         </AuthProvider>
       </body>

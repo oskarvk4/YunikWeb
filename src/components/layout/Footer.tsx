@@ -7,10 +7,8 @@ export default function Footer() {
   const footerLinks = {
     shop: [
       { label: "Alle Smykker", href: "/shop" },
-      { label: "Ringe", href: "/shop?category=rings" },
-      { label: "Halskæder", href: "/shop?category=necklaces" },
       { label: "Øreringe", href: "/shop?category=earrings" },
-      { label: "Armbånd", href: "/shop?category=bracelets" },
+      { label: "Ringe", href: "/shop?category=rings" },
     ],
     about: [
       { label: "Vores Historie", href: "/about" },
@@ -52,7 +50,7 @@ export default function Footer() {
               {/* Social Links */}
               <div className="flex space-x-4 mt-6">
                 <a
-                  href="https://instagram.com"
+                  href="https://instagram.com/yunik"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/60 hover:text-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/40 rounded-sm"
@@ -63,7 +61,7 @@ export default function Footer() {
                   </svg>
                 </a>
                 <a
-                  href="https://facebook.com"
+                  href="https://facebook.com/yunik"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/60 hover:text-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/40 rounded-sm"

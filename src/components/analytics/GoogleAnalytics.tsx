@@ -1,11 +1,20 @@
 "use client";
 
 import Script from "next/script";
+import { useEffect, useState } from "react";
+import { readConsent, onConsentChange } from "@/lib/consent";
 
 const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export default function GoogleAnalytics() {
-  if (!GA_TRACKING_ID) {
+  const [consented, setConsented] = useState(false);
+
+  useEffect(() => {
+    setConsented(readConsent() === "accepted");
+    return onConsentChange((v) => setConsented(v === "accepted"));
+  }, []);
+
+  if (!GA_TRACKING_ID || !consented) {
     return null;
   }
 
