@@ -3,14 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/components/auth/AuthProvider";
 import MobileMenu from "./MobileMenu";
 import CartDrawer from "./CartDrawer";
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { openCart, getItemCount, hasHydrated } = useCart();
@@ -18,17 +17,8 @@ export default function Navbar() {
   const itemCount = getItemCount();
   const userMenuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const isHomePage = pathname === "/";
-  const isSolid = !isHomePage || isScrolled;
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  // Header is always solid/visible — no transparent-over-hero behavior.
+  const isSolid = true;
 
   // Close user menu when clicking outside
   useEffect(() => {
@@ -74,87 +64,76 @@ export default function Navbar() {
 
   return (
     <>
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isSolid
-            ? "bg-white/95 backdrop-blur-md shadow-sm"
-            : "bg-transparent"
-        }`}
+      <header
+        className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm"
       >
         <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-20 items-center justify-between">
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(true)}
-              className={`lg:hidden p-2 -ml-2 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm transition-colors duration-300 ${
-                isSolid ? "text-[#1A1A1A]" : "text-white"
-              }`}
-              aria-label="Åbn menu"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
 
-            {/* Desktop nav links - left */}
-            <div className="hidden lg:flex items-center space-x-8">
-              {desktopLeftLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`text-xs font-sans uppercase tracking-[0.15em] hover:text-[#8D6553] transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm ${
-                    isSolid ? "text-[#1A1A1A]" : "text-white"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-
-            {/* Logo - center */}
-            <Link
-              href="/"
-              className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0"
-            >
-              <h1
-                className={`font-serif text-2xl md:text-3xl font-light tracking-[0.2em] transition-colors duration-300 ${
+            {/* Left group: mobile button (mobile) | nav links (desktop) */}
+            <div className="flex items-center">
+              <button
+                onClick={() => setIsMobileMenuOpen(true)}
+                className={`lg:hidden p-2 -ml-2 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm transition-colors duration-300 ${
                   isSolid ? "text-[#1A1A1A]" : "text-white"
                 }`}
+                aria-label="Åbn menu"
               >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              </button>
+              <div className="hidden lg:flex items-center space-x-8">
+                {desktopLeftLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`text-xs font-sans uppercase tracking-[0.15em] hover:text-[#8D6553] transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm ${
+                      isSolid ? "text-[#1A1A1A]" : "text-white"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Logo - absolute-centered */}
+            <Link
+              href="/"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto"
+              aria-label="Yunik – forside"
+            >
+              <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light tracking-[0.25em] text-[#1A1A1A] leading-none">
                 YUNIK
               </h1>
             </Link>
 
-            {/* Desktop nav links - right */}
-            <div className="hidden lg:flex items-center space-x-8">
-              {desktopRightLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`text-xs font-sans uppercase tracking-[0.15em] hover:text-[#8D6553] transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm ${
-                    isSolid ? "text-[#1A1A1A]" : "text-white"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-
-            {/* User menu and Cart */}
+            {/* Right group: nav links + icons */}
             <div className="flex items-center space-x-2 lg:space-x-4">
+              <div className="hidden lg:flex items-center space-x-8 mr-4">
+                {desktopRightLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`text-xs font-sans uppercase tracking-[0.15em] hover:text-[#8D6553] transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm ${
+                      isSolid ? "text-[#1A1A1A]" : "text-white"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
               {/* Admin quick-access button */}
               {!isLoading && isAdmin && (
                 <Link
@@ -311,7 +290,7 @@ export default function Navbar() {
             </div>
           </div>
         </nav>
-      </motion.header>
+      </header>
 
       {/* Mobile Menu */}
       <MobileMenu

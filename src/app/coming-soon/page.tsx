@@ -16,7 +16,7 @@ export default function ComingSoonPage() {
     <section className="relative min-h-screen w-full overflow-hidden bg-[#1A1A1A]">
       <div className="absolute inset-0">
         <Image
-          src="/yunik-1.jpeg"
+          src="/yunik-17.webp"
           alt="Yunik håndlavede smykker"
           fill
           priority

@@ -9,17 +9,11 @@ import Badge from "@/components/ui/Badge";
 import Accordion from "./Accordion";
 import SizeGuide from "./SizeGuide";
 import TrustBadges from "./TrustBadges";
+import { getCategoryLabel } from "@/constants/categories";
 
 interface ProductInfoProps {
   product: Product;
 }
-
-const categoryNames: Record<string, string> = {
-  rings: "Ringe",
-  necklaces: "Halskæder",
-  earrings: "Øreringe",
-  bracelets: "Armbånd",
-};
 
 export default function ProductInfo({ product }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(1);
@@ -47,7 +41,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     },
     {
       title: "Levering & Retur",
-      content: "Gratis fragt på ordrer over 500 DKK. Standardlevering tager 3-5 hverdage i Danmark. Du har 14 dages fuld returret. Se vores leveringspolitik for mere information.",
+      content: "Gratis standardfragt i Danmark. Standardlevering tager 2-5 hverdage. Express levering 1-2 hverdage (mod tillæg). Du har 14 dages fuld returret. Se vores leveringspolitik for mere information.",
     },
   ];
 
@@ -79,7 +73,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       {/* Category */}
       <p className="text-sm font-sans text-[#1A1A1A]/50 uppercase tracking-[0.15em] mb-4">
-        {categoryNames[product.category] || product.category}
+        {getCategoryLabel(product.category)}
       </p>
 
       {/* Price */}

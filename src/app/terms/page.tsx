@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
 import Container from "@/components/ui/Container";
 import FadeIn from "@/components/ui/FadeIn";
+
+export const metadata: Metadata = {
+  title: "Handelsbetingelser",
+  description: "Yunik Jewelry — handelsbetingelser, betalingsbetingelser og øvrige vilkår for køb på yunik.dk.",
+  alternates: { canonical: "/terms" },
+  robots: { index: false },
+};
 
 export default function TermsPage() {
   return (

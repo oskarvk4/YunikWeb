@@ -83,12 +83,7 @@ export default function ShopContent({ products }: ShopContentProps) {
         break;
       case "newest":
       default:
-        // Newest first - prioritize new arrivals
-        result.sort((a, b) => {
-          if (a.newArrival && !b.newArrival) return -1;
-          if (!a.newArrival && b.newArrival) return 1;
-          return 0;
-        });
+        // Products arrive pre-sorted by created_at DESC from Supabase — preserve that order
         break;
     }
 

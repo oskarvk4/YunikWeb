@@ -8,6 +8,7 @@ import ProductInfo from "@/components/product/ProductInfo";
 import StickyAddToCart from "@/components/product/StickyAddToCart";
 import RelatedProductsLoader from "@/components/product/RelatedProductsLoader";
 import { getProductBySlug, getAllProductSlugs } from "@/data/products";
+import { getCategoryLabel } from "@/constants/categories";
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
@@ -31,13 +32,6 @@ export async function generateMetadata({
       title: "Produkt Ikke Fundet",
     };
   }
-
-  const categoryNames: Record<string, string> = {
-    rings: "Ringe",
-    necklaces: "Halskæder",
-    earrings: "Øreringe",
-    bracelets: "Armbånd",
-  };
 
   return {
     title: product.name,
@@ -67,7 +61,7 @@ export async function generateMetadata({
     },
     keywords: [
       product.name,
-      categoryNames[product.category],
+      getCategoryLabel(product.category),
       "smykker",
       "Yunik",
       "håndlavet",
@@ -101,7 +95,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
       url: `https://yunik.dk/product/${product.slug}`,
       priceCurrency: "DKK",
       price: product.price,
-      availability: "https://schema.org/InStock",
+      availability: product.stockQuantity > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
       seller: {
         "@type": "Organization",
         name: "Yunik",
@@ -134,13 +130,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
   };
 
   // BreadcrumbList Schema
-  const categoryNames: Record<string, string> = {
-    rings: "Ringe",
-    necklaces: "Halskæder",
-    earrings: "Øreringe",
-    bracelets: "Armbånd",
-  };
-
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -160,7 +149,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       {
         "@type": "ListItem",
         position: 3,
-        name: categoryNames[product.category],
+        name: getCategoryLabel(product.category),
         item: `https://yunik.dk/shop?category=${product.category}`,
       },
       {

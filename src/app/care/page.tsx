@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Container from "@/components/ui/Container";
 import FadeIn from "@/components/ui/FadeIn";
+
+export const metadata: Metadata = {
+  title: "Plejeguide",
+  description: "Lær hvordan du plejer dine Yunik-smykker, så de bevarer deres skønhed i mange år. Tips til rengøring, opbevaring og daglig brug af sølv- og guldsmykker.",
+  alternates: { canonical: "/care" },
+};
 
 export default function CarePage() {
   return (

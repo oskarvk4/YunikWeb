@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatPrice } from "@/types";
 import type { DbProduct } from "@/types/supabase";
+import ProductPublishToggle from "@/components/admin/ProductPublishToggle";
 
 export const metadata = {
   title: "Produkter",
@@ -54,6 +55,7 @@ export default async function AdminProductsPage({
   const products = productsData as DbProduct[] | null;
 
   const total = products?.length ?? 0;
+  const offline = products?.filter((p) => !(p.published ?? true)).length ?? 0;
   const outOfStock = products?.filter((p) => p.stock_quantity === 0).length ?? 0;
   const lowStock =
     products?.filter((p) => p.stock_quantity > 0 && p.stock_quantity <= 5)
@@ -185,17 +187,23 @@ export default async function AdminProductsPage({
           <div className="bg-white rounded-lg shadow-sm p-4 flex items-center justify-between">
             <div>
               <p className="text-xs text-dark/60 uppercase tracking-wide">
-                Fremhævet
+                Offline
               </p>
-              <p className="text-2xl font-serif text-accent mt-1">{featured}</p>
+              <p className="text-2xl font-serif text-gray-400 mt-1">{offline}</p>
             </div>
-            <div className="w-10 h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center">
               <svg
                 className="w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                />
               </svg>
             </div>
           </div>
@@ -222,6 +230,9 @@ export default async function AdminProductsPage({
                 <th className="text-left px-6 py-4 text-xs font-medium text-dark/60 uppercase tracking-wider">
                   Status
                 </th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-dark/60 uppercase tracking-wider">
+                  Synlighed
+                </th>
                 <th className="text-right px-6 py-4 text-xs font-medium text-dark/60 uppercase tracking-wider">
                   Handling
                 </th>
@@ -231,7 +242,7 @@ export default async function AdminProductsPage({
               {products.map((product) => {
                 const sb = stockBadge(product.stock_quantity);
                 return (
-                  <tr key={product.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={product.id} className={`hover:bg-gray-50 transition-colors ${!(product.published ?? true) ? "opacity-50" : ""}`}>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-gray-100 rounded flex-shrink-0 overflow-hidden flex items-center justify-center">
@@ -312,6 +323,12 @@ export default async function AdminProductsPage({
                           <span className="text-xs text-dark/30">—</span>
                         )}
                       </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <ProductPublishToggle
+                        productId={product.id}
+                        published={product.published ?? true}
+                      />
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="inline-flex items-center gap-1">

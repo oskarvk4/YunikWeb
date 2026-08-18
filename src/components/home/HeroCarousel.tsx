@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 
 interface Slide {
   src: string;
+  srcMobile?: string;
   alt: string;
   position?: string;
 }
@@ -47,6 +48,7 @@ const SLIDES: Slide[] = [
 
   {
     src: "/hero-rings.webp",
+    srcMobile: "/yunik-14.jpg",
     alt: "Yunik ringe og armbånd i guld",
     position: "object-center",
   },
@@ -101,16 +103,41 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
               style={{ width: `${100 / SLIDES.length}%` }}
               aria-hidden={i !== index}
             >
-              <Image
-                src={slide.src}
-                alt={slide.alt}
-                fill
-                priority={i === 0}
-                loading={i === 0 ? undefined : "eager"}
-                quality={80}
-                className={`object-cover ${slide.position ?? "object-center"}`}
-                sizes="100vw"
-              />
+              {slide.srcMobile ? (
+                <>
+                  <Image
+                    src={slide.srcMobile}
+                    alt={slide.alt}
+                    fill
+                    priority={i === 0}
+                    loading={i === 0 ? undefined : "eager"}
+                    quality={80}
+                    className={`object-cover md:hidden ${slide.position ?? "object-center"}`}
+                    sizes="100vw"
+                  />
+                  <Image
+                    src={slide.src}
+                    alt={slide.alt}
+                    fill
+                    priority={i === 0}
+                    loading={i === 0 ? undefined : "eager"}
+                    quality={80}
+                    className={`object-cover hidden md:block ${slide.position ?? "object-center"}`}
+                    sizes="100vw"
+                  />
+                </>
+              ) : (
+                <Image
+                  src={slide.src}
+                  alt={slide.alt}
+                  fill
+                  priority={i === 0}
+                  loading={i === 0 ? undefined : "eager"}
+                  quality={80}
+                  className={`object-cover ${slide.position ?? "object-center"}`}
+                  sizes="100vw"
+                />
+              )}
             </div>
           ))}
         </div>
@@ -121,7 +148,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
       {/* Content */}
       <div className="relative z-20 h-full flex items-center">
         <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8">
-          <div className="max-w-xl">
+          <div className="max-w-xl translate-y-16">
             <p className="text-white/80 text-sm font-sans uppercase tracking-[0.3em] mb-4">
               {content.kicker}
             </p>

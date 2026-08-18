@@ -8,10 +8,12 @@ import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import { useCart } from "@/lib/cart";
 import { formatPrice } from "@/types";
+import { getCategoryLabel } from "@/constants/categories";
 import { trackBeginCheckout } from "@/lib/analytics";
 
 export default function CheckoutPage() {
-  const { items, getTotal, removeItem, updateQuantity } = useCart();
+  const { items, getTotal, getItemCount, removeItem, updateQuantity } = useCart();
+  const totalItemCount = getItemCount();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -130,7 +132,7 @@ export default function CheckoutPage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 <h2 className="font-serif text-xl font-light text-[#1A1A1A] mb-6">
-                  Din Ordre ({items.length} {items.length === 1 ? "vare" : "varer"})
+                  Din Ordre ({totalItemCount} {totalItemCount === 1 ? "vare" : "varer"})
                 </h2>
 
                 <div className="space-y-6">
@@ -159,10 +161,7 @@ export default function CheckoutPage() {
                               {item.name}
                             </h3>
                             <p className="text-sm text-[#1A1A1A]/60 font-sans capitalize mt-1">
-                              {item.category === "rings" && "Ringe"}
-                              {item.category === "necklaces" && "Halskæder"}
-                              {item.category === "earrings" && "Øreringe"}
-                              {item.category === "bracelets" && "Armbånd"}
+                              {getCategoryLabel(item.category)}
                             </p>
                           </div>
                           <button

@@ -17,6 +17,7 @@ export type Product = {
   newArrival: boolean;
   oneOfOne: boolean;
   stockQuantity: number;
+  published: boolean;
 };
 
 export type CartItem = Product & {

@@ -2,6 +2,7 @@ import { Product, CategoryInfo, ProductCategory } from "@/types";
 import type { Database } from "@/types/supabase";
 import { unstable_cache } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
+import type { PostgrestError } from "@supabase/supabase-js";
 import productsData from "./products.json";
 
 type DbProduct = Database["public"]["Tables"]["products"]["Row"];
@@ -45,49 +46,52 @@ function mapDbProductToProduct(dbProduct: DbProduct): Product {
     newArrival: dbProduct.new_arrival,
     oneOfOne: dbProduct.one_of_one ?? false,
     stockQuantity: dbProduct.stock_quantity ?? 0,
+    published: dbProduct.published ?? true,
   };
+}
+
+function formatSupabaseError(context: string, error: PostgrestError): Error {
+  return new Error(`${context}: ${error.message}`);
+}
+
+async function fetchProductsOrThrow(
+  context: string,
+  query: PromiseLike<{
+    data: DbProduct[] | null;
+    error: PostgrestError | null;
+  }>
+): Promise<Product[]> {
+  const { data, error } = await query;
+
+  if (error) {
+    throw formatSupabaseError(context, error);
+  }
+
+  return ((data || []) as DbProduct[]).map(mapDbProductToProduct);
 }
 
 // Fetch all products from Supabase (cached)
 export const getAllProducts = unstable_cache(
   async (): Promise<Product[]> => {
     const supabase = getSupabaseClient();
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Error fetching products:", error);
-      return [];
-    }
-
-    return ((data || []) as DbProduct[]).map(mapDbProductToProduct);
+    return fetchProductsOrThrow(
+      "Failed to fetch products",
+      supabase
+        .from("products")
+        .select("*")
+        .eq("published", true)
+        .order("created_at", { ascending: false })
+    );
   },
   ["all-products"],
   { revalidate: CACHE_REVALIDATE, tags: ["products"] }
 );
 
 // Fetch single product by slug (cached)
+// Uses getAllProducts cache and finds by slug to avoid per-call cache instance creation
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  return unstable_cache(
-    async (): Promise<Product | null> => {
-      const supabase = getSupabaseClient();
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("slug", slug)
-        .single();
-
-      if (error || !data) {
-        return null;
-      }
-
-      return mapDbProductToProduct(data as DbProduct);
-    },
-    [`product-${slug}`],
-    { revalidate: CACHE_REVALIDATE, tags: ["products", `product-${slug}`] }
-  )();
+  const products = await getAllProducts();
+  return products.find((p) => p.slug === slug) ?? null;
 }
 
 // Fetch products by category (cached)
@@ -97,18 +101,15 @@ export async function getProductsByCategory(category: string): Promise<Product[]
   return unstable_cache(
     async (): Promise<Product[]> => {
       const supabase = getSupabaseClient();
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("category", category)
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching products by category:", error);
-        return [];
-      }
-
-      return ((data || []) as DbProduct[]).map(mapDbProductToProduct);
+      return fetchProductsOrThrow(
+        `Failed to fetch products by category "${category}"`,
+        supabase
+          .from("products")
+          .select("*")
+          .eq("category", category)
+          .eq("published", true)
+          .order("created_at", { ascending: false })
+      );
     },
     [`products-category-${category}`],
     { revalidate: CACHE_REVALIDATE, tags: ["products"] }
@@ -119,18 +120,15 @@ export async function getProductsByCategory(category: string): Promise<Product[]
 export const getFeaturedProducts = unstable_cache(
   async (): Promise<Product[]> => {
     const supabase = getSupabaseClient();
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("featured", true)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Error fetching featured products:", error);
-      return [];
-    }
-
-    return ((data || []) as DbProduct[]).map(mapDbProductToProduct);
+    return fetchProductsOrThrow(
+      "Failed to fetch featured products",
+      supabase
+        .from("products")
+        .select("*")
+        .eq("featured", true)
+        .eq("published", true)
+        .order("created_at", { ascending: false })
+    );
   },
   ["featured-products"],
   { revalidate: CACHE_REVALIDATE, tags: ["products"] }
@@ -140,18 +138,15 @@ export const getFeaturedProducts = unstable_cache(
 export const getNewArrivals = unstable_cache(
   async (): Promise<Product[]> => {
     const supabase = getSupabaseClient();
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("new_arrival", true)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Error fetching new arrivals:", error);
-      return [];
-    }
-
-    return ((data || []) as DbProduct[]).map(mapDbProductToProduct);
+    return fetchProductsOrThrow(
+      "Failed to fetch new arrivals",
+      supabase
+        .from("products")
+        .select("*")
+        .eq("new_arrival", true)
+        .eq("published", true)
+        .order("created_at", { ascending: false })
+    );
   },
   ["new-arrivals"],
   { revalidate: CACHE_REVALIDATE, tags: ["products"] }
@@ -161,20 +156,25 @@ export const getNewArrivals = unstable_cache(
 export async function getRelatedProducts(product: Product, limit: number = 4): Promise<Product[]> {
   return unstable_cache(
     async (): Promise<Product[]> => {
-      const supabase = getSupabaseClient();
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("category", product.category)
-        .neq("id", product.id)
-        .limit(limit);
-
-      if (error) {
-        console.error("Error fetching related products:", error);
+      try {
+        const supabase = getSupabaseClient();
+        return await fetchProductsOrThrow(
+          `Failed to fetch related products for "${product.slug}"`,
+          supabase
+            .from("products")
+            .select("*")
+            .eq("category", product.category)
+            .eq("published", true)
+            .neq("id", product.id)
+            .limit(limit)
+        );
+      } catch (error) {
+        console.error(
+          `Related products degraded for "${product.slug}":`,
+          error
+        );
         return [];
       }
-
-      return ((data || []) as DbProduct[]).map(mapDbProductToProduct);
     },
     [`related-products-${product.category}-${product.id}`],
     { revalidate: CACHE_REVALIDATE, tags: ["products"] }
@@ -183,20 +183,12 @@ export async function getRelatedProducts(product: Product, limit: number = 4): P
 
 // Fetch all product slugs (for generateStaticParams - runs at build time)
 export async function getAllProductSlugs(): Promise<string[]> {
-  try {
-    const supabase = getSupabaseClient();
-    const { data, error } = await supabase
-      .from("products")
-      .select("slug");
+  const supabase = getSupabaseClient();
+  const { data, error } = await supabase.from("products").select("slug");
 
-    if (error) {
-      console.error("Error fetching product slugs:", error);
-      return [];
-    }
-
-    return (data || []).map((p) => p.slug);
-  } catch (error) {
-    console.error("Error fetching product slugs:", error);
-    return [];
+  if (error) {
+    throw formatSupabaseError("Failed to fetch product slugs", error);
   }
+
+  return (data || []).map((p) => p.slug);
 }

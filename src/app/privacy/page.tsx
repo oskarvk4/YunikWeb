@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
 import Container from "@/components/ui/Container";
 import FadeIn from "@/components/ui/FadeIn";
+
+export const metadata: Metadata = {
+  title: "Privatlivspolitik",
+  description: "Yunik Jewelry — privatlivspolitik og GDPR-information. CVR: 46331060.",
+  alternates: { canonical: "/privacy" },
+  robots: { index: false },
+};
 
 export default function PrivacyPage() {
   return (

@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import Container from "@/components/ui/Container";
 import FadeIn from "@/components/ui/FadeIn";
+
+export const metadata: Metadata = {
+  title: "Levering",
+  description: "Alt om levering hos Yunik — leveringstider, fragtpriser og sporingsinfo. Gratis standardfragt og express-mulighed.",
+  alternates: { canonical: "/shipping" },
+};
 
 export default function ShippingPage() {
   return (

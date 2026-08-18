@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import Container from "@/components/ui/Container";
 import FadeIn from "@/components/ui/FadeIn";
+
+export const metadata: Metadata = {
+  title: "Returnering",
+  description: "14 dages fuld returret og 2 års reklamationsret på alle Yunik-smykker. Læs vores returpolitik og find ud af, hvordan du returnerer en vare.",
+  alternates: { canonical: "/returns" },
+};
 
 export default function ReturnsPage() {
   return (
