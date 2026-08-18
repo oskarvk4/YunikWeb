@@ -1,16 +1,16 @@
 {
   "categories": [
     {
+      "name": "Øreringe",
+      "slug": "earrings",
+      "image": "/yunik-4.jpg",
+      "description": "Smukke øreringe der fuldender dit look"
+    },
+    {
       "name": "Ringe",
       "slug": "rings",
       "image": "/yunik-6.jpg",
       "description": "Elegante ringe til enhver lejlighed"
-    },
-    {
-      "name": "Øreringe",
-      "slug": "earrings",
-      "image": "/yunik-2.jpg",
-      "description": "Smukke øreringe der fuldender dit look"
     }
   ],
   "products": [
