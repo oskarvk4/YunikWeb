@@ -9,7 +9,7 @@ export const metadata = {
 };
 
 interface AdminProductsPageProps {
-  searchParams: Promise<{ deleted?: string }>;
+  searchParams: Promise<{ deleted?: string; category?: string }>;
 }
 
 const categoryLabel: Record<string, string> = {
@@ -18,6 +18,8 @@ const categoryLabel: Record<string, string> = {
   earrings: "Øreringe",
   bracelets: "Armbånd",
 };
+
+const CATEGORY_ORDER = ["rings", "necklaces", "earrings", "bracelets"] as const;
 
 function stockBadge(qty: number) {
   if (qty === 0) {
@@ -54,6 +56,11 @@ export default async function AdminProductsPage({
 
   const products = productsData as DbProduct[] | null;
 
+  const selectedCategory = params.category ?? null;
+  const filteredProducts = selectedCategory
+    ? products?.filter((p) => p.category === selectedCategory) ?? null
+    : products;
+
   const total = products?.length ?? 0;
   const offline = products?.filter((p) => !(p.published ?? true)).length ?? 0;
   const outOfStock = products?.filter((p) => p.stock_quantity === 0).length ?? 0;
@@ -61,6 +68,11 @@ export default async function AdminProductsPage({
     products?.filter((p) => p.stock_quantity > 0 && p.stock_quantity <= 5)
       .length ?? 0;
   const featured = products?.filter((p) => p.featured).length ?? 0;
+
+  const categoryCounts: Record<string, number> = {};
+  products?.forEach((p) => {
+    categoryCounts[p.category] = (categoryCounts[p.category] ?? 0) + 1;
+  });
 
   return (
     <div>
@@ -210,7 +222,41 @@ export default async function AdminProductsPage({
         </div>
       )}
 
-      {products && products.length > 0 ? (
+      {products && products.length > 0 && (
+        <div className="mb-6 flex flex-wrap gap-2">
+          <Link
+            href="/admin/products"
+            aria-current={!selectedCategory ? "page" : undefined}
+            className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+              !selectedCategory
+                ? "bg-dark text-white border-dark"
+                : "bg-white text-dark border-dark/20 hover:border-dark"
+            }`}
+          >
+            Alle ({total})
+          </Link>
+          {CATEGORY_ORDER.map((cat) => {
+            const count = categoryCounts[cat] ?? 0;
+            const active = selectedCategory === cat;
+            return (
+              <Link
+                key={cat}
+                href={`/admin/products?category=${cat}`}
+                aria-current={active ? "page" : undefined}
+                className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                  active
+                    ? "bg-dark text-white border-dark"
+                    : "bg-white text-dark border-dark/20 hover:border-dark"
+                }`}
+              >
+                {categoryLabel[cat]} ({count})
+              </Link>
+            );
+          })}
+        </div>
+      )}
+
+      {filteredProducts && filteredProducts.length > 0 ? (
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-dark/10">
@@ -239,7 +285,7 @@ export default async function AdminProductsPage({
               </tr>
             </thead>
             <tbody className="divide-y divide-dark/10">
-              {products.map((product) => {
+              {filteredProducts.map((product) => {
                 const sb = stockBadge(product.stock_quantity);
                 return (
                   <tr key={product.id} className={`hover:bg-gray-50 transition-colors ${!(product.published ?? true) ? "opacity-50" : ""}`}>
@@ -379,6 +425,36 @@ export default async function AdminProductsPage({
               })}
             </tbody>
           </table>
+        </div>
+      ) : selectedCategory && products && products.length > 0 ? (
+        <div className="bg-white rounded-lg shadow-sm p-12 text-center">
+          <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg
+              className="w-8 h-8 text-accent"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+              />
+            </svg>
+          </div>
+          <h2 className="font-serif text-xl text-dark mb-2">
+            Ingen produkter i {categoryLabel[selectedCategory] ?? selectedCategory}
+          </h2>
+          <p className="text-dark/60 mb-6">
+            Der er ingen produkter i denne kategori endnu.
+          </p>
+          <Link
+            href="/admin/products"
+            className="inline-block bg-dark text-white px-6 py-3 font-medium hover:bg-dark/90 transition-colors rounded"
+          >
+            Vis alle produkter
+          </Link>
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow-sm p-12 text-center">
