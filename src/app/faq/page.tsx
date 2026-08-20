@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import Container from "@/components/ui/Container";
 
 interface FAQItem {
@@ -105,34 +104,32 @@ function FAQAccordion({ item }: { item: FAQItem }) {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full py-5 flex items-center justify-between text-left"
+        aria-expanded={isOpen}
       >
         <span className="font-sans text-[#1A1A1A] pr-4">{item.question}</span>
-        <motion.svg
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-          className="w-5 h-5 text-[#8D6553] flex-shrink-0"
+        <svg
+          className="w-5 h-5 text-[#8D6553] flex-shrink-0 transition-transform duration-200"
+          style={{ transform: isOpen ? "rotate(180deg)" : "none" }}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
-        </motion.svg>
+        </svg>
       </button>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <p className="pb-5 text-[#1A1A1A]/70 font-sans leading-relaxed">
-              {item.answer}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div
+        className="grid transition-[grid-template-rows,opacity] duration-200 ease-out"
+        style={{
+          gridTemplateRows: isOpen ? "1fr" : "0fr",
+          opacity: isOpen ? 1 : 0,
+        }}
+      >
+        <div className="overflow-hidden">
+          <p className="pb-5 text-[#1A1A1A]/70 font-sans leading-relaxed">
+            {item.answer}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -143,30 +140,23 @@ export default function FAQPage() {
       {/* Header */}
       <section className="bg-[#F5F0EB] py-16 md:py-20">
         <Container size="narrow">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
-          >
+          <div className="text-center animate-fade-in-up">
             <h1 className="font-serif text-4xl md:text-5xl font-light text-[#1A1A1A] mb-4">
               Ofte Stillede Spørgsmål
             </h1>
             <p className="text-[#1A1A1A]/60 font-sans">
               Find svar på de mest almindelige spørgsmål
             </p>
-          </motion.div>
+          </div>
         </Container>
       </section>
 
       {/* FAQ Content */}
       <section className="py-16 md:py-20">
         <Container size="narrow">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="space-y-12"
+          <div
+            className="space-y-12 animate-fade-in-up"
+            style={{ animationDelay: "0.2s" }}
           >
             {faqData.map((category) => (
               <div key={category.title}>
@@ -180,14 +170,12 @@ export default function FAQPage() {
                 </div>
               </div>
             ))}
-          </motion.div>
+          </div>
 
           {/* Contact CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-16 text-center p-8 bg-[#F5F0EB] rounded-sm"
+          <div
+            className="mt-16 text-center p-8 bg-[#F5F0EB] rounded-sm animate-fade-in-up"
+            style={{ animationDelay: "0.4s" }}
           >
             <h3 className="font-serif text-xl text-[#1A1A1A] mb-3">
               Fandt du ikke svaret?
@@ -201,7 +189,7 @@ export default function FAQPage() {
             >
               Kontakt Os
             </a>
-          </motion.div>
+          </div>
         </Container>
       </section>
     </div>

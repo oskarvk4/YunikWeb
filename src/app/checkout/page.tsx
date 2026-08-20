@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import { useCart } from "@/lib/cart";
@@ -64,12 +63,7 @@ export default function CheckoutPage() {
       <div className="pt-20">
         <section className="py-16 md:py-24">
           <Container size="narrow">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-center"
-            >
+            <div className="text-center animate-fade-in-up">
               <div className="w-20 h-20 bg-[#F5F0EB] rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg
                   className="w-10 h-10 text-[#1A1A1A]/30"
@@ -96,7 +90,7 @@ export default function CheckoutPage() {
                   Gå til Shop
                 </Button>
               </Link>
-            </motion.div>
+            </div>
           </Container>
         </section>
       </div>
@@ -108,15 +102,11 @@ export default function CheckoutPage() {
       {/* Header */}
       <section className="bg-[#F5F0EB] py-12 md:py-16">
         <Container>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="animate-fade-in-up">
             <h1 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A]">
               Checkout
             </h1>
-          </motion.div>
+          </div>
         </Container>
       </section>
 
@@ -126,10 +116,9 @@ export default function CheckoutPage() {
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Cart Items */}
             <div className="lg:col-span-2">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+              <div
+                className="animate-fade-in"
+                style={{ animationDelay: "0.2s" }}
               >
                 <h2 className="font-serif text-xl font-light text-[#1A1A1A] mb-6">
                   Din Ordre ({totalItemCount} {totalItemCount === 1 ? "vare" : "varer"})
@@ -137,12 +126,10 @@ export default function CheckoutPage() {
 
                 <div className="space-y-6">
                   {items.map((item, index) => (
-                    <motion.div
+                    <div
                       key={item.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex gap-4 pb-6 border-b border-[#1A1A1A]/10"
+                      className="flex gap-4 pb-6 border-b border-[#1A1A1A]/10 animate-fade-in-up"
+                      style={{ animationDelay: `${index * 0.1}s` }}
                     >
                       <div className="relative w-24 h-24 md:w-32 md:h-32 bg-[#F5F0EB] flex-shrink-0">
                         <Image
@@ -211,7 +198,7 @@ export default function CheckoutPage() {
                           </p>
                         </div>
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
 
@@ -234,16 +221,14 @@ export default function CheckoutPage() {
                   </svg>
                   Fortsæt shopping
                 </Link>
-              </motion.div>
+              </div>
             </div>
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="bg-[#F5F0EB] p-6 md:p-8 sticky top-24"
+              <div
+                className="bg-[#F5F0EB] p-6 md:p-8 sticky top-24 animate-fade-in-up"
+                style={{ animationDelay: "0.3s" }}
               >
                 <h2 className="font-serif text-xl font-light text-[#1A1A1A] mb-6">
                   Ordreoversigt
@@ -319,7 +304,7 @@ export default function CheckoutPage() {
                   </svg>
                   <span className="text-xs font-sans">Sikker betaling med Stripe</span>
                 </div>
-              </motion.div>
+              </div>
             </div>
           </div>
         </Container>

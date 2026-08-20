@@ -1,7 +1,4 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 
@@ -10,12 +7,7 @@ export default function CheckoutCancelPage() {
     <div className="pt-20">
       <section className="py-16 md:py-24">
         <Container size="narrow">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
-          >
+          <div className="text-center animate-fade-in-up">
             <div className="w-20 h-20 bg-[#F5F0EB] rounded-full flex items-center justify-center mx-auto mb-8">
               <svg
                 className="w-10 h-10 text-[#1A1A1A]/40"
@@ -68,7 +60,7 @@ export default function CheckoutCancelPage() {
                 Kontakt kundeservice →
               </a>
             </div>
-          </motion.div>
+          </div>
         </Container>
       </section>
     </div>

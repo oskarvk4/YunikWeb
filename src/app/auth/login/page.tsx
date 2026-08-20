@@ -3,7 +3,6 @@
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 
 function LoginForm() {
@@ -53,11 +52,7 @@ function LoginForm() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-md"
-    >
+    <div className="w-full max-w-md animate-fade-in-up">
       <div className="bg-white p-8 shadow-sm">
         <h1 className="font-serif text-3xl text-brand-black text-center mb-2">
           Log ind
@@ -134,7 +129,7 @@ function LoginForm() {
           </Link>
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 }
 

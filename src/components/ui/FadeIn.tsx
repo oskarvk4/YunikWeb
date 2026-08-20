@@ -1,7 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 type Direction = "up" | "down" | "left" | "right" | "none";
 
@@ -19,7 +18,6 @@ interface FadeInProps {
   delay?: number;
   duration?: number;
   className?: string;
-  // When true, animates on scroll-into-view; when false, animates immediately on mount.
   inView?: boolean;
   viewportMargin?: string;
   id?: string;
@@ -35,35 +33,50 @@ export default function FadeIn({
   viewportMargin = "-100px",
   id,
 }: FadeInProps) {
-  const offset = offsets[direction];
-  const initial = { opacity: 0, ...offset };
-  const target = { opacity: 1, x: 0, y: 0 };
-  const transition = { duration, delay };
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(!inView);
 
-  if (inView) {
-    return (
-      <motion.div
-        id={id}
-        initial={initial}
-        whileInView={target}
-        viewport={{ once: true, margin: viewportMargin }}
-        transition={transition}
-        className={className}
-      >
-        {children}
-      </motion.div>
+  useEffect(() => {
+    if (!inView) {
+      setVisible(true);
+      return;
+    }
+    const node = ref.current;
+    if (!node) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setVisible(true);
+            observer.disconnect();
+            break;
+          }
+        }
+      },
+      { rootMargin: viewportMargin }
     );
-  }
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [inView, viewportMargin]);
+
+  const offset = offsets[direction];
+  const style: React.CSSProperties = {
+    opacity: visible ? 1 : 0,
+    transform: visible ? "none" : `translate(${offset.x}px, ${offset.y}px)`,
+    transition: `opacity ${duration}s ease-out ${delay}s, transform ${duration}s ease-out ${delay}s`,
+    willChange: visible ? undefined : "opacity, transform",
+  };
 
   return (
-    <motion.div
-      id={id}
-      initial={initial}
-      animate={target}
-      transition={transition}
-      className={className}
-    >
+    <div ref={ref} id={id} className={className} style={style}>
       {children}
-    </motion.div>
+    </div>
   );
 }

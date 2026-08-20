@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 
 export default function ResetPasswordPage() {
@@ -85,11 +84,7 @@ export default function ResetPasswordPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-light flex items-center justify-center px-4 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md"
-        >
+        <div className="w-full max-w-md animate-fade-in-up">
           <div className="bg-white p-8 shadow-sm text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
@@ -113,7 +108,7 @@ export default function ResetPasswordPage() {
               Din adgangskode er blevet ændret. Du bliver nu sendt videre...
             </p>
           </div>
-        </motion.div>
+        </div>
       </div>
     );
   }
@@ -129,11 +124,7 @@ export default function ResetPasswordPage() {
   if (!isValidSession) {
     return (
       <div className="min-h-screen bg-light flex items-center justify-center px-4 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md"
-        >
+        <div className="w-full max-w-md animate-fade-in-up">
           <div className="bg-white p-8 shadow-sm text-center">
             <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
@@ -164,18 +155,14 @@ export default function ResetPasswordPage() {
               Anmod om nyt link
             </Link>
           </div>
-        </motion.div>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-light flex items-center justify-center px-4 py-16">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
-      >
+      <div className="w-full max-w-md animate-fade-in-up">
         <div className="bg-white p-8 shadow-sm">
           <h1 className="font-serif text-3xl text-dark text-center mb-2">
             Ny adgangskode
@@ -237,7 +224,7 @@ export default function ResetPasswordPage() {
             </button>
           </form>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

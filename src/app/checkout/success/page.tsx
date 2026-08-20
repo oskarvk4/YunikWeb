@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import { useCart } from "@/lib/cart";
@@ -39,17 +38,10 @@ export default function CheckoutSuccessPage() {
     <div className="pt-20">
       <section className="py-16 md:py-24">
         <Container size="narrow">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8"
+          <div className="text-center animate-fade-in-up">
+            <div
+              className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8 animate-fade-in-scale"
+              style={{ animationDelay: "0.2s" }}
             >
               <svg
                 className="w-10 h-10 text-green-600"
@@ -64,7 +56,7 @@ export default function CheckoutSuccessPage() {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-            </motion.div>
+            </div>
 
             <h1 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A] mb-4">
               Tak for din ordre!
@@ -126,7 +118,7 @@ export default function CheckoutSuccessPage() {
                 kontakt@yunik.dk
               </a>
             </p>
-          </motion.div>
+          </div>
         </Container>
       </section>
     </div>
