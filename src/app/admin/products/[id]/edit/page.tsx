@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import ProductForm from "@/components/admin/ProductForm";
+import DownloadImagesButton from "@/components/admin/DownloadImagesButton";
 import type { DbProduct } from "@/types/supabase";
 
 export const metadata = {
@@ -39,8 +40,17 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
           <span className="mx-2">/</span>
           <span className="text-dark">Rediger</span>
         </nav>
-        <h1 className="text-2xl font-serif text-dark">Rediger Produkt</h1>
-        <p className="text-dark/60">{product.name}</p>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-serif text-dark">Rediger Produkt</h1>
+            <p className="text-dark/60">{product.name}</p>
+          </div>
+          <DownloadImagesButton
+            slug={product.slug}
+            name={product.name}
+            images={product.images ?? []}
+          />
+        </div>
       </div>
 
       <Suspense fallback={null}>

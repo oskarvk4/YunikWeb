@@ -129,6 +129,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       {/* Add to Cart Button */}
       <Button
+        id="primary-add-to-cart"
         variant="primary"
         size="lg"
         fullWidth

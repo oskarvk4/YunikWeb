@@ -9,15 +9,12 @@ export default async function ShopPage() {
   return (
     <div className="pt-20">
       {/* Hero Section */}
-      <section className="bg-[#F5F0EB] py-6">
+      <section className="bg-[#F5F0EB] py-4 md:py-6">
         <Container>
           <div className="text-center">
-            <h1 className="font-serif text-2xl md:text-3xl font-light text-[#1A1A1A] mb-1">
+            <h1 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A]">
               Alle Smykker
             </h1>
-            <p className="text-[#1A1A1A]/60 font-sans text-sm max-w-md mx-auto">
-              Udforsk vores komplette kollektion af håndlavede smykker
-            </p>
           </div>
         </Container>
       </section>
