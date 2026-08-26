@@ -6,8 +6,6 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Product, formatPrice } from "@/types";
 import Badge from "@/components/ui/Badge";
-import { useCart } from "@/lib/cart";
-import QuickViewSheet from "./QuickViewSheet";
 
 interface ProductCardProps {
   product: Product;
@@ -20,13 +18,10 @@ const BLUR_DATA_URL =
 const IMAGE_SIZES = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw";
 
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
-  const { addItem } = useCart();
-  const isOutOfStock = product.stockQuantity <= 0;
   const hasSecondImage = Boolean(product.images[1]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
   useEffect(() => {
     if (!hasSecondImage) return;
@@ -134,7 +129,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           </div>
 
           {hasSecondImage && (
-            <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 pointer-events-none">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 pointer-events-none">
               <span
                 aria-hidden
                 className={`h-1.5 w-1.5 rounded-full transition-colors ${
@@ -151,40 +146,12 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           )}
         </div>
 
-        {/* Desktop hover: quick-add adds directly */}
-        <div className="absolute inset-x-0 bottom-0 p-4 z-10 transition-all duration-500 hidden [@media(hover:hover)]:block opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0">
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              addItem(product);
-            }}
-            disabled={isOutOfStock}
-            className="w-full py-3 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.15em] hover:bg-[#333] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white focus:ring-inset disabled:cursor-not-allowed disabled:bg-[#1A1A1A]/45"
-          >
-            {isOutOfStock ? "Udsolgt" : "Tilføj Hurtigt"}
-          </button>
-        </div>
-
-        {/* Touch: always-visible "Se Detaljer" opens quick view */}
-        <div className="absolute inset-x-0 bottom-0 p-4 z-10 [@media(hover:hover)]:hidden">
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setIsQuickViewOpen(true);
-            }}
-            className="w-full py-3 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.15em] hover:bg-[#333] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white focus:ring-inset"
-          >
-            Se Detaljer
-          </button>
-        </div>
+        {/* Desktop hover indicator: thin white underline at bottom of image */}
+        <span
+          aria-hidden
+          className="absolute inset-x-4 bottom-3 h-px bg-white z-10 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out hidden [@media(hover:hover)]:block pointer-events-none"
+        />
       </Link>
-
-      <QuickViewSheet
-        product={product}
-        isOpen={isQuickViewOpen}
-        onClose={() => setIsQuickViewOpen(false)}
-      />
 
       {/* Product Info */}
       <div className="text-center">
