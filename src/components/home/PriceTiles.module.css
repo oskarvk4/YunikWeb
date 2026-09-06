@@ -1,0 +1,119 @@
+.split {
+  --skew: -12deg;
+  --counter-skew: 12deg;
+
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: clamp(420px, 68vh, 760px);
+  overflow: hidden;
+  isolation: isolate;
+  background: #ede4d3;
+}
+
+.panel {
+  position: relative;
+  flex: 1 1 0;
+  display: block;
+  overflow: hidden;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transform: skewX(var(--skew));
+  transform-origin: center;
+  margin-inline: -1px;
+}
+.panel:first-child { margin-left: 0; }
+.panel:last-child { margin-right: 0; }
+
+.frame {
+  position: absolute;
+  inset: -2px;
+  display: block;
+  overflow: hidden;
+  transform: skewX(var(--counter-skew)) scale(1.08);
+  transform-origin: center;
+  transition: transform 380ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.panel:hover .frame,
+.panel:focus-visible .frame {
+  transform: skewX(var(--counter-skew)) scale(1.16);
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.18) 0%,
+    rgba(0, 0, 0, 0.02) 35%,
+    rgba(0, 0, 0, 0.42) 100%
+  );
+  opacity: 0.85;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.panel:hover .scrim,
+.panel:focus-visible .scrim {
+  opacity: 0.5;
+}
+
+.label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) skewX(var(--counter-skew));
+  z-index: 1;
+  white-space: nowrap;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.5rem, 2.6vw, 2.75rem);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow: 0 1px 24px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
+.panel:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.9);
+  outline-offset: -6px;
+}
+
+@media (max-width: 768px) {
+  .split {
+    display: grid;
+    grid-template-columns: 1fr;
+    height: auto;
+    background: transparent;
+  }
+  .panel {
+    flex: initial;
+    height: 42vw;
+    min-height: 200px;
+    margin-inline: 0;
+    transform: none;
+  }
+  .frame,
+  .panel:hover .frame,
+  .panel:focus-visible .frame {
+    inset: 0;
+    transform: scale(1);
+  }
+  .label {
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frame,
+  .scrim {
+    transition: none;
+  }
+  .panel:hover .frame,
+  .panel:focus-visible .frame {
+    transform: skewX(var(--counter-skew)) scale(1.08);
+  }
+}

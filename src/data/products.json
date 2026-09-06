@@ -9,8 +9,20 @@
     {
       "name": "Ringe",
       "slug": "rings",
-      "image": "/yunik-5.jpg",
+      "image": "/yunik-6.jpg",
       "description": "Elegante ringe til enhver lejlighed"
+    },
+    {
+      "name": "Armbånd",
+      "slug": "bracelets",
+      "image": "/hero-bracelet.webp",
+      "description": "Smukke armbånd og armringe"
+    },
+    {
+      "name": "Vedhæng og Halskæder",
+      "slug": "necklaces",
+      "image": "/yunik-3.jpg",
+      "description": "Tidløse vedhæng og halskæder"
     }
   ],
   "products": [

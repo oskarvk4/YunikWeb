@@ -7,6 +7,12 @@ import { createClient } from "@/lib/supabase/client";
 import { revalidateProducts } from "@/lib/revalidate";
 import type { DbProduct, Database } from "@/types/supabase";
 import ImageUploader from "./ImageUploader";
+import { RING_SIZE_OPTIONS } from "@/constants/ring-sizes";
+import {
+  applyMetalToMaterials,
+  defaultMaterials,
+  hasStandardMaterials,
+} from "@/constants/materials";
 
 type ProductInsert = Database["public"]["Tables"]["products"]["Insert"];
 type ProductUpdate = Database["public"]["Tables"]["products"]["Update"];
@@ -30,6 +36,7 @@ type FormState = {
   price: number;
   category: string;
   metal: "gold" | "silver";
+  ring_size: number | null;
   description: string;
   materials: string;
   images: string[];
@@ -47,8 +54,9 @@ function buildInitialState(product?: DbProduct): FormState {
     price: product?.price ?? 0,
     category: product?.category || "rings",
     metal: product?.metal || "silver",
+    ring_size: product?.ring_size ?? null,
     description: product?.description || "",
-    materials: product?.materials || "",
+    materials: product?.materials || defaultMaterials(product?.metal || "silver"),
     images: product?.images || [],
     featured: product?.featured ?? false,
     new_arrival: product?.new_arrival ?? false,
@@ -67,6 +75,9 @@ function humanizeError(message: string): string {
   }
   if (m.includes("permission denied")) {
     return "Adgang nægtet i databasen. Tjek RLS-politikker for 'products'-tabellen.";
+  }
+  if (m.includes("products_ring_size_check")) {
+    return "Ringstørrelse kan kun sættes på ringe, og skal være mellem 44 og 68.";
   }
   if (m.includes("bucket not found")) {
     return "Storage-bucket 'product-images' findes ikke. Opret den i Supabase Dashboard først.";
@@ -96,6 +107,9 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
   const isDirty = useMemo(() => {
     return JSON.stringify(formData) !== JSON.stringify(savedSnapshot);
   }, [formData, savedSnapshot]);
+
+  // Ring size is a rings-only property — the DB has a check constraint to match.
+  const isRing = formData.category === "rings";
 
   useEffect(() => {
     if (!isDirty) return;
@@ -161,6 +175,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
         price: Number(formData.price),
         category: formData.category,
         metal: formData.metal,
+        ring_size: isRing ? formData.ring_size : null,
         description: formData.description,
         materials: formData.materials,
         images: formData.images,
@@ -195,6 +210,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
       price: Number(formData.price),
       category: formData.category,
       metal: formData.metal,
+      ring_size: isRing ? formData.ring_size : null,
       description: formData.description,
       materials: formData.materials,
       images: formData.images,
@@ -470,9 +486,14 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
             </label>
             <select
               value={formData.category}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, category: e.target.value }))
-              }
+              onChange={(e) => {
+                const category = e.target.value;
+                setFormData((prev) => ({
+                  ...prev,
+                  category,
+                  ring_size: category === "rings" ? prev.ring_size : null,
+                }));
+              }}
               className="w-full px-4 py-3 border border-dark/20 focus:border-accent focus:outline-none bg-white rounded"
             >
               {categories.map((cat) => (
@@ -495,7 +516,11 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
                     key={m}
                     type="button"
                     onClick={() =>
-                      setFormData((prev) => ({ ...prev, metal: m }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        metal: m,
+                        materials: applyMetalToMaterials(prev.materials, m),
+                      }))
                     }
                     aria-pressed={isActive}
                     className={`flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded border text-sm font-medium transition-colors ${
@@ -521,19 +546,67 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
             </p>
           </div>
 
+          {isRing && (
+            <div>
+              <label className="block text-sm font-medium text-dark mb-2">
+                Ringstørrelse
+              </label>
+              <select
+                value={formData.ring_size ?? ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    ring_size: e.target.value === "" ? null : Number(e.target.value),
+                  }))
+                }
+                className="w-full px-4 py-3 border border-dark/20 focus:border-accent focus:outline-none bg-white rounded"
+              >
+                <option value="">Ikke angivet</option>
+                {RING_SIZE_OPTIONS.map((size) => (
+                  <option key={size} value={size}>
+                    {size} (indvendig omkreds {size} mm)
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-dark/50">
+                Vises på produktsiden sammen med størrelsesguiden. Kun for ringe.
+              </p>
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-dark mb-2">
               Materialer
             </label>
-            <input
-              type="text"
+            <textarea
               value={formData.materials}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, materials: e.target.value }))
               }
+              rows={2}
               className="w-full px-4 py-3 border border-dark/20 focus:border-accent focus:outline-none rounded"
-              placeholder="f.eks. 925 Sterling sølv"
+              placeholder={defaultMaterials(formData.metal)}
             />
+            <div className="mt-1 flex items-start justify-between gap-3">
+              <p className="text-xs text-dark/50">
+                Udfyldes automatisk ud fra metallet. Tilføj gerne detaljer om
+                lås, finish eller sten efter den første sætning.
+              </p>
+              {!hasStandardMaterials(formData.materials) && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      materials: defaultMaterials(prev.metal),
+                    }))
+                  }
+                  className="shrink-0 text-xs underline text-dark/60 hover:text-dark"
+                >
+                  Indsæt standardtekst
+                </button>
+              )}
+            </div>
           </div>
 
           <div>

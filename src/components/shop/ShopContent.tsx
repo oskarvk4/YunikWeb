@@ -31,12 +31,16 @@ export default function ShopContent({ products }: ShopContentProps) {
     () => parseMetals(searchParams.get("metal")),
     [searchParams]
   );
+  const minPrice = Number(searchParams.get("minPrice")) || null;
+  const maxPrice = Number(searchParams.get("maxPrice")) || null;
 
   const updateURL = (category: string, sort: string, metals: Metal[]) => {
     const params = new URLSearchParams();
     if (category !== "all") params.set("category", category);
     if (sort !== "newest") params.set("sort", sort);
     if (metals.length > 0) params.set("metal", metals.join(","));
+    if (minPrice !== null) params.set("minPrice", String(minPrice));
+    if (maxPrice !== null) params.set("maxPrice", String(maxPrice));
     const queryString = params.toString();
     router.push(`/shop${queryString ? `?${queryString}` : ""}`, {
       scroll: false,
@@ -73,6 +77,14 @@ export default function ShopContent({ products }: ShopContentProps) {
       result = result.filter((p) => activeMetals.includes(p.metal));
     }
 
+    // Filter by price
+    if (minPrice !== null) {
+      result = result.filter((p) => p.price >= minPrice);
+    }
+    if (maxPrice !== null) {
+      result = result.filter((p) => p.price <= maxPrice);
+    }
+
     // Sort
     switch (activeSort) {
       case "price-asc":
@@ -88,7 +100,7 @@ export default function ShopContent({ products }: ShopContentProps) {
     }
 
     return result;
-  }, [products, activeCategory, activeSort, activeMetals]);
+  }, [products, activeCategory, activeSort, activeMetals, minPrice, maxPrice]);
 
   return (
     <>

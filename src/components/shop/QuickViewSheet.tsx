@@ -146,6 +146,13 @@ export default function QuickViewSheet({
                   {product.description}
                 </p>
 
+                {product.category === "rings" && product.ringSize && (
+                  <p className="text-sm font-sans text-[#1A1A1A]/70 mb-6">
+                    Størrelse:{" "}
+                    <span className="text-[#1A1A1A]">EU {product.ringSize}</span>
+                  </p>
+                )}
+
                 {product.materials && (
                   <p className="text-xs font-sans text-[#1A1A1A]/50 uppercase tracking-[0.1em]">
                     {product.materials}

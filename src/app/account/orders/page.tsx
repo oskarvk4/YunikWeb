@@ -2,6 +2,11 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatPrice } from "@/types";
+import { getCarrierLabel, getTrackingUrl } from "@/constants/carriers";
+import {
+  getShippingOption,
+  readPickupPoint,
+} from "@/constants/shipping";
 import type { Order } from "@/types/supabase";
 
 export const metadata = {
@@ -56,6 +61,14 @@ export default async function OrdersPage() {
                 image?: string;
               }>;
 
+              const trackingUrl = getTrackingUrl(
+                order.carrier,
+                order.tracking_number,
+                order.tracking_url
+              );
+              const shippingOption = getShippingOption(order.shipping_option);
+              const pickupPoint = readPickupPoint(order.pickup_point);
+
               return (
                 <div key={order.id} className="bg-white shadow-sm overflow-hidden">
                   {/* Order Header */}
@@ -91,7 +104,7 @@ export default async function OrdersPage() {
                           </p>
                         </div>
                       </div>
-                      <div>
+                      <div className="flex items-center gap-2">
                         <span
                           className={`inline-block px-3 py-1 text-sm rounded-full ${
                             order.status === "completed"
@@ -107,6 +120,11 @@ export default async function OrdersPage() {
                             ? "Afventer"
                             : order.status}
                         </span>
+                        {order.fulfillment_status === "shipped" && (
+                          <span className="inline-block px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700">
+                            Afsendt
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -146,8 +164,64 @@ export default async function OrdersPage() {
                     </div>
                   </div>
 
+                  {/* Tracking */}
+                  {order.fulfillment_status === "shipped" && (
+                    <div className="px-6 py-4 border-t border-dark/10">
+                      <p className="text-xs text-dark/60 uppercase tracking-wide mb-2">
+                        Forsendelse
+                      </p>
+                      <p className="text-sm text-dark">
+                        Sendt med {getCarrierLabel(order.carrier)}
+                        {order.shipped_at &&
+                          ` den ${new Date(order.shipped_at).toLocaleDateString("da-DK", {
+                            day: "numeric",
+                            month: "long",
+                          })}`}
+                      </p>
+                      {order.tracking_number && (
+                        <p className="text-sm text-dark/60 font-mono mt-1">
+                          {order.tracking_number}
+                        </p>
+                      )}
+                      {trackingUrl && (
+                        <a
+                          href={trackingUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block text-sm text-accent hover:underline mt-2"
+                        >
+                          Spor din pakke →
+                        </a>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Pakkeshop */}
+                  {shippingOption.key === "pickup" && pickupPoint && (
+                    <div className="px-6 py-4 border-t border-dark/10">
+                      <p className="text-xs text-dark/60 uppercase tracking-wide mb-2">
+                        Afhentes hos
+                      </p>
+                      <p className="text-sm text-dark">
+                        {pickupPoint.name}
+                        {pickupPoint.address && (
+                          <>
+                            <br />
+                            {pickupPoint.address}
+                          </>
+                        )}
+                        {pickupPoint.city && (
+                          <>
+                            <br />
+                            {pickupPoint.zipcode} {pickupPoint.city}
+                          </>
+                        )}
+                      </p>
+                    </div>
+                  )}
+
                   {/* Shipping Info */}
-                  {order.shipping_address && (
+                  {shippingOption.key !== "pickup" && order.shipping_address && (
                     <div className="px-6 py-4 border-t border-dark/10">
                       <p className="text-xs text-dark/60 uppercase tracking-wide mb-2">
                         Leveringsadresse

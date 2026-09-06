@@ -67,16 +67,16 @@ export default function TermsPage() {
               3. Levering
             </h2>
             <p>
-              Vi leverer til hele Danmark og udvalgte europæiske lande.
-              Leveringstiden er typisk 3-5 hverdage inden for Danmark.
+              Vi leverer til hele Danmark. Leveringstiden er typisk
+              2-5 hverdage.
             </p>
             <p>
               <strong>Fragtpriser:</strong>
             </p>
             <ul>
-              <li>Gratis fragt ved køb over 500 DKK</li>
-              <li>Standardfragt: 39 DKK</li>
-              <li>Ekspreslevering: 79 DKK (1-2 hverdage)</li>
+              <li>Pakkeshop: gratis (2-5 hverdage)</li>
+              <li>Levering til døren: gratis (2-5 hverdage)</li>
+              <li>Ekspres til døren: 49 DKK (1-2 hverdage)</li>
             </ul>
             <p>
               Du modtager en email med tracking-information, når din ordre er afsendt.

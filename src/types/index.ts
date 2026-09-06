@@ -10,6 +10,8 @@ export type Product = {
   currency: "DKK";
   category: ProductCategory;
   metal: ProductMetal;
+  /** EU/ISO size in mm. Rings only — null on every other category. */
+  ringSize: number | null;
   description: string;
   materials: string;
   images: string[];

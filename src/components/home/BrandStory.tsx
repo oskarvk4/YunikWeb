@@ -8,7 +8,7 @@ import Button from "@/components/ui/Button";
 
 export default function BrandStory() {
   return (
-    <section className="py-20 md:py-28 bg-white overflow-hidden">
+    <section className="py-20 md:py-28 bg-white">
       <Container>
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Images */}
@@ -17,33 +17,26 @@ export default function BrandStory() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
-            className="relative"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-4"
           >
-            <div className="grid grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4">
-              {/* Main image — gemstones */}
-              <div className="lg:col-span-7 relative aspect-[3/4] overflow-hidden">
-                <Image
-                  src="/StoryPics/gemstones.webp"
-                  alt="Håndplukkede blågrønne ædelsten med pincet"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 50vw, 30vw"
-                />
-              </div>
-              {/* Secondary image — workbench */}
-              <div className="lg:col-span-5 relative aspect-[3/4] overflow-hidden lg:mt-12">
-                <Image
-                  src="/StoryPics/workbench.webp"
-                  alt="Perler, sten og værktøj på arbejdsbordet"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 50vw, 20vw"
-                />
-              </div>
+            <div className="relative aspect-[4/5] overflow-hidden">
+              <Image
+                src="/StoryPics/gemstones.webp"
+                alt="Håndplukkede blågrønne ædelsten med pincet"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              />
             </div>
-            {/* Decorative element */}
-            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-[#D4A9A5]/20 -z-10" />
-            <div className="absolute -top-6 -left-6 w-24 h-24 bg-[#8D6553]/10 -z-10" />
+            <div className="relative aspect-[4/5] overflow-hidden">
+              <Image
+                src="/StoryPics/workbench.webp"
+                alt="Perler, sten og værktøj på arbejdsbordet"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              />
+            </div>
           </motion.div>
 
           {/* Content */}

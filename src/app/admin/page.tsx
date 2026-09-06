@@ -25,6 +25,7 @@ export default async function AdminDashboard() {
 
   const recentOrders = orders.slice(0, 5);
   const pendingOrders = orders.filter((o) => o.status === "pending").length;
+  const attentionOrders = orders.filter((o) => o.needs_attention).length;
 
   return (
     <div>
@@ -52,7 +53,11 @@ export default async function AdminDashboard() {
         <StatsCard
           title="Ordrer"
           value={orders.length}
-          subtitle={`${pendingOrders} afventer`}
+          subtitle={
+            attentionOrders > 0
+              ? `${attentionOrders} kræver handling · ${pendingOrders} afventer`
+              : `${pendingOrders} afventer`
+          }
           icon={
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path

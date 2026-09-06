@@ -113,6 +113,9 @@ export default function CartDrawer() {
                           {item.category === "necklaces" && "Halskæder"}
                           {item.category === "earrings" && "Øreringe"}
                           {item.category === "bracelets" && "Armbånd"}
+                          {item.category === "rings" && item.ringSize
+                            ? ` · str. ${item.ringSize}`
+                            : ""}
                         </p>
                         <p className="text-sm font-sans font-medium text-[#1A1A1A] mt-2">
                           {formatPrice(item.price)}
@@ -179,7 +182,7 @@ export default function CartDrawer() {
                   </span>
                 </div>
                 <p className="text-xs text-[#1A1A1A]/50 font-sans">
-                  Fragt beregnes ved checkout
+                  Gratis fragt på alle ordrer
                 </p>
                 <Link href="/checkout" onClick={closeCart}>
                   <Button fullWidth variant="primary" size="lg">

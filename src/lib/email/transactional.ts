@@ -5,6 +5,9 @@ import OrderConfirmation, {
   type OrderEmailAddress,
   type OrderEmailItem,
 } from "@/emails/OrderConfirmation";
+import ShippingConfirmation from "@/emails/ShippingConfirmation";
+import { getCarrierLabel, getTrackingUrl } from "@/constants/carriers";
+import { getShippingOption, readPickupPoint } from "@/constants/shipping";
 import type { Order } from "@/types/supabase";
 
 let resendInstance: Resend | null = null;
@@ -88,6 +91,10 @@ export async function sendOrderConfirmationEmail(
         currency: order.currency || "DKK",
         shippingAddress,
         shippingOption: order.shipping_option || "free",
+        pickupPoint:
+          getShippingOption(order.shipping_option).key === "pickup"
+            ? readPickupPoint(order.pickup_point)
+            : null,
         contactEmail,
       }),
     });
@@ -101,6 +108,70 @@ export async function sendOrderConfirmationEmail(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.error("sendOrderConfirmationEmail failed:", message);
+    return { success: false, error: message };
+  }
+}
+
+export async function sendShippingConfirmationEmail(
+  order: Order
+): Promise<SendResult> {
+  const resend = getResend();
+  if (!resend) {
+    console.warn(
+      "RESEND_API_KEY not configured — skipping shipping confirmation email"
+    );
+    return { success: false, error: "RESEND_API_KEY not configured" };
+  }
+
+  if (!order.customer_email) {
+    return { success: false, error: "Order has no customer_email" };
+  }
+
+  const items = (order.items as unknown as OrderEmailItem[]) ?? [];
+  const shippingAddress =
+    (order.shipping_address as unknown as OrderEmailAddress | null) ?? null;
+  const customerName = shippingAddress?.name ?? null;
+  const shortId = order.id.slice(0, 8).toUpperCase();
+
+  const replyTo = getReplyTo();
+  const contactEmail = getContactEmail();
+
+  try {
+    const result = await resend.emails.send({
+      from: getFromAddress(),
+      to: order.customer_email,
+      ...(replyTo ? { replyTo } : {}),
+      subject: `Din Yunik-ordre er sendt afsted — ${shortId}`,
+      react: ShippingConfirmation({
+        orderId: order.id,
+        customerName,
+        items,
+        shippingAddress,
+        shippingOption: order.shipping_option || "free",
+        carrierLabel: getCarrierLabel(order.carrier),
+        pickupPoint:
+          getShippingOption(order.shipping_option).key === "pickup"
+            ? readPickupPoint(order.pickup_point)
+            : null,
+        trackingNumber: order.tracking_number,
+        trackingUrl: getTrackingUrl(
+          order.carrier,
+          order.tracking_number,
+          order.tracking_url
+        ),
+        contactEmail,
+      }),
+    });
+
+    if (result.error) {
+      console.error("Resend send error:", result.error);
+      return { success: false, error: result.error.message };
+    }
+
+    return { success: true, id: result.data?.id };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("sendShippingConfirmationEmail failed:", message);
     return { success: false, error: message };
   }
 }

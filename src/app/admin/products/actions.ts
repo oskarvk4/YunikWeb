@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
+import { revalidateProducts } from "@/lib/revalidate";
 
 export async function toggleProductPublished(productId: string, currentValue: boolean) {
   const supabase = await createClient();
@@ -25,7 +25,5 @@ export async function toggleProductPublished(productId: string, currentValue: bo
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/shop");
-  revalidatePath("/", "layout");
-  revalidatePath("/admin/products");
+  await revalidateProducts();
 }

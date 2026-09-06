@@ -41,7 +41,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     },
     {
       title: "Levering & Retur",
-      content: "Gratis standardfragt i Danmark. Standardlevering tager 2-5 hverdage. Express levering 1-2 hverdage (mod tillæg). Du har 14 dages fuld returret. Se vores leveringspolitik for mere information.",
+      content: "Gratis fragt på alle ordrer i Danmark — både til pakkeshop og til døren, 2-5 hverdage. Ekspres til døren 1-2 hverdage koster 49 DKK. Du har 14 dages fuld returret. Se vores leveringspolitik for mere information.",
     },
   ];
 
@@ -94,10 +94,29 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         {product.description}
       </p>
 
-      {/* Size Guide (for rings) */}
-      <div className="mb-6">
-        <SizeGuide category={product.category} />
-      </div>
+      {/* Ring size + guide (rings only) */}
+      {product.category === "rings" && (
+        <div className="mb-6">
+          <p className="text-xs font-sans uppercase tracking-[0.1em] text-[#1A1A1A]/60 mb-3">
+            Størrelse
+          </p>
+          {/* Grouped left rather than spread across the column — at desktop
+              width justify-between pushed the guide link ~700px from its label. */}
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <span className="font-serif text-lg text-[#1A1A1A]">
+              {product.ringSize
+                ? `EU ${product.ringSize}`
+                : "Kontakt os for størrelse"}
+            </span>
+            <SizeGuide category={product.category} ringSize={product.ringSize} />
+          </div>
+          {product.ringSize && (
+            <p className="mt-2 text-sm font-sans text-[#1A1A1A]/50">
+              Findes kun i denne størrelse.
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Quantity Selector */}
       <div className="mb-6">

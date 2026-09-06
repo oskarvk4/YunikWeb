@@ -145,6 +145,20 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
         <div className="absolute inset-0 bg-gradient-to-b from-[#1A1A1A]/70 via-[#1A1A1A]/35 to-[#1A1A1A]/20 md:bg-gradient-to-r md:from-[#1A1A1A]/50 md:via-[#1A1A1A]/20 md:to-transparent z-10" />
       </div>
 
+      {/* Mobile tap zones */}
+      <button
+        type="button"
+        onClick={() => paginate(-1)}
+        aria-label="Forrige billede"
+        className="absolute left-0 top-0 z-[15] h-full w-1/3 touch-manipulation bg-transparent outline-none focus-visible:ring-2 focus-visible:ring-white md:hidden"
+      />
+      <button
+        type="button"
+        onClick={() => paginate(1)}
+        aria-label="Næste billede"
+        className="absolute right-0 top-0 z-[15] h-full w-2/3 touch-manipulation bg-transparent outline-none focus-visible:ring-2 focus-visible:ring-white md:hidden"
+      />
+
       {/* Content */}
       <div className="relative z-20 h-full flex items-center">
         <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8">

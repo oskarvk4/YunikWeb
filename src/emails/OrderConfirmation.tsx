@@ -12,6 +12,28 @@ import {
   Section,
   Text,
 } from "@react-email/components";
+import {
+  addressLine,
+  body,
+  brand,
+  card,
+  container,
+  footer,
+  footerSmall,
+  footerText,
+  h2,
+  h3,
+  header,
+  hr,
+  link,
+  meta,
+  paragraph,
+  tagline,
+} from "./styles";
+import {
+  getShippingOption,
+  type PickupPointSnapshot,
+} from "@/constants/shipping";
 
 export interface OrderEmailItem {
   id: string;
@@ -41,6 +63,8 @@ export interface OrderConfirmationProps {
   currency: string;
   shippingAddress?: OrderEmailAddress | null;
   shippingOption: string;
+  /** Set only for pakkeshop orders — the shop replaces the delivery address. */
+  pickupPoint?: PickupPointSnapshot | null;
   contactEmail: string;
 }
 
@@ -57,6 +81,7 @@ export default function OrderConfirmation({
   currency,
   shippingAddress,
   shippingOption,
+  pickupPoint,
   contactEmail,
 }: OrderConfirmationProps) {
   const shortId = orderId.slice(0, 8).toUpperCase();
@@ -129,7 +154,7 @@ export default function OrderConfirmation({
             <Row>
               <Column>
                 <Text style={totalsLabel}>
-                  Fragt ({shippingOption === "express" ? "Express" : "Standard"})
+                  Fragt ({getShippingOption(shippingOption).label})
                 </Text>
               </Column>
               <Column style={totalsValueCol}>
@@ -149,7 +174,27 @@ export default function OrderConfirmation({
             </Row>
           </Section>
 
-          {shippingAddress ? (
+          {pickupPoint ? (
+            <Section style={card}>
+              <Heading as="h3" style={h3}>
+                Afhentes i pakkeshop
+              </Heading>
+              <Text style={addressLine}>{pickupPoint.name}</Text>
+              {pickupPoint.address ? (
+                <Text style={addressLine}>{pickupPoint.address}</Text>
+              ) : null}
+              {pickupPoint.zipcode || pickupPoint.city ? (
+                <Text style={addressLine}>
+                  {[pickupPoint.zipcode, pickupPoint.city]
+                    .filter(Boolean)
+                    .join(" ")}
+                </Text>
+              ) : null}
+              <Text style={addressLine}>
+                Du får besked, når pakken er klar til afhentning.
+              </Text>
+            </Section>
+          ) : shippingAddress ? (
             <Section style={card}>
               <Heading as="h3" style={h3}>
                 Leveringsadresse
@@ -192,78 +237,6 @@ export default function OrderConfirmation({
     </Html>
   );
 }
-
-const body: React.CSSProperties = {
-  backgroundColor: "#F5F0EB",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-  margin: 0,
-  padding: 0,
-};
-
-const container: React.CSSProperties = {
-  maxWidth: "560px",
-  margin: "0 auto",
-  padding: "32px 16px",
-};
-
-const header: React.CSSProperties = {
-  textAlign: "center" as const,
-  padding: "24px 0 32px",
-};
-
-const brand: React.CSSProperties = {
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontSize: "32px",
-  letterSpacing: "0.3em",
-  color: "#1A1A1A",
-  margin: 0,
-  fontWeight: 400,
-};
-
-const tagline: React.CSSProperties = {
-  fontSize: "12px",
-  letterSpacing: "0.2em",
-  textTransform: "uppercase" as const,
-  color: "#8D6553",
-  margin: "8px 0 0",
-};
-
-const card: React.CSSProperties = {
-  backgroundColor: "#FFFFFF",
-  borderRadius: "8px",
-  padding: "28px 24px",
-  marginBottom: "16px",
-};
-
-const h2: React.CSSProperties = {
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontSize: "24px",
-  color: "#1A1A1A",
-  margin: "0 0 16px",
-  fontWeight: 400,
-};
-
-const h3: React.CSSProperties = {
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontSize: "18px",
-  color: "#1A1A1A",
-  margin: "0 0 16px",
-  fontWeight: 400,
-};
-
-const paragraph: React.CSSProperties = {
-  fontSize: "15px",
-  lineHeight: "24px",
-  color: "#1A1A1A",
-  margin: "0 0 12px",
-};
-
-const meta: React.CSSProperties = {
-  fontSize: "14px",
-  color: "#8D6553",
-  margin: "16px 0 0",
-};
 
 const itemRow: React.CSSProperties = {
   marginBottom: "12px",
@@ -310,11 +283,6 @@ const itemPrice: React.CSSProperties = {
   margin: 0,
 };
 
-const hr: React.CSSProperties = {
-  borderColor: "#EDE5DC",
-  margin: "16px 0",
-};
-
 const totalsLabel: React.CSSProperties = {
   fontSize: "14px",
   color: "#1A1A1A",
@@ -343,33 +311,4 @@ const grandTotalValue: React.CSSProperties = {
   fontWeight: 600,
   color: "#1A1A1A",
   margin: "4px 0",
-};
-
-const addressLine: React.CSSProperties = {
-  fontSize: "14px",
-  color: "#1A1A1A",
-  margin: "2px 0",
-  lineHeight: "20px",
-};
-
-const footer: React.CSSProperties = {
-  textAlign: "center" as const,
-  padding: "24px 0",
-};
-
-const footerText: React.CSSProperties = {
-  fontSize: "13px",
-  color: "#1A1A1A",
-  margin: "0 0 8px",
-};
-
-const footerSmall: React.CSSProperties = {
-  fontSize: "12px",
-  color: "#8D6553",
-  margin: 0,
-};
-
-const link: React.CSSProperties = {
-  color: "#8D6553",
-  textDecoration: "underline",
 };

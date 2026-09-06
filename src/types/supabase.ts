@@ -39,6 +39,7 @@ export type Database = {
           currency: string;
           category: string;
           metal: "gold" | "silver";
+          ring_size: number | null;
           description: string | null;
           materials: string | null;
           images: string[];
@@ -58,6 +59,7 @@ export type Database = {
           currency?: string;
           category: string;
           metal?: "gold" | "silver";
+          ring_size?: number | null;
           description?: string | null;
           materials?: string | null;
           images?: string[];
@@ -77,6 +79,7 @@ export type Database = {
           currency?: string;
           category?: string;
           metal?: "gold" | "silver";
+          ring_size?: number | null;
           description?: string | null;
           materials?: string | null;
           images?: string[];
@@ -102,7 +105,15 @@ export type Database = {
           shipping_address: Json | null;
           billing_address: Json | null;
           shipping_option: string | null;
+          pickup_point_id: string | null;
+          pickup_point: Json | null;
           status: string;
+          fulfillment_status: string;
+          carrier: string | null;
+          tracking_number: string | null;
+          tracking_url: string | null;
+          shipped_at: string | null;
+          needs_attention: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -117,7 +128,15 @@ export type Database = {
           shipping_address?: Json | null;
           billing_address?: Json | null;
           shipping_option?: string | null;
+          pickup_point_id?: string | null;
+          pickup_point?: Json | null;
           status?: string;
+          fulfillment_status?: string;
+          carrier?: string | null;
+          tracking_number?: string | null;
+          tracking_url?: string | null;
+          shipped_at?: string | null;
+          needs_attention?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -132,7 +151,15 @@ export type Database = {
           shipping_address?: Json | null;
           billing_address?: Json | null;
           shipping_option?: string | null;
+          pickup_point_id?: string | null;
+          pickup_point?: Json | null;
           status?: string;
+          fulfillment_status?: string;
+          carrier?: string | null;
+          tracking_number?: string | null;
+          tracking_url?: string | null;
+          shipped_at?: string | null;
+          needs_attention?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -159,12 +186,44 @@ export type Database = {
         };
         Relationships: [];
       };
+      early_access_subscribers: {
+        Row: {
+          id: string;
+          email: string;
+          source: string;
+          notified_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          source?: string;
+          notified_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          source?: string;
+          notified_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      /**
+       * Atomic inventory decrement, clamped at zero. Returns null when no
+       * product matched, otherwise the stock left and how many units were sold
+       * beyond what existed (0 in the normal case).
+       */
+      decrement_product_stock: {
+        Args: { p_product_id: string; p_quantity: number };
+        Returns: { remaining: number; shortfall: number } | null;
+      };
     };
     Enums: {
       [_ in never]: never;

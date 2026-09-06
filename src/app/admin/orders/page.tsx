@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatPrice } from "@/types";
+import { getFulfillmentLabel } from "@/constants/carriers";
 import type { Order } from "@/types/supabase";
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default async function AdminOrdersPage() {
   const statusLabels: Record<string, string> = {
     completed: "Gennemført",
     pending: "Afventer",
+    failed: "Betaling fejlet",
     expired: "Udløbet",
   };
 
@@ -49,6 +51,9 @@ export default async function AdminOrdersPage() {
                 </th>
                 <th className="text-left px-6 py-4 text-xs font-medium text-dark/60 uppercase tracking-wider">
                   Status
+                </th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-dark/60 uppercase tracking-wider">
+                  Afsendelse
                 </th>
                 <th className="text-right px-6 py-4 text-xs font-medium text-dark/60 uppercase tracking-wider">
                   Handling
@@ -108,6 +113,25 @@ export default async function AdminOrdersPage() {
                       >
                         {statusLabels[order.status] || order.status}
                       </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`inline-block px-3 py-1 text-sm rounded-full ${
+                          order.fulfillment_status === "shipped"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        {getFulfillmentLabel(order.fulfillment_status)}
+                      </span>
+                      {order.needs_attention && (
+                        <span
+                          className="ml-2 inline-block px-3 py-1 text-sm rounded-full bg-red-100 text-red-700"
+                          title="Ordren tog mere på lager end der var. Genskab varen eller refundér."
+                        >
+                          Kræver handling
+                        </span>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <Link

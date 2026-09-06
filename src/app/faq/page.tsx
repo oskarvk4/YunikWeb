@@ -19,19 +19,23 @@ const faqData: FAQCategory[] = [
     items: [
       {
         question: "Hvor lang tid tager leveringen?",
-        answer: "Standardlevering i Danmark tager 3-5 hverdage. Vi tilbyder også ekspreslevering på 1-2 hverdage mod et tillæg. Du modtager en tracking-email, når din ordre er afsendt.",
+        answer: "Pakkeshop og levering til døren tager 2-5 hverdage. Vælger du ekspres til døren, er den hos dig inden for 1-2 hverdage. Du modtager en tracking-email, når din ordre er afsendt.",
       },
       {
         question: "Hvad koster fragten?",
-        answer: "Standardfragt koster 39 DKK. Ekspresfragt koster 79 DKK. Ved køb over 500 DKK får du gratis standardlevering.",
+        answer: "Både pakkeshop og levering til døren er gratis på alle ordrer — uanset beløb. Kun ekspres til døren koster ekstra: 49 DKK.",
       },
       {
         question: "Kan jeg spore min ordre?",
         answer: "Ja! Når din ordre er afsendt, modtager du en email med et tracking-nummer, så du kan følge pakken hele vejen.",
       },
       {
+        question: "Hvordan vælger jeg pakkeshop?",
+        answer: "Du vælger den i kurven, før du betaler. Vælg Pakkeshop under Levering, indtast dit postnummer, og vælg blandt pakkeshops i nærheden. Din pakke sendes derhen, og du får besked, når den er klar til afhentning.",
+      },
+      {
         question: "Sender I internationalt?",
-        answer: "Ja, vi sender til Sverige, Norge, Tyskland og øvrige EU-lande. Leveringstiden varierer afhængigt af destination.",
+        answer: "Lige nu sender vi kun til danske adresser. Vi udvider til resten af Norden på sigt.",
       },
     ],
   },

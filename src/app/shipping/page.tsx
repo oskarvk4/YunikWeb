@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import Container from "@/components/ui/Container";
 import FadeIn from "@/components/ui/FadeIn";
+import {
+  SHIPPING_OPTION_LIST,
+  formatDeliveryEstimate,
+  formatShippingPrice,
+} from "@/constants/shipping";
 
 export const metadata: Metadata = {
   title: "Levering",
@@ -34,30 +39,29 @@ export default function ShippingPage() {
               <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mb-6">
                 Fragtmuligheder
               </h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="p-6 bg-[#F5F0EB] rounded-sm">
-                  <h3 className="font-serif text-lg font-medium text-[#1A1A1A] mb-2">
-                    Standardlevering
-                  </h3>
-                  <p className="text-3xl font-serif text-[#8D6553] mb-2">39 DKK</p>
-                  <p className="text-[#1A1A1A]/60 font-sans text-sm">
-                    Levering inden for 3-5 hverdage
-                  </p>
-                </div>
-                <div className="p-6 bg-[#F5F0EB] rounded-sm">
-                  <h3 className="font-serif text-lg font-medium text-[#1A1A1A] mb-2">
-                    Ekspreslevering
-                  </h3>
-                  <p className="text-3xl font-serif text-[#8D6553] mb-2">79 DKK</p>
-                  <p className="text-[#1A1A1A]/60 font-sans text-sm">
-                    Levering inden for 1-2 hverdage
-                  </p>
-                </div>
+              <div className="grid md:grid-cols-3 gap-6">
+                {SHIPPING_OPTION_LIST.map((option) => (
+                  <div key={option.key} className="p-6 bg-[#F5F0EB] rounded-sm">
+                    <h3 className="font-serif text-lg font-medium text-[#1A1A1A] mb-2">
+                      {option.label}
+                    </h3>
+                    <p className="text-3xl font-serif text-[#8D6553] mb-2">
+                      {formatShippingPrice(option)}
+                    </p>
+                    <p className="text-[#1A1A1A]/60 font-sans text-sm">
+                      {option.description}
+                    </p>
+                    <p className="text-[#1A1A1A]/60 font-sans text-sm mt-1">
+                      {formatDeliveryEstimate(option)}
+                    </p>
+                  </div>
+                ))}
               </div>
               <div className="mt-6 p-6 bg-[#1A1A1A] text-white rounded-sm">
-                <p className="font-serif text-lg mb-1">Gratis fragt</p>
+                <p className="font-serif text-lg mb-1">Altid gratis fragt</p>
                 <p className="text-white/70 font-sans text-sm">
-                  Ved køb over 500 DKK får du gratis standardlevering
+                  Både pakkeshop og levering til døren er gratis på alle ordrer
+                  — uanset beløb. Kun ekspres koster ekstra.
                 </p>
               </div>
             </div>
@@ -71,37 +75,43 @@ export default function ShippingPage() {
                 <table className="w-full font-sans text-sm">
                   <thead>
                     <tr className="border-b border-[#1A1A1A]/10">
-                      <th className="text-left py-3 font-medium text-[#1A1A1A]">Destination</th>
-                      <th className="text-left py-3 font-medium text-[#1A1A1A]">Standard</th>
-                      <th className="text-left py-3 font-medium text-[#1A1A1A]">Ekspres</th>
+                      <th className="text-left py-3 font-medium text-[#1A1A1A]">Fragtmulighed</th>
+                      <th className="text-left py-3 font-medium text-[#1A1A1A]">Pris</th>
+                      <th className="text-left py-3 font-medium text-[#1A1A1A]">Leveringstid</th>
                     </tr>
                   </thead>
                   <tbody className="text-[#1A1A1A]/70">
-                    <tr className="border-b border-[#1A1A1A]/10">
-                      <td className="py-3">Danmark</td>
-                      <td className="py-3">3-5 hverdage</td>
-                      <td className="py-3">1-2 hverdage</td>
-                    </tr>
-                    <tr className="border-b border-[#1A1A1A]/10">
-                      <td className="py-3">Sverige, Norge</td>
-                      <td className="py-3">5-7 hverdage</td>
-                      <td className="py-3">3-4 hverdage</td>
-                    </tr>
-                    <tr className="border-b border-[#1A1A1A]/10">
-                      <td className="py-3">Tyskland</td>
-                      <td className="py-3">5-7 hverdage</td>
-                      <td className="py-3">3-4 hverdage</td>
-                    </tr>
-                    <tr className="border-b border-[#1A1A1A]/10">
-                      <td className="py-3">Øvrige EU</td>
-                      <td className="py-3">7-10 hverdage</td>
-                      <td className="py-3">5-7 hverdage</td>
-                    </tr>
+                    {SHIPPING_OPTION_LIST.map((option) => (
+                      <tr
+                        key={option.key}
+                        className="border-b border-[#1A1A1A]/10"
+                      >
+                        <td className="py-3">{option.label}</td>
+                        <td className="py-3">{formatShippingPrice(option)}</td>
+                        <td className="py-3">
+                          {formatDeliveryEstimate(option)}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
               <p className="mt-4 text-sm text-[#1A1A1A]/60 font-sans">
-                * Leveringstider er estimater og kan variere pga. helligdage eller uforudsete forsinkelser.
+                * Vi sender kun til danske adresser. Leveringstider er estimater og kan
+                variere pga. helligdage eller uforudsete forsinkelser.
+              </p>
+            </div>
+
+            {/* Parcel shop */}
+            <div>
+              <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mb-4">
+                Levering til pakkeshop
+              </h2>
+              <p className="text-[#1A1A1A]/70 font-sans leading-relaxed">
+                Vælger du pakkeshop, viser vi dig shops nær din adresse, så snart
+                din ordre er gennemført — og du vælger selv, hvilken du vil hente
+                i. Du får besked fra fragtføreren, når pakken er klar til
+                afhentning.
               </p>
             </div>
 

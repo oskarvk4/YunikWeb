@@ -39,6 +39,7 @@ function mapDbProductToProduct(dbProduct: DbProduct): Product {
     currency: "DKK",
     category: dbProduct.category as ProductCategory,
     metal: dbProduct.metal,
+    ringSize: dbProduct.ring_size ?? null,
     description: dbProduct.description || "",
     materials: dbProduct.materials || "",
     images: dbProduct.images || [],

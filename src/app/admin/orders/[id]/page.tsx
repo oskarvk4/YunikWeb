@@ -2,6 +2,14 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatPrice } from "@/types";
+import ShipOrderForm from "@/components/admin/ShipOrderForm";
+import { getFulfillmentLabel } from "@/constants/carriers";
+import {
+  formatDeliveryEstimate,
+  formatShippingPrice,
+  getShippingOption,
+  readPickupPoint,
+} from "@/constants/shipping";
 import type { Order } from "@/types/supabase";
 
 export const metadata = {
@@ -44,9 +52,13 @@ export default async function OrderDetailsPage({ params }: OrderDetailsPageProps
     country?: string;
   } | null;
 
+  const shippingOption = getShippingOption(order.shipping_option);
+  const pickupPoint = readPickupPoint(order.pickup_point);
+
   const statusLabels: Record<string, string> = {
     completed: "Gennemført",
     pending: "Afventer",
+    failed: "Betaling fejlet",
     expired: "Udløbet",
   };
 
@@ -60,6 +72,19 @@ export default async function OrderDetailsPage({ params }: OrderDetailsPageProps
           <span className="mx-2">/</span>
           <span className="text-dark">#{order.id.slice(0, 8)}</span>
         </nav>
+
+        {order.needs_attention && (
+          <div className="mb-6 border border-red-200 bg-red-50 p-4 rounded">
+            <p className="font-medium text-red-800">
+              Denne ordre kræver handling
+            </p>
+            <p className="mt-1 text-sm text-red-700">
+              Ordren blev betalt for flere styk, end der var på lager. Lageret
+              står nu på 0. Kontakt kunden og aftal, om varen kan genskabes,
+              eller refundér ordren i Stripe.
+            </p>
+          </div>
+        )}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-serif text-dark">
@@ -75,17 +100,28 @@ export default async function OrderDetailsPage({ params }: OrderDetailsPageProps
               })}
             </p>
           </div>
-          <span
-            className={`inline-block px-4 py-2 text-sm rounded-full ${
-              order.status === "completed"
-                ? "bg-green-100 text-green-700"
-                : order.status === "pending"
-                ? "bg-yellow-100 text-yellow-700"
-                : "bg-gray-100 text-gray-700"
-            }`}
-          >
-            {statusLabels[order.status] || order.status}
-          </span>
+          <div className="flex items-center gap-2">
+            <span
+              className={`inline-block px-4 py-2 text-sm rounded-full ${
+                order.status === "completed"
+                  ? "bg-green-100 text-green-700"
+                  : order.status === "pending"
+                  ? "bg-yellow-100 text-yellow-700"
+                  : "bg-gray-100 text-gray-700"
+              }`}
+            >
+              {statusLabels[order.status] || order.status}
+            </span>
+            <span
+              className={`inline-block px-4 py-2 text-sm rounded-full ${
+                order.fulfillment_status === "shipped"
+                  ? "bg-blue-100 text-blue-700"
+                  : "bg-gray-100 text-gray-700"
+              }`}
+            >
+              {getFulfillmentLabel(order.fulfillment_status)}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -172,14 +208,48 @@ export default async function OrderDetailsPage({ params }: OrderDetailsPageProps
 
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h2 className="font-serif text-lg mb-4">Forsendelse</h2>
-            <p className="text-dark capitalize">
-              {order.shipping_option === "free"
-                ? "Gratis fragt (2-5 hverdage)"
-                : order.shipping_option === "express"
-                ? "Express (1-2 hverdage)"
-                : order.shipping_option || "Standard"}
+            <p className="text-dark">
+              {shippingOption.label} · {formatShippingPrice(shippingOption)} ·{" "}
+              {formatDeliveryEstimate(shippingOption)}
             </p>
+
+            {shippingOption.key === "pickup" && (
+              <div className="mt-4 pt-4 border-t border-dark/10">
+                <p className="text-sm text-dark/60 mb-1">Pakkeshop</p>
+                {pickupPoint ? (
+                  <>
+                    <p className="text-dark">{pickupPoint.name}</p>
+                    <p className="text-sm text-dark/70">
+                      {pickupPoint.address}
+                      {pickupPoint.city
+                        ? `, ${pickupPoint.zipcode} ${pickupPoint.city}`
+                        : ""}
+                    </p>
+                    <p className="mt-2 text-xs text-dark/60">
+                      Service point ID{" "}
+                      <span className="font-mono text-dark">
+                        {pickupPoint.number}
+                      </span>
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-sm text-yellow-700">
+                    Kunden har ikke valgt en pakkeshop endnu.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
+
+          <ShipOrderForm
+            orderId={order.id}
+            fulfillmentStatus={order.fulfillment_status}
+            carrier={order.carrier}
+            trackingNumber={order.tracking_number}
+            trackingUrl={order.tracking_url}
+            shippedAt={order.shipped_at}
+            customerEmail={order.customer_email}
+          />
 
           {order.stripe_session_id && (
             <div className="bg-white rounded-lg shadow-sm p-6">

@@ -149,9 +149,10 @@ export default function ReturnsPage() {
                 Refusion
               </h2>
               <p className="text-[#1A1A1A]/70 font-sans leading-relaxed mb-4">
-                Vi refunderer det fulde beløb for varen. Den oprindelige fragtomkostning
-                refunderes kun, hvis hele ordren returneres, og grunden til returen skyldes
-                en fejl fra vores side.
+                Vi refunderer det fulde beløb for varen. Pakkeshop og levering til
+                døren er gratis, så der er intet fragtbeløb at refundere. Har du valgt
+                ekspres til døren, refunderes de 49 DKK kun, hvis hele ordren
+                returneres, og grunden til returen skyldes en fejl fra vores side.
               </p>
               <p className="text-[#1A1A1A]/70 font-sans leading-relaxed">
                 Refusionen sker til den oprindelige betalingsmetode inden 14 dage efter,
