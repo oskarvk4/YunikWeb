@@ -4,10 +4,12 @@ import {
   Head,
   Heading,
   Html,
+  Img,
   Preview,
   Section,
   Text,
 } from "@react-email/components";
+import { MARK_BEIGE_URL } from "./styles";
 
 export interface EarlyAccessConfirmationProps {
   contactEmail: string;
@@ -23,7 +25,13 @@ export default function EarlyAccessConfirmation({
       <Body style={body}>
         <Container style={container}>
           <Section style={header}>
-            <Text style={eyebrow}>YUNIK</Text>
+            <Img
+              src={MARK_BEIGE_URL}
+              alt="Yunik"
+              width={64}
+              height={64}
+              style={markImg}
+            />
             <Heading style={heroTitle}>Du er på listen</Heading>
             <Text style={heroText}>
               Tak fordi du vil være blandt de første. Vi giver dig besked,
@@ -80,12 +88,16 @@ const header: React.CSSProperties = {
   textAlign: "center",
 };
 
-const eyebrow: React.CSSProperties = {
+// Outlook blocks images by default and Gmail does for unfamiliar senders, so
+// the type styling stays on the element — a blocked mark falls back to the alt
+// text rendered as the blush wordmark this header used to carry.
+const markImg: React.CSSProperties = {
+  display: "block",
+  margin: "0 auto 18px",
   color: "#D4A9A5",
   fontSize: "12px",
   letterSpacing: "0.32em",
   textTransform: "uppercase",
-  margin: "0 0 16px",
 };
 
 const heroTitle: React.CSSProperties = {

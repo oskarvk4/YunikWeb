@@ -4,6 +4,24 @@
  * Email-specific one-offs stay local to their template.
  */
 
+/**
+ * Email clients can't resolve relative paths, so the mark needs an absolute
+ * URL. Deliberately www — the apex 307s to www.yunik.dk, and some image
+ * proxies won't follow that hop, which would leave the mark broken. (The rest
+ * of the app still hardcodes the apex; that's a wider cleanup.)
+ *
+ * Two variants because the headers differ: the tile carries its own beige
+ * ground for the dark headers, the transparent one sits on the beige ones.
+ */
+export const MARK_URL = "https://www.yunik.dk/yunik-mark.png";
+export const MARK_BEIGE_URL = "https://www.yunik.dk/yunik-mark-beige.png";
+
+/** Rendered at half its pixel width so it stays sharp on retina displays. */
+export const mark: React.CSSProperties = {
+  display: "block",
+  margin: "0 auto 14px",
+};
+
 export const body: React.CSSProperties = {
   backgroundColor: "#F5F0EB",
   fontFamily:

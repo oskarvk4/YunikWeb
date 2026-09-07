@@ -26,6 +26,8 @@ import {
   header,
   hr,
   link,
+  mark,
+  MARK_URL,
   meta,
   paragraph,
   tagline,
@@ -94,6 +96,13 @@ export default function OrderConfirmation({
       <Body style={body}>
         <Container style={container}>
           <Section style={header}>
+            <Img
+              src={MARK_URL}
+              alt=""
+              width={56}
+              height={56}
+              style={mark}
+            />
             <Heading style={brand}>YUNIK</Heading>
             <Text style={tagline}>Håndlavede smykker fra Danmark</Text>
           </Section>

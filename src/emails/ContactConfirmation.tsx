@@ -5,10 +5,12 @@ import {
   Head,
   Heading,
   Html,
+  Img,
   Preview,
   Section,
   Text,
 } from "@react-email/components";
+import { MARK_BEIGE_URL } from "./styles";
 
 export interface ContactConfirmationProps {
   customerName: string;
@@ -32,7 +34,13 @@ export default function ContactConfirmation({
       <Body style={body}>
         <Container style={container}>
           <Section style={header}>
-            <Text style={eyebrow}>YUNIK</Text>
+            <Img
+              src={MARK_BEIGE_URL}
+              alt="Yunik"
+              width={64}
+              height={64}
+              style={markImg}
+            />
             <Heading style={heroTitle}>Vi har modtaget din besked</Heading>
             <Text style={heroText}>
               Tak for din henvendelse. Vi vender tilbage hurtigst muligt, som
@@ -101,12 +109,15 @@ const header: React.CSSProperties = {
   textAlign: "center",
 };
 
-const eyebrow: React.CSSProperties = {
+// Type styling stays on the element so a blocked image falls back to alt text
+// rendered as the blush wordmark this header used to carry.
+const markImg: React.CSSProperties = {
+  display: "block",
+  margin: "0 auto 18px",
   color: "#D4A9A5",
   fontSize: "12px",
   letterSpacing: "0.32em",
   textTransform: "uppercase",
-  margin: "0 0 16px",
 };
 
 const heroTitle: React.CSSProperties = {
