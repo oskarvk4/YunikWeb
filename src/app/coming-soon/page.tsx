@@ -31,31 +31,17 @@ export default function ComingSoonPage() {
       {/* The stagger below is a single pass on load — each block fades up a
           beat after the one above it, ending on the sign-up. */}
       <div className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 py-16">
-        <p
-          className="text-white/70 text-xs sm:text-sm font-sans uppercase tracking-[0.4em] mb-8 animate-fade-in-up"
-          style={{ animationDelay: "0.05s" }}
-        >
-          Håndlavet med Kærlighed
-        </p>
-
-        <h1
-          className="font-serif text-6xl sm:text-7xl md:text-8xl font-light text-white leading-none mb-6 animate-fade-in-up"
-          style={{ animationDelay: "0.15s" }}
-        >
-          Yunik
-        </h1>
-
         <div
           className="w-16 h-px bg-white/40 mb-8 animate-fade-in"
-          style={{ animationDelay: "0.3s" }}
+          style={{ animationDelay: "0.05s" }}
         />
 
-        <h2
-          className="font-serif text-2xl sm:text-3xl md:text-4xl font-light text-white/90 mb-6 animate-fade-in-up"
-          style={{ animationDelay: "0.35s" }}
+        <h1
+          className="font-serif text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-light text-white leading-none mb-6 animate-fade-in-up"
+          style={{ animationDelay: "0.15s" }}
         >
           Kommer Snart
-        </h2>
+        </h1>
 
         <p
           className="text-white/60 text-sm sm:text-base font-sans font-light leading-relaxed max-w-md mb-14 animate-fade-in-up"
