@@ -15,6 +15,10 @@ export const defaultCopy = {
       body: "Opdag smykker der fejrer din unikke historie. Hvert stykke er skabt til at blive en værdsat del af din rejse.",
       cta: "Se Kollektionen",
     },
+    categories: {
+      headline: "Shop efter Kategori",
+      body: "Udforsk vores kuraterede kollektioner af tidløse smykker",
+    },
   },
   about: {
     hero: {

@@ -13,7 +13,16 @@ const categories: CategoryInfo[] = categoriesData.categories.map((c) => ({
   slug: c.slug as ProductCategory,
 }));
 
-export default function CategoryGrid() {
+const DEFAULT_CONTENT = {
+  headline: "Shop efter Kategori",
+  body: "Udforsk vores kuraterede kollektioner af tidløse smykker",
+};
+
+export default function CategoryGrid({
+  content = DEFAULT_CONTENT,
+}: {
+  content?: { headline: string; body: string };
+}) {
   return (
     <section className="py-20 md:py-28 bg-white">
       <Container>
@@ -25,10 +34,10 @@ export default function CategoryGrid() {
           className="text-center mb-12 md:mb-16"
         >
           <h2 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A] mb-4">
-            Shop efter Kategori
+            {content.headline}
           </h2>
           <p className="text-[#1A1A1A]/60 font-sans max-w-md mx-auto">
-            Udforsk vores kuraterede kollektioner af tidløse smykker
+            {content.body}
           </p>
         </motion.div>
 

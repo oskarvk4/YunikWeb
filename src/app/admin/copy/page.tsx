@@ -21,6 +21,15 @@ const SECTIONS = [
     ],
   },
   {
+    key: "home.categories" as const,
+    title: "Forside – Shop efter Kategori",
+    previewHref: "/",
+    fields: [
+      { key: "headline", label: "Overskrift", multiline: false },
+      { key: "body", label: "Brødtekst", multiline: false },
+    ],
+  },
+  {
     key: "about.hero" as const,
     title: "Om os – Hero",
     previewHref: "/about",

@@ -24,7 +24,7 @@ export default async function Home() {
   return (
     <>
       <HeroCarousel content={copy.home.hero} />
-      <CategoryGrid />
+      <CategoryGrid content={copy.home.categories} />
       <FeaturedProducts products={featuredProducts} />
       <BrandStory />
       <Newsletter />
