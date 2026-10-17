@@ -150,7 +150,9 @@ export default async function RootLayout({
         <AuthProvider>
           <AuthErrorHandler />
           <Navbar visibleCategories={visibleCategories} />
-          <main className="min-h-screen">
+          {/* overflow-x-clip stops slide-in animations (BrandStory, FadeIn) from widening
+              the page on phones; unlike overflow-hidden it keeps position: sticky working. */}
+          <main className="min-h-screen overflow-x-clip">
             <ErrorBoundary>
               {children}
             </ErrorBoundary>

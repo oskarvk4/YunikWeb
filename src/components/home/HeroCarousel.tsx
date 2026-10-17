@@ -91,7 +91,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
 
   return (
     <section
-      className="relative h-[65vh] min-h-[480px] max-h-[760px] w-full overflow-hidden md:h-[75vh] md:min-h-[560px] md:max-h-[820px]"
+      className="relative h-[70vh] min-h-[520px] max-h-[760px] w-full overflow-hidden md:h-[75vh] md:min-h-[560px] md:max-h-[820px]"
       aria-roledescription="carousel"
       aria-label="Yunik – udvalgte billeder"
       onMouseEnter={() => setHovered(true)}
@@ -173,7 +173,8 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
       />
 
       {/* Content */}
-      <div className="relative z-20 h-full flex items-center">
+      {/* pt-20 on phones keeps the text clear of the fixed 80px header that overlays the hero. */}
+      <div className="relative z-20 h-full flex items-center pt-20 md:pt-0">
         <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8">
           <div className="max-w-xl md:translate-y-16">
             <p className="text-white/80 text-sm font-sans uppercase tracking-[0.3em] mb-4">
@@ -184,9 +185,11 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
               <br />
               {content.headlineLine2}
             </h1>
-            <p className="text-white/80 text-lg font-sans font-light leading-relaxed mb-8 max-w-md">
-              {content.body}
-            </p>
+            {content.body && (
+              <p className="text-white/80 text-lg font-sans font-light leading-relaxed mb-8 max-w-md">
+                {content.body}
+              </p>
+            )}
             <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
               <Link href="/shop">
                 <Button variant="primary" size="lg">
@@ -227,7 +230,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+      <div className="absolute bottom-5 md:bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
         {SLIDES.map((slide, i) => (
           <button
             key={slide.src}
