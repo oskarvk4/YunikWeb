@@ -1,11 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { EARLY_ACCESS_COOKIE, hasValidAccessCookie } from "@/lib/early-access";
 
 const COMING_SOON_PATH = "/coming-soon";
 
 // Routes always visible, whether or not the coming-soon gate is on.
 const ALLOWED_PREFIXES = [
   COMING_SOON_PATH,
+  // Personal links from the launch email; the route sets the access cookie.
+  "/early-access",
   "/admin",
   "/auth",
   "/api",
@@ -38,6 +41,12 @@ export async function middleware(request: NextRequest) {
     ALLOWED_FILES.has(pathname) || pathname.includes(".");
 
   if (isAllowedPrefix || isAllowedFile) {
+    return NextResponse.next({ request: { headers: requestHeaders } });
+  }
+
+  // Early-access bypass — people who opened their personal link from the
+  // launch email. Signed cookie, so no database call per request.
+  if (await hasValidAccessCookie(request.cookies.get(EARLY_ACCESS_COOKIE)?.value)) {
     return NextResponse.next({ request: { headers: requestHeaders } });
   }
 

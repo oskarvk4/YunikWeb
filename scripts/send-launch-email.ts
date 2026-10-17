@@ -1,5 +1,7 @@
 /**
- * Send the "doors are open" launch email to the early-access list.
+ * Send the "doors are open" launch email to the early-access list. Each
+ * recipient gets a personal link that lets them into the shop while the
+ * coming-soon gate is still on (see src/lib/early-access.ts).
  * Dry run by default — nothing is sent and nothing is written.
  *
  * Usage:
@@ -8,10 +10,14 @@
  *   NODE_TLS_REJECT_UNAUTHORIZED=0 npx tsx scripts/send-launch-email.ts --test=you@example.com # one [TEST] copy, list untouched
  *   NODE_TLS_REJECT_UNAUTHORIZED=0 npx tsx scripts/send-launch-email.ts --send --confirm       # the real send
  *
+ * Test and preview copies carry a preview link that works for 3 days and is
+ * not tied to anyone on the list.
+ *
  * The real send only goes to rows whose notified_at is empty, and sets
  * notified_at after each successful send, so a crash or rerun never
- * double-sends. It refuses to run while the shop link still redirects to the
- * coming-soon page (override with --allow-coming-soon).
+ * double-sends. Before sending it opens a preview link on the live site and
+ * refuses to go on unless that lands in the shop — which proves the access
+ * route is deployed and EARLY_ACCESS_SECRET matches production.
  */
 
 import { writeFileSync } from "node:fs";
@@ -23,6 +29,7 @@ import LaunchAnnouncement, {
   LAUNCH_SUBJECT,
   launchAnnouncementText,
 } from "../src/emails/LaunchAnnouncement";
+import { createLinkToken, createPreviewLinkToken } from "../src/lib/early-access";
 
 config({ path: ".env.local" });
 
@@ -41,7 +48,7 @@ const arg = (name: string) =>
   process.argv.find((a) => a.startsWith(`--${name}=`))?.split("=")[1];
 const flag = (name: string) => process.argv.includes(`--${name}`);
 
-const SHOP_URL = process.env.LAUNCH_SHOP_URL || "https://www.yunik.dk/shop";
+const SITE_URL = (process.env.LAUNCH_SITE_URL || "https://www.yunik.dk").replace(/\/$/, "");
 const FROM = process.env.EMAIL_FROM || "Yunik <kontakt@yunik.dk>";
 const CONTACT_EMAIL =
   process.env.REPLY_TO_EMAIL || process.env.CONTACT_EMAIL || "kontakt@yunik.dk";
@@ -58,17 +65,21 @@ const mask = (email: string) => {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-async function renderEmail() {
-  const props = { shopUrl: SHOP_URL, contactEmail: CONTACT_EMAIL };
+const accessUrl = (token: string) => `${SITE_URL}/early-access/${token}`;
+
+async function renderEmail(link: string) {
+  const props = { accessUrl: link, contactEmail: CONTACT_EMAIL };
   const html = await render(LaunchAnnouncement(props));
   return { html, text: launchAnnouncementText(props) };
 }
 
-/** True when the shop link still lands on the coming-soon page. */
-async function shopIsGated(): Promise<boolean> {
-  const response = await fetch(SHOP_URL, { redirect: "manual" });
+/** True when a preview link on the live site lands in the shop. */
+async function liveLinkWorks(): Promise<boolean> {
+  const response = await fetch(accessUrl(await createPreviewLinkToken()), {
+    redirect: "manual",
+  });
   const location = response.headers.get("location") ?? "";
-  return location.includes("coming-soon");
+  return location.endsWith("/shop");
 }
 
 async function pendingRecipients() {
@@ -82,10 +93,9 @@ async function pendingRecipients() {
 }
 
 async function main() {
-  const { html, text } = await renderEmail();
-
   const previewPath = arg("preview");
   if (previewPath) {
+    const { html } = await renderEmail(accessUrl(await createPreviewLinkToken()));
     writeFileSync(previewPath, html);
     console.log(`Wrote preview to ${previewPath}`);
     return;
@@ -93,6 +103,7 @@ async function main() {
 
   const testTo = arg("test");
   if (testTo) {
+    const { html, text } = await renderEmail(accessUrl(await createPreviewLinkToken()));
     const { data, error } = await resend.emails.send({
       from: FROM,
       to: testTo,
@@ -110,7 +121,7 @@ async function main() {
   console.log(`From:     ${FROM}`);
   console.log(`Reply-to: ${CONTACT_EMAIL}`);
   console.log(`Subject:  ${LAUNCH_SUBJECT}`);
-  console.log(`Link:     ${SHOP_URL}`);
+  console.log(`Links:    ${SITE_URL}/early-access/<personal token>`);
   console.log(`Not yet notified: ${recipients.length}`);
 
   if (!(flag("send") && flag("confirm"))) {
@@ -119,9 +130,9 @@ async function main() {
     return;
   }
 
-  if (!flag("allow-coming-soon") && (await shopIsGated())) {
+  if (!(await liveLinkWorks())) {
     console.error(
-      `${SHOP_URL} still redirects to the coming-soon page. Open the shop first, or pass --allow-coming-soon.`
+      `A preview link on ${SITE_URL} did not land in the shop. Deploy the early-access route and make sure EARLY_ACCESS_SECRET in production matches .env.local.`
     );
     process.exit(1);
   }
@@ -130,6 +141,7 @@ async function main() {
   const failed: string[] = [];
 
   for (const r of recipients) {
+    const { html, text } = await renderEmail(accessUrl(await createLinkToken(r.id)));
     const { error } = await resend.emails.send(
       { from: FROM, to: r.email, replyTo: CONTACT_EMAIL, subject: LAUNCH_SUBJECT, html, text },
       // Same key on a rerun, so Resend drops a duplicate within 24 hours.

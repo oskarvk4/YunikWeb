@@ -9,6 +9,7 @@ Next.js 16 App Router storefront for Yunik, a Danish handmade jewelry brand. It 
 - The confirmation email (`src/emails/EarlyAccessConfirmation.tsx`) promises one message when the shop opens, "ikke en nyhedsstrøm". Keep the launch email to that: one message, no newsletter.
 - Don't email the list, or any customer, without explicit approval of the recipients, the content and the send time.
 - After a mailing, set `notified_at` for the people it went to.
+- While the coming-soon gate is on, only people with a personal link get in. The launch email links to `/early-access/<token>`, which sets a signed 30-day cookie that the middleware accepts (`src/lib/early-access.ts`). Links and cookies are signed with `EARLY_ACCESS_SECRET`, which must be the same in `.env.local` and in production. Removing someone from `early_access_subscribers` stops their link working. Cookies they already hold stay valid until they expire.
 - `RESEND_API_KEY` in `.env.local` is send-only. It can't list domains or read verification status, so check those in the Resend dashboard.
 - The homepage newsletter (`src/components/home/Newsletter.tsx`) shows a thank-you without saving anything when `NEXT_PUBLIC_MAILCHIMP_URL` is unset.
 

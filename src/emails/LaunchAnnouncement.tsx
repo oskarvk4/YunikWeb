@@ -2,7 +2,6 @@ import {
   Body,
   Button,
   Container,
-  Head,
   Heading,
   Html,
   Preview,
@@ -23,6 +22,7 @@ import {
   tagline,
 } from "./styles";
 import Logo from "./Logo";
+import EmailHead from "./EmailHead";
 
 /**
  * The one "doors are open" mail the early-access list was promised in
@@ -32,20 +32,22 @@ import Logo from "./Logo";
 export const LAUNCH_SUBJECT = "Dørene er åbne hos Yunik";
 
 export interface LaunchAnnouncementProps {
-  shopUrl: string;
+  /** Personal early-access link for this recipient. */
+  accessUrl: string;
   contactEmail: string;
 }
 
 export function launchAnnouncementText({
-  shopUrl,
+  accessUrl,
   contactEmail,
 }: LaunchAnnouncementProps): string {
   return (
     `Dørene er åbne.\n\n` +
-    `Du skrev dig op til at høre det først. Nu er Yunik åben.\n\n` +
+    `Du skrev dig op til at høre det først. Nu kan du se kollektionen, før vi åbner for alle andre.\n\n` +
     `Kollektionen er håndlavede smykker i sølv og forgyldt sølv, formet ét ad gangen. ` +
     `Mange stykker findes kun i få eksemplarer, så det største udvalg er der lige nu.\n\n` +
-    `Se kollektionen: ${shopUrl}\n\n` +
+    `Se kollektionen: ${accessUrl}\n\n` +
+    `Linket er personligt og giver adgang i 30 dage, så del det helst ikke.\n\n` +
     `Gratis fragt i Danmark og 14 dages returret.\n\n` +
     `Har du spørgsmål, kan du svare direkte på denne mail eller skrive til ${contactEmail}.\n\n` +
     `Det her er den ene mail, vi lovede. Vil du ikke høre mere fra os, så svar "afmeld", så fjerner vi dig fra listen.\n\n` +
@@ -54,13 +56,13 @@ export function launchAnnouncementText({
 }
 
 export default function LaunchAnnouncement({
-  shopUrl,
+  accessUrl,
   contactEmail,
 }: LaunchAnnouncementProps) {
   return (
     <Html lang="da">
-      <Head />
-      <Preview>Du skrev dig op til at høre det først. Nu er Yunik åben.</Preview>
+      <EmailHead />
+      <Preview>Du skrev dig op til at høre det først. Nu kan du se kollektionen før alle andre.</Preview>
       <Body style={body}>
         <Container style={container}>
           <Section style={header}>
@@ -73,7 +75,8 @@ export default function LaunchAnnouncement({
               Dørene er åbne
             </Heading>
             <Text style={paragraph}>
-              Du skrev dig op til at høre det først. Nu er Yunik åben.
+              Du skrev dig op til at høre det først. Nu kan du se
+              kollektionen, før vi åbner for alle andre.
             </Text>
             <Text style={paragraph}>
               Kollektionen er håndlavede smykker i sølv og forgyldt sølv,
@@ -81,10 +84,14 @@ export default function LaunchAnnouncement({
               så det største udvalg er der lige nu.
             </Text>
             <Section style={buttonRow}>
-              <Button href={shopUrl} style={button}>
+              <Button href={accessUrl} style={button}>
                 Se kollektionen
               </Button>
             </Section>
+            <Text style={note}>
+              Linket er personligt og giver adgang i 30 dage, så del det helst
+              ikke.
+            </Text>
             <Text style={paragraph}>
               Gratis fragt i Danmark og 14 dages returret.
             </Text>
@@ -112,6 +119,14 @@ export default function LaunchAnnouncement({
     </Html>
   );
 }
+
+const note: React.CSSProperties = {
+  color: "#8D6553",
+  fontSize: "13px",
+  lineHeight: "20px",
+  textAlign: "center",
+  margin: "-8px 0 20px",
+};
 
 const buttonRow: React.CSSProperties = {
   textAlign: "center",
