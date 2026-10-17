@@ -5,21 +5,25 @@
  */
 
 /**
- * Email clients can't resolve relative paths, so the mark needs an absolute
- * URL. Deliberately www — the apex 307s to www.yunik.dk, and some image
- * proxies won't follow that hop, which would leave the mark broken. (The rest
- * of the app still hardcodes the apex; that's a wider cleanup.)
- *
- * Two variants because the headers differ: the tile carries its own beige
- * ground for the dark headers, the transparent one sits on the beige ones.
+ * The YUNIK wordmark — the only logo emails use, rendered by Logo.tsx.
+ * Email clients can't resolve relative paths, so it needs an absolute URL.
+ * Deliberately www — the apex 307s to www.yunik.dk, and some image proxies
+ * won't follow that hop. Transparent PNG (383×62), shown at about half its
+ * pixel width so it stays sharp on retina displays.
  */
-export const MARK_URL = "https://www.yunik.dk/yunik-mark.png";
-export const MARK_BEIGE_URL = "https://www.yunik.dk/yunik-mark-beige.png";
+export const LOGO_URL = "https://www.yunik.dk/yunik-wordmark.png";
+export const LOGO_WIDTH = 180;
+export const LOGO_HEIGHT = 29;
 
-/** Rendered at half its pixel width so it stays sharp on retina displays. */
-export const mark: React.CSSProperties = {
+// Type styling stays on the element, so a blocked image falls back to its alt
+// text set as the same spaced serif wordmark.
+export const logo: React.CSSProperties = {
   display: "block",
-  margin: "0 auto 14px",
+  margin: "0 auto",
+  color: "#1A1A1A",
+  fontFamily: "Georgia, 'Times New Roman', serif",
+  fontSize: "24px",
+  letterSpacing: "0.3em",
 };
 
 export const body: React.CSSProperties = {
@@ -41,21 +45,12 @@ export const header: React.CSSProperties = {
   padding: "24px 0 32px",
 };
 
-export const brand: React.CSSProperties = {
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontSize: "32px",
-  letterSpacing: "0.3em",
-  color: "#1A1A1A",
-  margin: 0,
-  fontWeight: 400,
-};
-
 export const tagline: React.CSSProperties = {
   fontSize: "12px",
   letterSpacing: "0.2em",
   textTransform: "uppercase" as const,
   color: "#8D6553",
-  margin: "8px 0 0",
+  margin: "14px 0 0",
 };
 
 export const card: React.CSSProperties = {

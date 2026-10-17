@@ -5,7 +5,6 @@ import {
   Head,
   Heading,
   Html,
-  Img,
   Preview,
   Section,
   Text,
@@ -15,7 +14,6 @@ import type { PickupPointSnapshot } from "@/constants/shipping";
 import {
   addressLine,
   body,
-  brand,
   card,
   container,
   footer,
@@ -25,12 +23,11 @@ import {
   h3,
   header,
   link,
-  mark,
-  MARK_URL,
   meta,
   paragraph,
   tagline,
 } from "./styles";
+import Logo from "./Logo";
 
 export interface ShippingConfirmationProps {
   orderId: string;
@@ -69,14 +66,7 @@ export default function ShippingConfirmation({
       <Body style={body}>
         <Container style={container}>
           <Section style={header}>
-            <Img
-              src={MARK_URL}
-              alt=""
-              width={56}
-              height={56}
-              style={mark}
-            />
-            <Heading style={brand}>YUNIK</Heading>
+            <Logo />
             <Text style={tagline}>Håndlavede smykker fra Danmark</Text>
           </Section>
 
