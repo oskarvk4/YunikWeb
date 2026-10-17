@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
@@ -86,15 +86,58 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
     return () => window.removeEventListener("keydown", onKey);
   }, [paginate]);
 
+  // Swipe: the track follows a horizontal drag; a mostly vertical drag is left
+  // to the browser (touch-action: pan-y), so scrolling the page works as usual.
+  const [dragX, setDragX] = useState<number | null>(null);
+  const touch = useRef<{ x: number; y: number; t: number; axis: "x" | "y" | null } | null>(null);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    const p = e.touches[0];
+    touch.current = { x: p.clientX, y: p.clientY, t: Date.now(), axis: null };
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    const start = touch.current;
+    if (!start) return;
+    const p = e.touches[0];
+    const dx = p.clientX - start.x;
+    const dy = p.clientY - start.y;
+    if (!start.axis) {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      start.axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+      if (start.axis === "x") setSteppedThrough(true);
+    }
+    if (start.axis !== "x") return;
+    // Resist past the first and last photo instead of wrapping around.
+    const atEdge = (index === 0 && dx > 0) || (index === SLIDES.length - 1 && dx < 0);
+    setDragX(atEdge ? dx * 0.3 : dx);
+  };
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const start = touch.current;
+    touch.current = null;
+    setDragX(null);
+    if (!start || start.axis !== "x") return;
+    const dx = (e.changedTouches[0]?.clientX ?? start.x) - start.x;
+    const flick = Math.abs(dx) / Math.max(1, Date.now() - start.t) > 0.4;
+    if (Math.abs(dx) < 50 && !(flick && Math.abs(dx) > 20)) return;
+    const next = index + (dx < 0 ? 1 : -1);
+    if (next >= 0 && next < SLIDES.length) setIndex(next);
+  };
+
   return (
     <section
       // Phones: mt-20 starts the photo below the fixed 80px header instead of under it,
       // so the header never hides the top of the picture (faces sit high in these shots).
-      className="relative mt-20 md:mt-0 h-[70vh] min-h-[520px] max-h-[760px] w-full overflow-hidden md:h-[75vh] md:min-h-[560px] md:max-h-[820px]"
+      className="relative mt-20 md:mt-0 h-[70vh] min-h-[520px] max-h-[760px] w-full overflow-hidden touch-pan-y md:h-[75vh] md:min-h-[560px] md:max-h-[820px]"
       aria-roledescription="carousel"
       aria-label="Yunik – udvalgte billeder"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      onTouchCancel={onTouchEnd}
     >
       {/* Sliding track — GPU-compositing translate3d */}
       <div className="absolute inset-0 overflow-hidden">
@@ -102,8 +145,9 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
           className="flex h-full"
           style={{
             width: `${SLIDES.length * 100}%`,
-            transform: `translate3d(-${(index * 100) / SLIDES.length}%, 0, 0)`,
-            transition: `transform ${SLIDE_MS}ms cubic-bezier(0.65, 0, 0.35, 1)`,
+            transform: `translate3d(calc(-${(index * 100) / SLIDES.length}% + ${dragX ?? 0}px), 0, 0)`,
+            // No easing while a finger is on it, so the photo tracks the drag exactly.
+            transition: dragX === null ? `transform ${SLIDE_MS}ms cubic-bezier(0.65, 0, 0.35, 1)` : "none",
             willChange: "transform",
             backfaceVisibility: "hidden",
           }}
@@ -121,6 +165,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
                     src={slide.srcMobile}
                     alt={slide.alt}
                     fill
+                    draggable={false}
                     priority={i === 0}
                     loading={i === 0 ? undefined : "eager"}
                     quality={80}
@@ -131,6 +176,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
                     src={slide.src}
                     alt={slide.alt}
                     fill
+                    draggable={false}
                     priority={i === 0}
                     loading={i === 0 ? undefined : "eager"}
                     quality={80}
@@ -143,6 +189,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
                   src={slide.src}
                   alt={slide.alt}
                   fill
+                  draggable={false}
                   priority={i === 0}
                   loading={i === 0 ? undefined : "eager"}
                   quality={80}
@@ -157,20 +204,6 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
         {/* Phones: shade only the bottom, where the text sits, so the jewelry stays clear. */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/65 via-[#1A1A1A]/15 to-transparent md:bg-gradient-to-r md:from-[#1A1A1A]/50 md:via-[#1A1A1A]/20 md:to-transparent z-10" />
       </div>
-
-      {/* Mobile tap zones */}
-      <button
-        type="button"
-        onClick={() => paginate(-1)}
-        aria-label="Forrige billede"
-        className="absolute left-0 top-0 z-[15] h-full w-1/3 touch-manipulation bg-transparent outline-none focus-visible:ring-2 focus-visible:ring-white md:hidden"
-      />
-      <button
-        type="button"
-        onClick={() => paginate(1)}
-        aria-label="Næste billede"
-        className="absolute right-0 top-0 z-[15] h-full w-2/3 touch-manipulation bg-transparent outline-none focus-visible:ring-2 focus-visible:ring-white md:hidden"
-      />
 
       {/* Content */}
       {/* Phones: text anchored to the bottom of the photo, above the dots, off the subject. */}
