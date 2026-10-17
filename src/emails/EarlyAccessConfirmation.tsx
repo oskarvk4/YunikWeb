@@ -1,7 +1,6 @@
 import {
   Body,
   Container,
-  Head,
   Heading,
   Html,
   Preview,
@@ -21,6 +20,7 @@ import {
   tagline,
 } from "./styles";
 import Logo from "./Logo";
+import EmailHead from "./EmailHead";
 
 export interface EarlyAccessConfirmationProps {
   contactEmail: string;
@@ -31,7 +31,7 @@ export default function EarlyAccessConfirmation({
 }: EarlyAccessConfirmationProps) {
   return (
     <Html lang="da">
-      <Head />
+      <EmailHead />
       <Preview>Du er på listen — vi skriver, når Yunik åbner</Preview>
       <Body style={body}>
         <Container style={container}>

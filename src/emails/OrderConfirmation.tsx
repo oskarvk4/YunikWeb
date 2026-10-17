@@ -1,7 +1,6 @@
 import {
   Body,
   Container,
-  Head,
   Heading,
   Hr,
   Html,
@@ -30,6 +29,7 @@ import {
   tagline,
 } from "./styles";
 import Logo from "./Logo";
+import EmailHead from "./EmailHead";
 import {
   getShippingOption,
   type PickupPointSnapshot,
@@ -89,7 +89,7 @@ export default function OrderConfirmation({
 
   return (
     <Html lang="da">
-      <Head />
+      <EmailHead />
       <Preview>Tak for din ordre hos Yunik — ordrenummer {shortId}</Preview>
       <Body style={body}>
         <Container style={container}>

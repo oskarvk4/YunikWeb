@@ -2,7 +2,6 @@ import {
   Body,
   Button,
   Container,
-  Head,
   Heading,
   Html,
   Preview,
@@ -22,6 +21,7 @@ import {
   tagline,
 } from "./styles";
 import Logo from "./Logo";
+import EmailHead from "./EmailHead";
 
 export interface ContactConfirmationProps {
   customerName: string;
@@ -40,7 +40,7 @@ export default function ContactConfirmation({
 
   return (
     <Html lang="da">
-      <Head />
+      <EmailHead />
       <Preview>{preview}</Preview>
       <Body style={body}>
         <Container style={container}>

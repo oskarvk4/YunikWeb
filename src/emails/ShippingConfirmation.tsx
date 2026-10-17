@@ -2,7 +2,6 @@ import {
   Body,
   Button,
   Container,
-  Head,
   Heading,
   Html,
   Preview,
@@ -28,6 +27,7 @@ import {
   tagline,
 } from "./styles";
 import Logo from "./Logo";
+import EmailHead from "./EmailHead";
 
 export interface ShippingConfirmationProps {
   orderId: string;
@@ -61,7 +61,7 @@ export default function ShippingConfirmation({
 
   return (
     <Html lang="da">
-      <Head />
+      <EmailHead />
       <Preview>Din ordre {shortId} er sendt afsted</Preview>
       <Body style={body}>
         <Container style={container}>

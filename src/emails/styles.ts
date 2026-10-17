@@ -8,12 +8,19 @@
  * The YUNIK wordmark — the only logo emails use, rendered by Logo.tsx.
  * Email clients can't resolve relative paths, so it needs an absolute URL.
  * Deliberately www — the apex 307s to www.yunik.dk, and some image proxies
- * won't follow that hop. Transparent PNG (383×62), shown at about half its
- * pixel width so it stays sharp on retina displays.
+ * won't follow that hop. The email version (479×118) carries its own rounded
+ * beige ground: in light mode it blends into the body, and when the Gmail apps
+ * force dark mode it stays a beige badge so the black letters stay readable.
+ * Shown at about half its pixel width so it stays sharp on retina displays.
  */
-export const LOGO_URL = "https://www.yunik.dk/yunik-wordmark.png";
-export const LOGO_WIDTH = 180;
-export const LOGO_HEIGHT = 29;
+export const LOGO_URL = "https://www.yunik.dk/yunik-wordmark-email.png";
+export const LOGO_WIDTH = 225;
+export const LOGO_HEIGHT = 55;
+
+/** The site's fonts, with the fallbacks most mail apps will actually use. */
+export const SERIF = "'Cormorant Garamond', Georgia, 'Times New Roman', serif";
+export const SANS =
+  "'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
 
 // Type styling stays on the element, so a blocked image falls back to its alt
 // text set as the same spaced serif wordmark.
@@ -21,15 +28,14 @@ export const logo: React.CSSProperties = {
   display: "block",
   margin: "0 auto",
   color: "#1A1A1A",
-  fontFamily: "Georgia, 'Times New Roman', serif",
+  fontFamily: SERIF,
   fontSize: "24px",
   letterSpacing: "0.3em",
 };
 
 export const body: React.CSSProperties = {
   backgroundColor: "#F5F0EB",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+  fontFamily: SANS,
   margin: 0,
   padding: 0,
 };
@@ -61,16 +67,16 @@ export const card: React.CSSProperties = {
 };
 
 export const h2: React.CSSProperties = {
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontSize: "24px",
+  fontFamily: SERIF,
+  fontSize: "28px",
   color: "#1A1A1A",
   margin: "0 0 16px",
   fontWeight: 400,
 };
 
 export const h3: React.CSSProperties = {
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontSize: "18px",
+  fontFamily: SERIF,
+  fontSize: "21px",
   color: "#1A1A1A",
   margin: "0 0 16px",
   fontWeight: 400,
