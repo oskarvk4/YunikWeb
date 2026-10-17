@@ -1,4 +1,5 @@
 import { Product, CategoryInfo, ProductCategory } from "@/types";
+import { CATEGORY_VALUES, visibleCategories } from "@/lib/storefront";
 import type { Database } from "@/types/supabase";
 import { unstable_cache } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
@@ -192,4 +193,14 @@ export async function getAllProductSlugs(): Promise<string[]> {
   }
 
   return (data || []).map((p) => p.slug);
+}
+
+// Categories with enough published pieces to show in navigation. If the product
+// fetch fails, every category is shown rather than hiding the menu.
+export async function getVisibleCategories(): Promise<ProductCategory[]> {
+  try {
+    return visibleCategories(await getAllProducts());
+  } catch {
+    return CATEGORY_VALUES;
+  }
 }

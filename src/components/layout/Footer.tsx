@@ -1,15 +1,22 @@
 import Link from "next/link";
 import Container from "@/components/ui/Container";
+import type { ProductCategory } from "@/types";
+import { getVisibleCategories } from "@/data/products";
 
-export default function Footer() {
+export default async function Footer() {
   const currentYear = new Date().getFullYear();
+  const visibleCategories = await getVisibleCategories();
+
+  const shopLinks: { label: string; href: string; category?: ProductCategory }[] = [
+    { label: "Alle Smykker", href: "/shop" },
+    { label: "Øreringe", href: "/shop?category=earrings", category: "earrings" },
+    { label: "Ringe", href: "/shop?category=rings", category: "rings" },
+  ];
 
   const footerLinks = {
-    shop: [
-      { label: "Alle Smykker", href: "/shop" },
-      { label: "Øreringe", href: "/shop?category=earrings" },
-      { label: "Ringe", href: "/shop?category=rings" },
-    ],
+    shop: shopLinks.filter(
+      (link) => !link.category || visibleCategories.includes(link.category)
+    ),
     about: [
       { label: "Vores Historie", href: "/about" },
       { label: "Materialer", href: "/about#materials" },

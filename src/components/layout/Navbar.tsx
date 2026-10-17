@@ -8,8 +8,22 @@ import { useCart } from "@/lib/cart";
 import { useAuth } from "@/components/auth/AuthProvider";
 import MobileMenu from "./MobileMenu";
 import CartDrawer from "./CartDrawer";
+import { CATEGORY_VALUES } from "@/lib/storefront";
+import type { ProductCategory } from "@/types";
 
-export default function Navbar() {
+// Category links for the mobile menu. Each one only appears while it has enough pieces.
+const CATEGORY_LINKS: { category: ProductCategory; href: string; label: string }[] = [
+  { category: "rings", href: "/shop?category=rings", label: "Ringe" },
+  { category: "necklaces", href: "/shop?category=necklaces", label: "Halskæder" },
+  { category: "earrings", href: "/shop?category=earrings", label: "Øreringe" },
+  { category: "bracelets", href: "/shop?category=bracelets", label: "Armbånd" },
+];
+
+export default function Navbar({
+  visibleCategories = CATEGORY_VALUES,
+}: {
+  visibleCategories?: ProductCategory[];
+}) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { openCart, getItemCount, hasHydrated } = useCart();
@@ -49,10 +63,7 @@ export default function Navbar() {
 
   const mobileLinks = [
     { href: "/shop", label: "Shop" },
-    { href: "/shop?category=rings", label: "Ringe" },
-    { href: "/shop?category=necklaces", label: "Halskæder" },
-    { href: "/shop?category=earrings", label: "Øreringe" },
-    { href: "/shop?category=bracelets", label: "Armbånd" },
+    ...CATEGORY_LINKS.filter((link) => visibleCategories.includes(link.category)),
     { href: "/about", label: "Om Yunik" },
     { href: "/care", label: "Pleje" },
     { href: "/contact", label: "Kontakt" },

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Product } from "@/types";
 import ProductCard from "./ProductCard";
 
@@ -12,8 +13,14 @@ export default function ProductGrid({ products }: ProductGridProps) {
     return (
       <div className="text-center py-20">
         <p className="text-[#1A1A1A]/60 font-sans">
-          No products found in this category.
+          Ingen smykker matcher dine valg.
         </p>
+        <Link
+          href="/shop"
+          className="mt-4 inline-block text-xs font-sans uppercase tracking-[0.15em] text-[#1A1A1A] underline underline-offset-4 hover:text-[#8D6553] transition-colors"
+        >
+          Se alle smykker
+        </Link>
       </div>
     );
   }

@@ -52,6 +52,8 @@ export default function TrustBadges() {
         </svg>
         {/* MobilePay */}
         <span className="text-xs font-sans text-[#1A1A1A]/40">MobilePay</span>
+        {/* Klarna */}
+        <span className="text-xs font-sans text-[#1A1A1A]/40">Klarna</span>
       </div>
     </div>
   );

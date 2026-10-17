@@ -14,6 +14,7 @@ export const defaultCopy = {
       headlineLine2: "Elegance",
       body: "Opdag smykker der fejrer din unikke historie. Hvert stykke er skabt til at blive en værdsat del af din rejse.",
       cta: "Se Kollektionen",
+      secondaryCta: "Shop øreringe",
     },
     categories: {
       headline: "Shop efter Kategori",

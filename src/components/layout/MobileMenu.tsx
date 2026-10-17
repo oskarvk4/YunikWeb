@@ -188,7 +188,7 @@ export default function MobileMenu({ isOpen, onClose, links }: MobileMenuProps) 
                 </p>
                 <div className="flex space-x-4">
                   <a
-                    href="https://instagram.com"
+                    href="https://instagram.com/yunik"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#1A1A1A]/60 hover:text-[#8D6553] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#8D6553] focus-visible:ring-offset-2 rounded-sm"
@@ -199,7 +199,7 @@ export default function MobileMenu({ isOpen, onClose, links }: MobileMenuProps) 
                     </svg>
                   </a>
                   <a
-                    href="https://facebook.com"
+                    href="https://facebook.com/yunik"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#1A1A1A]/60 hover:text-[#8D6553] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#8D6553] focus-visible:ring-offset-2 rounded-sm"

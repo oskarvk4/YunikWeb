@@ -23,24 +23,38 @@ interface FilterBarProps {
   activeCategory: string;
   activeSort: string;
   activeMetals: string[];
+  availableCategories: string[];
+  underPriceActive: boolean;
   onCategoryChange: (category: string) => void;
   onSortChange: (sort: string) => void;
   onMetalToggle: (metal: string) => void;
+  onUnderPriceToggle: () => void;
 }
 
 export default function FilterBar({
   activeCategory,
   activeSort,
   activeMetals,
+  availableCategories,
+  underPriceActive,
   onCategoryChange,
   onSortChange,
   onMetalToggle,
+  onUnderPriceToggle,
 }: FilterBarProps) {
+  // Categories with too few pieces are hidden, but the active one stays so it can be cleared.
+  const shownCategories = categories.filter(
+    (category) =>
+      category.value === "all" ||
+      category.value === activeCategory ||
+      availableCategories.includes(category.value)
+  );
+
   return (
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4 mb-6">
       {/* Category + Metal Filters */}
       <div className="flex flex-wrap items-center gap-2">
-        {categories.map((category) => (
+        {shownCategories.map((category) => (
           <button
             key={category.value}
             onClick={() => onCategoryChange(category.value)}
@@ -82,6 +96,19 @@ export default function FilterBar({
             </button>
           );
         })}
+
+        <button
+          type="button"
+          onClick={onUnderPriceToggle}
+          aria-pressed={underPriceActive}
+          className={`shrink-0 px-4 py-2 rounded-full text-xs font-sans uppercase tracking-[0.15em] border transition-all duration-300 ${
+            underPriceActive
+              ? "bg-[#1A1A1A] text-white border-[#1A1A1A]"
+              : "bg-transparent text-[#1A1A1A] border-[#1A1A1A]/20 hover:border-[#1A1A1A]/40"
+          }`}
+        >
+          Under 700 kr
+        </button>
       </div>
 
       {/* Sort Dropdown */}

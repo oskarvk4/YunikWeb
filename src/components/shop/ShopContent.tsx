@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import FilterBar from "@/components/shop/FilterBar";
 import ProductGrid from "@/components/shop/ProductGrid";
 import { Product } from "@/types";
+import { visibleCategories } from "@/lib/storefront";
 
 interface ShopContentProps {
   products: Product[];
@@ -12,6 +13,15 @@ interface ShopContentProps {
 
 const VALID_METALS = ["gold", "silver"] as const;
 type Metal = (typeof VALID_METALS)[number];
+
+const UNDER_PRICE_LIMIT = 700;
+
+type UrlChanges = {
+  category?: string;
+  sort?: string;
+  metals?: Metal[];
+  maxPrice?: number | null;
+};
 
 function parseMetals(value: string | null): Metal[] {
   if (!value) return [];
@@ -34,13 +44,20 @@ export default function ShopContent({ products }: ShopContentProps) {
   const minPrice = Number(searchParams.get("minPrice")) || null;
   const maxPrice = Number(searchParams.get("maxPrice")) || null;
 
-  const updateURL = (category: string, sort: string, metals: Metal[]) => {
+  const availableCategories = useMemo(() => visibleCategories(products), [products]);
+
+  const updateURL = (changes: UrlChanges) => {
+    const category = changes.category ?? activeCategory;
+    const sort = changes.sort ?? activeSort;
+    const metals = changes.metals ?? activeMetals;
+    const max = changes.maxPrice !== undefined ? changes.maxPrice : maxPrice;
+
     const params = new URLSearchParams();
     if (category !== "all") params.set("category", category);
     if (sort !== "newest") params.set("sort", sort);
     if (metals.length > 0) params.set("metal", metals.join(","));
     if (minPrice !== null) params.set("minPrice", String(minPrice));
-    if (maxPrice !== null) params.set("maxPrice", String(maxPrice));
+    if (max !== null) params.set("maxPrice", String(max));
     const queryString = params.toString();
     router.push(`/shop${queryString ? `?${queryString}` : ""}`, {
       scroll: false,
@@ -48,11 +65,11 @@ export default function ShopContent({ products }: ShopContentProps) {
   };
 
   const handleCategoryChange = (category: string) => {
-    updateURL(category, activeSort, activeMetals);
+    updateURL({ category });
   };
 
   const handleSortChange = (sort: string) => {
-    updateURL(activeCategory, sort, activeMetals);
+    updateURL({ sort });
   };
 
   const handleMetalToggle = (metal: string) => {
@@ -61,7 +78,13 @@ export default function ShopContent({ products }: ShopContentProps) {
     const next = activeMetals.includes(m)
       ? activeMetals.filter((x) => x !== m)
       : [...activeMetals, m];
-    updateURL(activeCategory, activeSort, next);
+    updateURL({ metals: next });
+  };
+
+  const handleUnderPriceToggle = () => {
+    updateURL({
+      maxPrice: maxPrice === UNDER_PRICE_LIMIT ? null : UNDER_PRICE_LIMIT,
+    });
   };
 
   const filteredAndSortedProducts = useMemo(() => {
@@ -108,9 +131,12 @@ export default function ShopContent({ products }: ShopContentProps) {
         activeCategory={activeCategory}
         activeSort={activeSort}
         activeMetals={activeMetals}
+        availableCategories={availableCategories}
+        underPriceActive={maxPrice === UNDER_PRICE_LIMIT}
         onCategoryChange={handleCategoryChange}
         onSortChange={handleSortChange}
         onMetalToggle={handleMetalToggle}
+        onUnderPriceToggle={handleUnderPriceToggle}
       />
       <ProductGrid products={filteredAndSortedProducts} />
     </>

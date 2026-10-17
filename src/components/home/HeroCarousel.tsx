@@ -18,6 +18,7 @@ interface HeroContent {
   headlineLine2: string;
   body: string;
   cta: string;
+  secondaryCta: string;
 }
 
 const DEFAULT_CONTENT: HeroContent = {
@@ -26,6 +27,7 @@ const DEFAULT_CONTENT: HeroContent = {
   headlineLine2: "Elegance",
   body: "Opdag smykker der fejrer din unikke historie. Hvert stykke er skabt til at blive en værdsat del af din rejse.",
   cta: "Se Kollektionen",
+  secondaryCta: "Shop øreringe",
 };
 
 const SLIDES: Slide[] = [
@@ -59,15 +61,24 @@ const SLIDE_MS = 550;
 
 export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: HeroContent }) {
   const [index, setIndex] = useState(0);
+  const [hovered, setHovered] = useState(false);
+  // Once someone steps through the slides themselves, rotation stops for this visit.
+  const [steppedThrough, setSteppedThrough] = useState(false);
 
-  const paginate = useCallback((dir: 1 | -1) => {
+  const advance = useCallback((dir: 1 | -1) => {
     setIndex((current) => (current + dir + SLIDES.length) % SLIDES.length);
   }, []);
 
+  const paginate = useCallback((dir: 1 | -1) => {
+    setSteppedThrough(true);
+    advance(dir);
+  }, [advance]);
+
   useEffect(() => {
-    const id = window.setInterval(() => paginate(1), AUTOPLAY_MS);
+    if (hovered || steppedThrough) return;
+    const id = window.setInterval(() => advance(1), AUTOPLAY_MS);
     return () => window.clearInterval(id);
-  }, [paginate]);
+  }, [advance, hovered, steppedThrough]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -80,9 +91,11 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
 
   return (
     <section
-      className="relative h-screen min-h-[600px] max-h-[900px] w-full overflow-hidden"
+      className="relative h-[65vh] min-h-[480px] max-h-[760px] w-full overflow-hidden md:h-[75vh] md:min-h-[560px] md:max-h-[820px]"
       aria-roledescription="carousel"
       aria-label="Yunik – udvalgte billeder"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       {/* Sliding track — GPU-compositing translate3d */}
       <div className="absolute inset-0 overflow-hidden">
@@ -162,7 +175,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
       {/* Content */}
       <div className="relative z-20 h-full flex items-center">
         <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8">
-          <div className="max-w-xl translate-y-16">
+          <div className="max-w-xl md:translate-y-16">
             <p className="text-white/80 text-sm font-sans uppercase tracking-[0.3em] mb-4">
               {content.kicker}
             </p>
@@ -174,11 +187,19 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
             <p className="text-white/80 text-lg font-sans font-light leading-relaxed mb-8 max-w-md">
               {content.body}
             </p>
-            <Link href="/shop">
-              <Button variant="primary" size="lg">
-                {content.cta}
-              </Button>
-            </Link>
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+              <Link href="/shop">
+                <Button variant="primary" size="lg">
+                  {content.cta}
+                </Button>
+              </Link>
+              <Link
+                href="/shop?category=earrings"
+                className="text-sm font-sans uppercase tracking-[0.15em] text-white underline underline-offset-8 decoration-white/40 hover:decoration-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white rounded-sm"
+              >
+                {content.secondaryCta}
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -211,7 +232,10 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
           <button
             key={slide.src}
             type="button"
-            onClick={() => setIndex(i)}
+            onClick={() => {
+              setSteppedThrough(true);
+              setIndex(i);
+            }}
             aria-label={`Gå til billede ${i + 1}`}
             aria-current={i === index}
             className={`h-1.5 rounded-full transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-white ${

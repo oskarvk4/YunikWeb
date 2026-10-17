@@ -160,9 +160,17 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             {product.name}
           </h3>
         </Link>
+        <p className="mt-1 text-xs font-sans uppercase tracking-[0.12em] text-[#1A1A1A]/50">
+          {product.metal === "gold" ? "Forgyldt sølv" : "Sølv"}
+        </p>
         <p className="text-sm font-sans text-[#1A1A1A]/70 mt-1">
           {formatPrice(product.price)}
         </p>
+        {product.stockQuantity > 0 && product.stockQuantity <= 3 && (
+          <p className="text-xs font-sans text-[#8D6553] mt-1">
+            Kun {product.stockQuantity} tilbage
+          </p>
+        )}
       </div>
     </motion.div>
   );

@@ -3,6 +3,7 @@ import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import Script from "next/script";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { getVisibleCategories } from "@/data/products";
 import { HideOnAdmin } from "@/components/layout/SiteChrome";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import AuthErrorHandler from "@/components/auth/AuthErrorHandler";
@@ -107,11 +108,13 @@ const websiteSchema = {
   url: "https://yunik.dk",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const visibleCategories = await getVisibleCategories();
+
   return (
     <html lang="da" data-scroll-behavior="smooth">
       <head>
@@ -146,7 +149,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <AuthErrorHandler />
-          <Navbar />
+          <Navbar visibleCategories={visibleCategories} />
           <main className="min-h-screen">
             <ErrorBoundary>
               {children}

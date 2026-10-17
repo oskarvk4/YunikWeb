@@ -13,7 +13,6 @@ interface FeaturedProductsProps {
 }
 
 export default function FeaturedProducts({ products }: FeaturedProductsProps) {
-  const featuredProducts = products.slice(0, 4);
   const { addItem } = useCart();
 
   return (
@@ -34,82 +33,81 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {featuredProducts.map((product, index) => (
-            (() => {
-              const isOutOfStock = product.stockQuantity <= 0;
-              return (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group"
-            >
-              {/* Product Image */}
-              <Link
-                href={`/product/${product.slug}`}
-                className="block relative aspect-square overflow-hidden bg-white mb-4"
+        {/* Swipeable row: about 2 pieces visible on a phone, about 4 on a laptop */}
+        <div className="-mx-4 px-4 sm:mx-0 sm:px-0 flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {products.map((product, index) => {
+            const isOutOfStock = product.stockQuantity <= 0;
+            return (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: index * 0.05 }}
+                className="group w-[46%] shrink-0 snap-start sm:w-[32%] lg:w-[22%]"
               >
-                {/* Badges */}
-                <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-                  {product.newArrival && <Badge variant="new">Ny</Badge>}
-                  {product.featured && !product.newArrival && (
-                    <Badge variant="bestseller">Bestseller</Badge>
-                  )}
-                </div>
+                {/* Product Image */}
+                <Link
+                  href={`/product/${product.slug}`}
+                  className="block relative aspect-square overflow-hidden bg-white mb-4"
+                >
+                  {/* Badges */}
+                  <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+                    {product.newArrival && <Badge variant="new">Ny</Badge>}
+                    {product.featured && !product.newArrival && (
+                      <Badge variant="bestseller">Bestseller</Badge>
+                    )}
+                  </div>
 
-                {/* Main Image */}
-                <Image
-                  src={product.images[0]}
-                  alt={product.name}
-                  fill
-                  className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0"
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                />
-
-                {/* Hover Image */}
-                {product.images[1] && (
+                  {/* Main Image */}
                   <Image
-                    src={product.images[1]}
-                    alt={`${product.name} - alternativt billede`}
+                    src={product.images[0]}
+                    alt={product.name}
                     fill
-                    className="object-cover transition-all duration-700 opacity-0 group-hover:opacity-100 scale-105 group-hover:scale-100"
+                    className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0"
                     sizes="(max-width: 768px) 50vw, 25vw"
                   />
-                )}
 
-                {/* Quick Add Overlay */}
-                <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      addItem(product);
-                    }}
-                    disabled={isOutOfStock}
-                    className="w-full py-3 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.15em] hover:bg-[#333] transition-colors disabled:cursor-not-allowed disabled:bg-[#1A1A1A]/45"
-                  >
-                    {isOutOfStock ? "Udsolgt" : "Tilføj til Kurv"}
-                  </button>
-                </div>
-              </Link>
+                  {/* Hover Image */}
+                  {product.images[1] && (
+                    <Image
+                      src={product.images[1]}
+                      alt={`${product.name} - alternativt billede`}
+                      fill
+                      className="object-cover transition-all duration-700 opacity-0 group-hover:opacity-100 scale-105 group-hover:scale-100"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                  )}
 
-              {/* Product Info */}
-              <div className="text-center">
-                <Link href={`/product/${product.slug}`}>
-                  <h3 className="font-serif text-sm md:text-base font-medium text-[#1A1A1A] hover:text-[#8D6553] transition-colors">
-                    {product.name}
-                  </h3>
+                  {/* Quick Add Overlay */}
+                  <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        addItem(product);
+                      }}
+                      disabled={isOutOfStock}
+                      className="w-full py-3 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.15em] hover:bg-[#333] transition-colors disabled:cursor-not-allowed disabled:bg-[#1A1A1A]/45"
+                    >
+                      {isOutOfStock ? "Udsolgt" : "Tilføj til Kurv"}
+                    </button>
+                  </div>
                 </Link>
-                <p className="text-sm font-sans text-[#1A1A1A]/70 mt-1">
-                  {formatPrice(product.price)}
-                </p>
-              </div>
-            </motion.div>
-              );
-            })()
-          ))}
+
+                {/* Product Info */}
+                <div className="text-center">
+                  <Link href={`/product/${product.slug}`}>
+                    <h3 className="font-serif text-sm md:text-base font-medium text-[#1A1A1A] hover:text-[#8D6553] transition-colors">
+                      {product.name}
+                    </h3>
+                  </Link>
+                  <p className="text-sm font-sans text-[#1A1A1A]/70 mt-1">
+                    {formatPrice(product.price)}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* View All Link */}

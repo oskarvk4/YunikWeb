@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Product, formatPrice } from "@/types";
 import { useCart } from "@/lib/cart";
+import { trackViewItem } from "@/lib/analytics";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import Accordion from "./Accordion";
@@ -21,16 +22,22 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   const maxQuantity = Math.max(0, product.stockQuantity);
   const isOutOfStock = maxQuantity === 0;
 
+  useEffect(() => {
+    trackViewItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      category: product.category,
+    });
+  }, [product.id, product.name, product.price, product.category]);
+
   const handleAddToCart = () => {
     if (isOutOfStock) return;
     addItem(product, quantity);
   };
 
+  // The description is already shown under the price, so the first panel is the materials.
   const accordionItems = [
-    {
-      title: "Beskrivelse",
-      content: product.description,
-    },
     {
       title: "Materialer & Pleje",
       content: product.materials,
@@ -86,7 +93,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           ? "Udsolgt"
           : maxQuantity <= 3
           ? `Kun ${maxQuantity} tilbage`
-          : `${maxQuantity} på lager`}
+          : "På lager · sendes inden for 1–2 hverdage"}
       </p>
 
       {/* Short Description */}
@@ -153,13 +160,17 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         size="lg"
         fullWidth
         onClick={handleAddToCart}
-        className="mb-6"
+        className="mb-3"
         disabled={isOutOfStock}
       >
         {isOutOfStock
           ? "Udsolgt"
           : `Læg i Kurv — ${formatPrice(product.price * quantity)}`}
       </Button>
+
+      <p className="mb-6 text-center text-xs font-sans text-[#1A1A1A]/60">
+        Gratis fragt · 2–5 hverdage · 14 dages retur
+      </p>
 
       {/* Trust Badges */}
       <TrustBadges />
