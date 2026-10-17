@@ -118,10 +118,6 @@ export default async function RootLayout({
   return (
     <html lang="da" data-scroll-behavior="smooth">
       <head>
-        {/* Preload hero image for LCP optimization */}
-        <link rel="preload" as="image" href="/yunik-16.webp" type="image/webp" media="(max-width: 767px)" />
-        <link rel="preload" as="image" href="/hero-rings.webp" type="image/webp" media="(min-width: 768px)" />
-
         {/* Preconnect to external domains for performance */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://www.google-analytics.com" />

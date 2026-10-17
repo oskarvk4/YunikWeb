@@ -51,14 +51,18 @@ export type HomeTile = { label: string; href: string; image: string };
 
 /**
  * Homepage tiles that have enough pieces to be worth a click. Each tile
- * uses the photo of the first matching piece, so it follows the catalogue.
+ * uses the photo of the first matching piece no earlier tile has used, so the
+ * tiles follow the catalogue without repeating a picture.
  */
 export function buildHomeTiles(products: Product[]): HomeTile[] {
+  const used = new Set<string>();
   return HOME_TILES.flatMap(({ label, filter }) => {
     const matches = products.filter((product) => matchesFilter(product, filter));
     if (matches.length < MIN_PIECES_TO_SHOW) return [];
-    const image = matches.find((product) => product.images.length > 0)?.images[0];
-    return [{ label, href: shopHref(filter), image: image ?? FALLBACK_TILE_IMAGE }];
+    const photos = matches.map((product) => product.images[0]).filter(Boolean);
+    const image = photos.find((photo) => !used.has(photo)) ?? photos[0] ?? FALLBACK_TILE_IMAGE;
+    used.add(image);
+    return [{ label, href: shopHref(filter), image }];
   });
 }
 

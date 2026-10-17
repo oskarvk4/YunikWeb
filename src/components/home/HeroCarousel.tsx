@@ -14,17 +14,13 @@ interface Slide {
 
 interface HeroContent {
   kicker: string;
-  headlineLine1: string;
-  headlineLine2: string;
   body: string;
   cta: string;
   secondaryCta: string;
 }
 
 const DEFAULT_CONTENT: HeroContent = {
-  kicker: "Håndlavet med Kærlighed",
-  headlineLine1: "Tidløs",
-  headlineLine2: "Elegance",
+  kicker: "Formet gennem mere end 30 år",
   body: "Opdag smykker der fejrer din unikke historie. Hvert stykke er skabt til at blive en værdsat del af din rejse.",
   cta: "Se Kollektionen",
   secondaryCta: "Shop øreringe",
@@ -35,7 +31,8 @@ const SLIDES: Slide[] = [
   {
     src: "/yunik-18.webp",
     alt: "Yunik smykker – ny kollektion",
-    position: "object-center",
+    // Her face is at the photo's left edge; on narrow phones a centred crop cuts it off.
+    position: "object-[15%_50%] md:object-center",
   },
   {
     src: "/yunik-17.webp",
@@ -91,7 +88,9 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
 
   return (
     <section
-      className="relative h-[70vh] min-h-[520px] max-h-[760px] w-full overflow-hidden md:h-[75vh] md:min-h-[560px] md:max-h-[820px]"
+      // Phones: mt-20 starts the photo below the fixed 80px header instead of under it,
+      // so the header never hides the top of the picture (faces sit high in these shots).
+      className="relative mt-20 md:mt-0 h-[70vh] min-h-[520px] max-h-[760px] w-full overflow-hidden md:h-[75vh] md:min-h-[560px] md:max-h-[820px]"
       aria-roledescription="carousel"
       aria-label="Yunik – udvalgte billeder"
       onMouseEnter={() => setHovered(true)}
@@ -155,7 +154,8 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
           ))}
         </div>
         {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1A1A1A]/70 via-[#1A1A1A]/35 to-[#1A1A1A]/20 md:bg-gradient-to-r md:from-[#1A1A1A]/50 md:via-[#1A1A1A]/20 md:to-transparent z-10" />
+        {/* Phones: shade only the bottom, where the text sits, so the jewelry stays clear. */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/65 via-[#1A1A1A]/15 to-transparent md:bg-gradient-to-r md:from-[#1A1A1A]/50 md:via-[#1A1A1A]/20 md:to-transparent z-10" />
       </div>
 
       {/* Mobile tap zones */}
@@ -173,17 +173,12 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
       />
 
       {/* Content */}
-      {/* pt-20 on phones keeps the text clear of the fixed 80px header that overlays the hero. */}
-      <div className="relative z-20 h-full flex items-center pt-20 md:pt-0">
+      {/* Phones: text anchored to the bottom of the photo, above the dots, off the subject. */}
+      <div className="relative z-20 h-full flex items-end pb-16 md:items-center md:pb-0">
         <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8">
           <div className="max-w-xl md:translate-y-16">
-            <p className="text-white/80 text-sm font-sans uppercase tracking-[0.3em] mb-4">
+            <h1 className="text-white/90 text-sm font-sans uppercase tracking-[0.2em] md:tracking-[0.3em] mb-6 md:mb-8">
               {content.kicker}
-            </p>
-            <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-light text-white leading-tight mb-6">
-              {content.headlineLine1}
-              <br />
-              {content.headlineLine2}
             </h1>
             {content.body && (
               <p className="text-white/80 text-lg font-sans font-light leading-relaxed mb-8 max-w-md">
@@ -192,7 +187,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
             )}
             <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
               <Link href="/shop">
-                <Button variant="primary" size="lg">
+                <Button variant="primary" size="lg" className="text-white!">
                   {content.cta}
                 </Button>
               </Link>

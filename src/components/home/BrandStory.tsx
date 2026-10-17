@@ -8,7 +8,7 @@ import Button from "@/components/ui/Button";
 
 export default function BrandStory() {
   return (
-    <section className="py-20 md:py-28 bg-white">
+    <section className="py-14 md:py-28 bg-white">
       <Container>
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Images */}
@@ -17,7 +17,7 @@ export default function BrandStory() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+            className="grid grid-cols-2 gap-3 md:gap-4"
           >
             <div className="relative aspect-[4/5] overflow-hidden">
               <Image
@@ -25,7 +25,7 @@ export default function BrandStory() {
                 alt="Håndplukkede blågrønne ædelsten med pincet"
                 fill
                 className="object-cover"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                sizes="(max-width: 1024px) 50vw, 25vw"
               />
             </div>
             <div className="relative aspect-[4/5] overflow-hidden">
@@ -34,7 +34,7 @@ export default function BrandStory() {
                 alt="Perler, sten og værktøj på arbejdsbordet"
                 fill
                 className="object-cover"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                sizes="(max-width: 1024px) 50vw, 25vw"
               />
             </div>
           </motion.div>

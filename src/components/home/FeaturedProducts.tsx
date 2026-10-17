@@ -16,14 +16,14 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
   const { addItem } = useCart();
 
   return (
-    <section className="py-20 md:py-28 bg-[#F5F0EB]">
+    <section className="py-14 md:py-28 bg-[#F5F0EB]">
       <Container>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12 md:mb-16"
+          className="text-center mb-8 md:mb-16"
         >
           <h2 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A] mb-4">
             Udvalgte Smykker

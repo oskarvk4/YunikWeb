@@ -13,11 +13,10 @@ const SECTIONS = [
     title: "Forside – Hero",
     previewHref: "/",
     fields: [
-      { key: "kicker", label: "Overtitel", multiline: false },
-      { key: "headlineLine1", label: "Overskrift – linje 1", multiline: false },
-      { key: "headlineLine2", label: "Overskrift – linje 2", multiline: false },
+      { key: "kicker", label: "Overskrift", multiline: false },
       { key: "body", label: "Brødtekst", multiline: true },
       { key: "cta", label: "Knap tekst", multiline: false },
+      { key: "secondaryCta", label: "Link tekst (øreringe)", multiline: false },
     ],
   },
   {
