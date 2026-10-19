@@ -9,7 +9,7 @@ interface HeroProps {
   mobileImageSrc?: string;
 }
 
-export default function Hero({ mobileImageSrc = "/yunik-16.webp" }: HeroProps = {}) {
+export default function Hero({ mobileImageSrc = "/hero-carousel-rings.webp" }: HeroProps = {}) {
   return (
     <section className="relative h-screen min-h-[600px] max-h-[900px] w-full overflow-hidden">
       {/* Background Image */}

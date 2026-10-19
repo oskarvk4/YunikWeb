@@ -79,7 +79,7 @@ export default function CarePage() {
                 </div>
                 <div className="relative aspect-square bg-[#F5F0EB] rounded-sm overflow-hidden">
                   <Image
-                    src="/yunik-17.webp"
+                    src="/jewelry-close-up.webp"
                     alt="Smykkepleje"
                     fill
                     className="object-cover"

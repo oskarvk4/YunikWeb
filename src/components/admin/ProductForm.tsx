@@ -685,6 +685,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
               setFormData((prev) => ({ ...prev, images }))
             }
             maxImages={10}
+            nameHint={formData.slug || formData.name}
           />
         </div>
 

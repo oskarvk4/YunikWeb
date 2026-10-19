@@ -1,6 +1,8 @@
 import dynamic from "next/dynamic";
 import HeroCarousel from "@/components/home/HeroCarousel";
 import CategoryGrid from "@/components/home/CategoryGrid";
+import TrustBar from "@/components/home/TrustBar";
+import ShopWindow from "@/components/home/ShopWindow";
 import { getAllProducts } from "@/data/products";
 import { getCopy } from "@/lib/copy";
 import { buildHomeTiles, pickHomeProducts } from "@/lib/storefront";
@@ -25,8 +27,10 @@ export default async function Home() {
   return (
     <>
       <HeroCarousel content={copy.home.hero} />
+      <TrustBar />
       <FeaturedProducts products={pickHomeProducts(allProducts, 10)} />
       <CategoryGrid tiles={buildHomeTiles(allProducts)} content={copy.home.categories} />
+      <ShopWindow />
       <BrandStory />
       <Newsletter />
     </>

@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { flattenDefaults } from "@/lib/copy";
 
@@ -35,7 +35,9 @@ export async function saveCopy(entries: Entry[]): Promise<{ ok: true } | { ok: f
     .upsert(rows, { onConflict: "key" });
   if (error) return { ok: false, error: error.message };
 
-  // Revalidate every storefront route so changes go live immediately.
+  // Clear the cached copy (src/lib/copy.ts) and re-render every storefront
+  // route so changes go live immediately.
+  updateTag("site_copy");
   revalidatePath("/", "layout");
 
   return { ok: true };
@@ -63,6 +65,7 @@ export async function resetCopy(keys: string[]): Promise<{ ok: true } | { ok: fa
   const { error } = await supabase.from("site_copy").delete().in("key", keys);
   if (error) return { ok: false, error: error.message };
 
+  updateTag("site_copy");
   revalidatePath("/", "layout");
   return { ok: true };
 }

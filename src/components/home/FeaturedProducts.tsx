@@ -33,8 +33,9 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
           </p>
         </motion.div>
 
-        {/* Swipeable row: about 2 pieces visible on a phone, about 4 on a laptop */}
-        <div className="-mx-4 px-4 sm:mx-0 sm:px-0 flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {/* Phones: a swipeable row, about 2 pieces visible. Tablets and up: a plain grid,
+            so nothing is cut off and nothing needs sideways scrolling with a mouse. */}
+        <div className="-mx-4 px-4 scroll-px-4 sm:mx-0 sm:px-0 sm:scroll-px-0 flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible md:snap-none md:pb-0 md:[&>*:nth-child(n+9)]:hidden lg:[&>*:nth-child(n+9)]:block">
           {products.map((product, index) => {
             const isOutOfStock = product.stockQuantity <= 0;
             return (
@@ -44,7 +45,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.6, delay: index * 0.05 }}
-                className="group w-[46%] shrink-0 snap-start sm:w-[32%] lg:w-[22%]"
+                className="group w-[46%] shrink-0 snap-start sm:w-[32%] md:w-auto"
               >
                 {/* Product Image */}
                 <Link
@@ -64,8 +65,11 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                     src={product.images[0]}
                     alt={product.name}
                     fill
-                    className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0"
-                    sizes="(max-width: 768px) 50vw, 25vw"
+                    // Only fade the main photo out when a second photo is there to replace it.
+                    className={`object-cover transition-all duration-700 group-hover:scale-105 ${
+                      product.images[1] ? "group-hover:opacity-0" : ""
+                    }`}
+                    sizes="(max-width: 768px) 50vw, 20vw"
                   />
 
                   {/* Hover Image */}

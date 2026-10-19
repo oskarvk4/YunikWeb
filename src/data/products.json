@@ -3,13 +3,13 @@
     {
       "name": "Øreringe",
       "slug": "earrings",
-      "image": "/yunik-2.jpg",
+      "image": "/category-earrings.jpg",
       "description": "Smukke øreringe der fuldender dit look"
     },
     {
       "name": "Ringe",
       "slug": "rings",
-      "image": "/yunik-6.jpg",
+      "image": "/celestine-band.jpg",
       "description": "Elegante ringe til enhver lejlighed"
     },
     {
@@ -21,7 +21,7 @@
     {
       "name": "Vedhæng og Halskæder",
       "slug": "necklaces",
-      "image": "/yunik-3.jpg",
+      "image": "/category-necklaces.jpg",
       "description": "Tidløse vedhæng og halskæder"
     }
   ],
@@ -34,7 +34,7 @@
       "category": "rings",
       "description": "En moderne fortolkning af den klassiske signetring. Aurora har en subtilt hvælvet overflade, der fanger lyset smukt og skaber en æterisk glød på din finger.",
       "materials": "18 karat guldbelagt sterlingsølv. Nikkelfri og hypoallergenisk.",
-      "images": ["/yunik-5.jpg", "/yunik-6.jpg"],
+      "images": ["/aurora-signet-ring.jpg", "/celestine-band.jpg"],
       "featured": true,
       "newArrival": false
     },
@@ -46,7 +46,7 @@
       "category": "rings",
       "description": "En delikat stablering med hamret tekstur, der tilføjer dybde og karakter. Perfekt alene eller kombineret med dine favoritsmykker.",
       "materials": "Sterlingsølv med rhodiumbelægning for langvarig glans.",
-      "images": ["/yunik-6.jpg", "/yunik-7.jpg"],
+      "images": ["/celestine-band.jpg", "/solstice-dome-ring.jpg"],
       "featured": false,
       "newArrival": true
     },
@@ -58,7 +58,7 @@
       "category": "rings",
       "description": "Markant men raffineret. Solstice har et skulpturelt kuppeldesign inspireret af midterhundredetallets arkitektur. Et statement-smykke til den moderne kvinde.",
       "materials": "14 karat guld vermeil over sterlingsølv.",
-      "images": ["/yunik-7.jpg", "/yunik-5.jpg"],
+      "images": ["/solstice-dome-ring.jpg", "/aurora-signet-ring.jpg"],
       "featured": true,
       "newArrival": false
     },
@@ -70,7 +70,7 @@
       "category": "necklaces",
       "description": "Inspireret af månens blide skær. Luna-vedhænget har et lysende perlemorscenter indfattet i en delikat guldramme.",
       "materials": "18 karat guldbelagt sterlingsølv med ægte perlemor.",
-      "images": ["/yunik-14.jpg", "/yunik-15.jpg"],
+      "images": ["/luna-pendant.jpg", "/whisper-chain.jpg"],
       "featured": true,
       "newArrival": false
     },
@@ -82,7 +82,7 @@
       "category": "necklaces",
       "description": "En ultrafin kæde der ligger elegant på kravebenet. Simpel, elegant og uendeligt alsidig.",
       "materials": "Sterlingsølv. Fås i 40 cm og 45 cm længder.",
-      "images": ["/yunik-15.jpg", "/yunik-16.jpg"],
+      "images": ["/whisper-chain.jpg", "/ophelia-layered-necklace.jpg"],
       "featured": false,
       "newArrival": true
     },
@@ -94,7 +94,7 @@
       "category": "necklaces",
       "description": "Tre delikate kæder i forskellige længder samlet i ét ubesværet elegant smykke. Den perfekte genvej til et kurateret lagdelt look.",
       "materials": "14 karat guld vermeil med justerbar lås.",
-      "images": ["/yunik-16.jpg", "/yunik-14.jpg"],
+      "images": ["/ophelia-layered-necklace.jpg", "/luna-pendant.jpg"],
       "featured": true,
       "newArrival": true
     },
@@ -178,7 +178,7 @@
       "category": "bracelets",
       "description": "Rå tanzanitsten indfattet i gyldne griffer skaber et fantastisk statement-smykke. Hver sten er unik, hvilket gør hvert armbånd til et original.",
       "materials": "18 karat guldbelagt messing med naturlige tanzanitsten.",
-      "images": ["/hero-bracelet.webp", "/yunik-8.jpg"],
+      "images": ["/hero-bracelet.webp", "/tanzanite-bracelet.jpg"],
       "featured": true,
       "newArrival": false
     },
@@ -190,7 +190,7 @@
       "category": "bracelets",
       "description": "Et raffineret kædearmbånd med et unikt led-design, der skaber smuk bevægelse på håndleddet.",
       "materials": "18 karat guldbelagt sterlingsølv med hummerlås.",
-      "images": ["/yunik-8.jpg", "/yunik-9.jpg"],
+      "images": ["/tanzanite-bracelet.jpg", "/nova-chain-bracelet.jpg"],
       "featured": false,
       "newArrival": true
     },
@@ -202,7 +202,7 @@
       "category": "bracelets",
       "description": "En elegant armring med et delikat blomstermotiv. Det hængslede design sikrer en sikker og behagelig pasform.",
       "materials": "14 karat guld vermeil over sterlingsølv.",
-      "images": ["/yunik-9.jpg", "/yunik-10.jpg"],
+      "images": ["/nova-chain-bracelet.jpg", "/bloom-bangle.jpg"],
       "featured": true,
       "newArrival": true
     }

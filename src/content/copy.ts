@@ -9,7 +9,6 @@
 export const defaultCopy = {
   home: {
     hero: {
-      // Shown as the hero headline (the key keeps its old name so saved copy still applies).
       kicker: "Formet gennem mere end 30 år",
       body: "Opdag smykker der fejrer din unikke historie. Hvert stykke er skabt til at blive en værdsat del af din rejse.",
       cta: "Se Kollektionen",

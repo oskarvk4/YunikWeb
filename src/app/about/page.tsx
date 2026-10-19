@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Vores Historie | Yunik",
     description: "Lær Yunik at kende — håndlavede smykker skabt med inspiration fra 30 års rejser.",
-    images: [{ url: "/yunik-17.webp", width: 1200, height: 800, alt: "Yunik smykker" }],
+    images: [{ url: "/jewelry-close-up.webp", width: 1200, height: 800, alt: "Yunik smykker" }],
   },
 };
 
@@ -28,7 +28,7 @@ export default async function AboutPage() {
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[400px] max-h-[600px] overflow-hidden">
         <Image
-          src="/yunik-1.jpeg"
+          src="/about-hero.jpeg"
           alt="Yunik smykkekollektion"
           fill
           priority
@@ -93,8 +93,8 @@ export default async function AboutPage() {
         <div className="grid md:grid-cols-2">
           <FadeIn direction="left" className="relative aspect-square md:aspect-[4/3]">
             <Image
-              src="/yunik-11.jpg"
-              alt="Yunik smykkehåndværk"
+              src="/butik/yunik-stand.webp"
+              alt="Yuniks stand med sten, smykker og tøj, set ovenfra"
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -102,8 +102,8 @@ export default async function AboutPage() {
           </FadeIn>
           <FadeIn direction="right" delay={0.2} className="relative aspect-square md:aspect-[4/3]">
             <Image
-              src="/yunik-12.jpg"
-              alt="Yunik smykkedetaljer"
+              src="/butik/ole-messe.webp"
+              alt="Manden bag Yunik ved standen på en messe"
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -161,7 +161,7 @@ export default async function AboutPage() {
 
             <FadeIn direction="right" delay={0.2} className="relative aspect-square">
               <Image
-                src="/yunik-17.webp"
+                src="/jewelry-close-up.webp"
                 alt="Yunik smykkematerialer"
                 fill
                 className="object-cover"

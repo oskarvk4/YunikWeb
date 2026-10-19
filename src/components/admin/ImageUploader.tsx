@@ -9,6 +9,24 @@ interface ImageUploaderProps {
   images: string[];
   onChange: (images: string[]) => void;
   maxImages?: number;
+  /** Product name or slug. Uploaded files are named after it, never after the original file. */
+  nameHint?: string;
+}
+
+// Storage paths are public (they show in the page source), so they must not carry the
+// original file name, which can reveal things like "ChatGPT Image …" or "Screenshot …".
+function storageBaseName(hint?: string): string {
+  const slug = (hint ?? "")
+    .toLowerCase()
+    .replace(/æ/g, "ae")
+    .replace(/ø/g, "oe")
+    .replace(/å/g, "aa")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 40);
+  return slug ? `yunik-${slug}` : "yunik";
 }
 
 type UploadItem = {
@@ -35,10 +53,36 @@ function humanizeStorageError(message: string): string {
   return message;
 }
 
+async function uploadBlob(blob: Blob, nameHint?: string): Promise<string> {
+  const supabase = createClient();
+
+  const randomId = Math.random().toString(36).substring(2, 8);
+  const filename = `${storageBaseName(nameHint)}-${randomId}.jpg`;
+
+  const { data, error } = await supabase.storage
+    .from("product-images")
+    .upload(filename, blob, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: "image/jpeg",
+    });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const { data: urlData } = supabase.storage
+    .from("product-images")
+    .getPublicUrl(data.path);
+
+  return urlData.publicUrl;
+}
+
 export default function ImageUploader({
   images,
   onChange,
   maxImages = 10,
+  nameHint,
 }: ImageUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -67,36 +111,6 @@ export default function ImageUploader({
     return () => clearTimeout(t);
   }, [lastSummary]);
 
-  const uploadBlob = async (
-    blob: Blob,
-    originalName: string
-  ): Promise<string> => {
-    const supabase = createClient();
-
-    const timestamp = Date.now();
-    const randomId = Math.random().toString(36).substring(2, 8);
-    const baseName =
-      originalName.replace(/\.[^.]+$/, "").slice(0, 40) || "image";
-    const filename = `${timestamp}-${randomId}-${baseName}.jpg`;
-
-    const { data, error } = await supabase.storage
-      .from("product-images")
-      .upload(filename, blob, {
-        cacheControl: "3600",
-        upsert: false,
-        contentType: "image/jpeg",
-      });
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    const { data: urlData } = supabase.storage
-      .from("product-images")
-      .getPublicUrl(data.path);
-
-    return urlData.publicUrl;
-  };
 
   const finalizeBatch = useCallback(() => {
     const parts: string[] = [];
@@ -181,7 +195,7 @@ export default function ImageUploader({
       advance(queue);
 
       try {
-        const url = await uploadBlob(blob, file.name);
+        const url = await uploadBlob(blob, nameHint);
         successCountRef.current += 1;
         onChange([...imagesRef.current, url]);
         setItems((prev) =>
@@ -203,7 +217,7 @@ export default function ImageUploader({
         );
       }
     },
-    [advance, current, onChange, queue]
+    [advance, current, onChange, queue, nameHint]
   );
 
   const handleCropCancel = useCallback(() => {

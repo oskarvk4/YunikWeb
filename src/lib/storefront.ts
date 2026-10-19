@@ -38,29 +38,35 @@ export function shopHref(filter: ProductFilter): string {
   return query ? `/shop?${query}` : "/shop";
 }
 
-const HOME_TILES: { label: string; filter: ProductFilter }[] = [
-  { label: "Guldøreringe", filter: { category: "earrings", metal: "gold" } },
+// `image` pins a chosen photo to a tile; tiles without one use a matching piece's photo.
+const HOME_TILES: { label: string; filter: ProductFilter; image?: string }[] = [
+  {
+    label: "Guldøreringe",
+    filter: { category: "earrings", metal: "gold" },
+    image: "/kategorier/guldoereringe.webp",
+  },
   { label: "Sølvøreringe", filter: { category: "earrings", metal: "silver" } },
   { label: "Gaver under 700 kr", filter: { maxPrice: 700 } },
   { label: "Alle smykker", filter: {} },
 ];
 
-const FALLBACK_TILE_IMAGE = "/yunik-2.jpg";
+const FALLBACK_TILE_IMAGE = "/category-earrings.jpg";
 
 export type HomeTile = { label: string; href: string; image: string };
 
 /**
- * Homepage tiles that have enough pieces to be worth a click. Each tile
- * uses the photo of the first matching piece no earlier tile has used, so the
- * tiles follow the catalogue without repeating a picture.
+ * Homepage tiles that have enough pieces to be worth a click. A tile uses its
+ * pinned photo if it has one, otherwise the photo of the first matching piece
+ * no earlier tile has used, so the tiles don't repeat a picture.
  */
 export function buildHomeTiles(products: Product[]): HomeTile[] {
   const used = new Set<string>();
-  return HOME_TILES.flatMap(({ label, filter }) => {
+  return HOME_TILES.flatMap(({ label, filter, image: pinned }) => {
     const matches = products.filter((product) => matchesFilter(product, filter));
     if (matches.length < MIN_PIECES_TO_SHOW) return [];
     const photos = matches.map((product) => product.images[0]).filter(Boolean);
-    const image = photos.find((photo) => !used.has(photo)) ?? photos[0] ?? FALLBACK_TILE_IMAGE;
+    const image =
+      pinned ?? photos.find((photo) => !used.has(photo)) ?? photos[0] ?? FALLBACK_TILE_IMAGE;
     used.add(image);
     return [{ label, href: shopHref(filter), image }];
   });
