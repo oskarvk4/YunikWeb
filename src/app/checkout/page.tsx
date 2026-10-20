@@ -337,7 +337,7 @@ export default function CheckoutPage() {
             {/* Order Summary */}
             <div className={session ? "" : "lg:col-span-1"}>
               <div
-                className="bg-white border border-[#1A1A1A]/8 p-6 md:p-8 lg:sticky lg:top-24 animate-fade-in-up"
+                className="bg-white border border-[#1A1A1A]/8 p-6 md:p-8 lg:sticky lg:top-32 animate-fade-in-up"
                 style={{ animationDelay: "0.3s" }}
               >
                 <h2 className="font-serif text-xl font-light text-[#1A1A1A] mb-6">

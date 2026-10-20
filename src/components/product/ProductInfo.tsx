@@ -57,7 +57,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="lg:sticky lg:top-28"
+      className="lg:sticky lg:top-36"
     >
       {/* Badges */}
       <div className="flex gap-2 mb-4">

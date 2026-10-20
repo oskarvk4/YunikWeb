@@ -252,8 +252,8 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
       // Phones: mt-20 starts the photo below the fixed 80px header instead of under it,
       // so the header never hides the top of the picture (faces sit high in these shots).
       // Height leaves room for the trust bar below on the first screen: phones subtract
-      // the 5rem header and up to 10rem of bar, desktop the 7rem bar.
-      className="relative mt-20 md:mt-0 h-[calc(100svh-8.5rem-1px)] min-h-[360px] max-h-[760px] w-full overflow-hidden touch-pan-y md:h-[calc(100svh-2.75rem-1px)] md:min-h-[520px] md:max-h-[820px]"
+      // the 2rem announcement strip, 5rem menu and 5.25rem bar; desktop the strip and the 4rem bar.
+      className="relative mt-20 md:mt-0 h-[calc(100svh-12.25rem-1px)] min-h-[360px] max-h-[760px] w-full overflow-hidden touch-pan-y md:h-[calc(100svh-6rem-1px)] md:min-h-[520px] md:max-h-[820px]"
       aria-roledescription="carousel"
       aria-label="Yunik – udvalgte billeder"
       onMouseEnter={() => setHovered(true)}

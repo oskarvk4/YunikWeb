@@ -28,13 +28,13 @@ export default function ShopWindow() {
           </div>
         </div>
 
-        <div className="relative aspect-[3/2] overflow-hidden mb-12 md:mb-20">
+        <div className="relative aspect-[3/2] w-full md:w-1/2 overflow-hidden mb-12 md:mb-20">
           <Image
             src="/butik/butik-vindue-3x2.webp"
             alt="Yuniks butik om aftenen, set udefra gennem vinduet"
             fill
             className="object-cover"
-            sizes="100vw"
+            sizes="(max-width: 768px) 100vw, 640px"
           />
         </div>
 

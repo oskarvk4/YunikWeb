@@ -8,6 +8,7 @@ import { useCart } from "@/lib/cart";
 import { useAuth } from "@/components/auth/AuthProvider";
 import MobileMenu from "./MobileMenu";
 import CartDrawer from "./CartDrawer";
+import AnnouncementBar from "./AnnouncementBar";
 import { CATEGORY_VALUES } from "@/lib/storefront";
 import type { ProductCategory } from "@/types";
 
@@ -73,11 +74,16 @@ export default function Navbar({
     return null;
   }
 
+  // The shipping/returns strip above the menu. Not on the coming-soon page,
+  // where there is nothing to ship yet.
+  const showAnnouncement = pathname !== "/coming-soon";
+
   return (
     <>
       <header
         className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm"
       >
+        {showAnnouncement && <AnnouncementBar />}
         <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-20 items-center justify-between">
 
@@ -302,6 +308,9 @@ export default function Navbar({
           </div>
         </nav>
       </header>
+      {/* Pages leave 80px (pt-20) for the menu; this spacer covers the 2rem strip
+          above it, so every page moves down with it. */}
+      {showAnnouncement && <div aria-hidden="true" className="h-8" />}
 
       {/* Mobile Menu */}
       <MobileMenu
