@@ -1,30 +1,30 @@
 import Image from "next/image";
 import Container from "@/components/ui/Container";
+import Lines from "@/components/ui/Lines";
+import type { Copy } from "@/content/copy";
 
 /**
  * Our physical shops, in two rows: the shop window with a note on the shops,
  * then a note on the people behind them with a photo from one of our stands.
- * Phones stack everything in reading order.
+ * Phones stack everything in reading order. Texts come from /admin/copy (home.shops).
  */
-export default function ShopWindow() {
+export default function ShopWindow({ content }: { content: Copy["home"]["shops"] }) {
   return (
     <section aria-labelledby="butikker-heading" className="py-14 md:py-28 bg-[#F5F0EB]">
       <Container>
         <div className="mb-12 md:mb-16 max-w-2xl">
           <p className="text-sm font-sans uppercase tracking-[0.3em] text-[#8D6553] mb-4">
-            Vores butikker
+            {content.kicker}
           </p>
           <h2
             id="butikker-heading"
             className="font-serif text-3xl md:text-4xl lg:text-5xl font-light text-[#1A1A1A] leading-tight mb-6"
           >
-            Først i butikken,
-            <br />
-            nu også online
+            <Lines text={content.headline} />
           </h2>
           <div className="space-y-3 text-[#1A1A1A]/70 font-sans leading-relaxed">
-            <p>I over 30 år har vores kunder fundet os i butikkerne i Aarhus og på Bornholm.</p>
-            <p>Der har de kunnet se smykkerne i virkeligheden, prøve dem på og spørge os til råds.</p>
+            <p>{content.paragraph1}</p>
+            {content.paragraph2 && <p>{content.paragraph2}</p>}
           </div>
         </div>
 
@@ -41,11 +41,11 @@ export default function ShopWindow() {
         <div className="mt-12 md:mt-20 grid gap-8 md:grid-cols-12 md:gap-12 lg:gap-16 md:items-center">
           <div className="md:col-span-6 md:col-start-2 lg:col-span-5 lg:col-start-2">
             <h3 className="font-serif text-2xl md:text-3xl font-light text-[#1A1A1A] leading-tight mb-4">
-              Også på messer
+              {content.fairsHeadline}
             </h3>
             <div className="space-y-3 text-[#1A1A1A]/70 font-sans leading-relaxed">
-              <p>Du har måske også mødt os ved vores stand på en messe, med smykker, sten og krystaller.</p>
-              <p>Webshoppen har de samme smykker og de samme mennesker bag.</p>
+              <p>{content.fairsParagraph1}</p>
+              {content.fairsParagraph2 && <p>{content.fairsParagraph2}</p>}
             </div>
           </div>
 

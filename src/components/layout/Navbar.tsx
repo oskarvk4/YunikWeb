@@ -23,8 +23,11 @@ const CATEGORY_LINKS: { category: ProductCategory; href: string; label: string }
 
 export default function Navbar({
   visibleCategories = CATEGORY_VALUES,
+  announcement = [],
 }: {
   visibleCategories?: ProductCategory[];
+  /** Messages for the strip above the menu, from /admin/copy. */
+  announcement?: string[];
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -84,7 +87,7 @@ export default function Navbar({
       <header
         className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm"
       >
-        {showAnnouncement && <AnnouncementBar />}
+        {showAnnouncement && <AnnouncementBar messages={announcement} />}
         <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="relative flex h-20 items-center justify-between">
 

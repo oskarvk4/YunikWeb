@@ -4,6 +4,7 @@ import Script from "next/script";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { getVisibleCategories } from "@/data/products";
+import { getCopy } from "@/lib/copy";
 import { HideOnAdmin } from "@/components/layout/SiteChrome";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import AuthErrorHandler from "@/components/auth/AuthErrorHandler";
@@ -113,7 +114,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const visibleCategories = await getVisibleCategories();
+  const [visibleCategories, copy] = await Promise.all([getVisibleCategories(), getCopy()]);
 
   return (
     <html lang="da" data-scroll-behavior="smooth">
@@ -145,7 +146,10 @@ export default async function RootLayout({
       >
         <AuthProvider>
           <AuthErrorHandler />
-          <Navbar visibleCategories={visibleCategories} />
+          <Navbar
+            visibleCategories={visibleCategories}
+            announcement={[copy.site.announcement.message1, copy.site.announcement.message2]}
+          />
           {/* overflow-x-clip stops slide-in animations (BrandStory, FadeIn) from widening
               the page on phones; unlike overflow-hidden it keeps position: sticky working. */}
           <main className="min-h-screen overflow-x-clip">

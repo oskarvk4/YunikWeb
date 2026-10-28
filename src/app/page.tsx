@@ -27,11 +27,11 @@ export default async function Home() {
   return (
     <>
       <HeroCarousel content={copy.home.hero} />
-      <TrustBar />
-      <FeaturedProducts products={pickHomeProducts(allProducts, 10)} />
+      <TrustBar content={copy.home.trustBar} />
+      <FeaturedProducts products={pickHomeProducts(allProducts, 10)} content={copy.home.featured} />
       <CategoryGrid tiles={buildHomeTiles(allProducts)} content={copy.home.categories} />
-      <ShopWindow />
-      <BrandStory />
+      <ShopWindow content={copy.home.shops} />
+      <BrandStory content={copy.home.brandStory} />
       <Newsletter />
     </>
   );

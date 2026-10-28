@@ -9,6 +9,15 @@ export const dynamic = "force-dynamic";
 // migrate more pages to use getCopy() in src/lib/copy.ts.
 const SECTIONS = [
   {
+    key: "site.announcement" as const,
+    title: "Alle sider – Sort bjælke øverst",
+    previewHref: "/",
+    fields: [
+      { key: "message1", label: "Besked 1", multiline: false },
+      { key: "message2", label: "Besked 2 (skiftes med besked 1 – lad stå tom for kun én)", multiline: false },
+    ],
+  },
+  {
     key: "home.hero" as const,
     title: "Forside – Hero",
     previewHref: "/",
@@ -20,12 +29,63 @@ const SECTIONS = [
     ],
   },
   {
+    key: "home.trustBar" as const,
+    title: "Forside – Tillidsbjælke under billedet",
+    previewHref: "/",
+    fields: [
+      { key: "point1", label: "Punkt 1 (butikker) – store skærme", multiline: false },
+      { key: "point1Short", label: "Punkt 1 – mobil og tablet (kort)", multiline: false },
+      { key: "point2", label: "Punkt 2 (kunder) – store skærme", multiline: false },
+      { key: "point2Short", label: "Punkt 2 – mobil og tablet (kort)", multiline: false },
+      { key: "point3", label: "Punkt 3 (sølv) – store skærme", multiline: false },
+      { key: "point3Short", label: "Punkt 3 – mobil og tablet (kort)", multiline: false },
+      { key: "point4", label: "Punkt 4 (fragt) – store skærme", multiline: false },
+      { key: "point4Short", label: "Punkt 4 – mobil og tablet (kort)", multiline: false },
+    ],
+  },
+  {
+    key: "home.featured" as const,
+    title: "Forside – Udvalgte smykker",
+    previewHref: "/",
+    fields: [
+      { key: "headline", label: "Overskrift", multiline: false },
+      { key: "body", label: "Brødtekst", multiline: false },
+      { key: "link", label: "Link tekst (til shoppen)", multiline: false },
+    ],
+  },
+  {
     key: "home.categories" as const,
     title: "Forside – Shop efter Kategori",
     previewHref: "/",
     fields: [
       { key: "headline", label: "Overskrift", multiline: false },
       { key: "body", label: "Brødtekst", multiline: false },
+    ],
+  },
+  {
+    key: "home.shops" as const,
+    title: "Forside – Vores butikker",
+    previewHref: "/",
+    fields: [
+      { key: "kicker", label: "Overtitel", multiline: false },
+      { key: "headline", label: "Overskrift (linjeskift = ny linje)", multiline: true },
+      { key: "paragraph1", label: "Afsnit 1", multiline: true },
+      { key: "paragraph2", label: "Afsnit 2", multiline: true },
+      { key: "fairsHeadline", label: "Messer – overskrift", multiline: false },
+      { key: "fairsParagraph1", label: "Messer – afsnit 1", multiline: true },
+      { key: "fairsParagraph2", label: "Messer – afsnit 2", multiline: true },
+    ],
+  },
+  {
+    key: "home.brandStory" as const,
+    title: "Forside – Familiearkiv",
+    previewHref: "/",
+    fields: [
+      { key: "kicker", label: "Overtitel", multiline: false },
+      { key: "headline", label: "Overskrift (linjeskift = ny linje)", multiline: true },
+      { key: "paragraph1", label: "Afsnit 1", multiline: true },
+      { key: "paragraph2", label: "Afsnit 2", multiline: true },
+      { key: "button", label: "Knap tekst", multiline: false },
     ],
   },
   {
@@ -155,6 +215,17 @@ const SECTIONS = [
       { key: "submitting", label: "Send-knap (mens der sendes)", multiline: false },
       { key: "successMessage", label: "Succes-besked", multiline: true },
       { key: "defaultError", label: "Standard fejlbesked", multiline: true },
+    ],
+  },
+  {
+    key: "site.footer" as const,
+    title: "Alle sider – Footer",
+    previewHref: "/",
+    fields: [
+      { key: "tagline", label: "Tekst under logoet", multiline: true },
+      { key: "companyLine", label: "Firmanavn og CVR", multiline: false },
+      { key: "addressLine", label: "Adresse", multiline: false },
+      { key: "contactLine", label: "E-mail og telefon", multiline: false },
     ],
   },
 ];

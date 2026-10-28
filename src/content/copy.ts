@@ -7,6 +7,19 @@
 // `const copy = await getCopy(); copy.section.key`.
 
 export const defaultCopy = {
+  site: {
+    announcement: {
+      message1: "Gratis fragt i Danmark · 14 dages retur",
+      message2: "+20.000 glade kunder",
+    },
+    footer: {
+      tagline:
+        "Tidløs elegance, skabt til den moderne kvinde. Hvert smykke fortæller en historie om raffineret skønhed og individuel udtryk.",
+      companyLine: "Yunik Jewelry · CVR: 46331060",
+      addressLine: "Silkeborgvej 226, 8320 Åbyhøj, Danmark",
+      contactLine: "kontakt@yunik.dk · +45 28 57 61 57",
+    },
+  },
   home: {
     hero: {
       kicker: "Formet gennem mere end 30 år",
@@ -14,9 +27,40 @@ export const defaultCopy = {
       cta: "Se Kollektionen",
       secondaryCta: "Shop øreringe",
     },
+    trustBar: {
+      point1: "Over 30 år i Aarhus og på Bornholm",
+      point1Short: "30 år i butikker",
+      point2: "+20.000 glade kunder",
+      point2Short: "+20.000 kunder",
+      point3: "Håndlavet i 925 sterlingsølv",
+      point3Short: "925 sterlingsølv",
+      point4: "Fri fragt og 14 dages returret",
+      point4Short: "Fri fragt i DK",
+    },
+    featured: {
+      headline: "Udvalgte Smykker",
+      body: "Vores mest elskede designs, udvalgt for deres enestående skønhed",
+      link: "Se Alle Produkter",
+    },
     categories: {
       headline: "Shop efter Kategori",
       body: "Udforsk vores kuraterede kollektioner af tidløse smykker",
+    },
+    shops: {
+      kicker: "Vores butikker",
+      headline: "Først i butikken,\nnu også online",
+      paragraph1: "I over 30 år har vores kunder fundet os i butikkerne i Aarhus og på Bornholm.",
+      paragraph2: "Der har de kunnet se smykkerne i virkeligheden, prøve dem på og spørge os til råds.",
+      fairsHeadline: "Også på messer",
+      fairsParagraph1: "Du har måske også mødt os ved vores stand på en messe, med smykker, sten og krystaller.",
+      fairsParagraph2: "Webshoppen har de samme smykker og de samme mennesker bag.",
+    },
+    brandStory: {
+      kicker: "Et familiearkiv",
+      headline: "Et univers\nsamlet over tid",
+      paragraph1: "Samlet gennem årtiers rejser mellem Danmark, Indien og Thailand.",
+      paragraph2: "Fra stille værksteder til håndplukkede sten.",
+      button: "Læs vores historie",
     },
   },
   about: {

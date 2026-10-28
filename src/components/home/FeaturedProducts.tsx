@@ -7,12 +7,15 @@ import Container from "@/components/ui/Container";
 import Badge from "@/components/ui/Badge";
 import { formatPrice, Product } from "@/types";
 import { useCart } from "@/lib/cart";
+import type { Copy } from "@/content/copy";
 
 interface FeaturedProductsProps {
   products: Product[];
+  /** Heading, intro and link text from /admin/copy (home.featured). */
+  content: Copy["home"]["featured"];
 }
 
-export default function FeaturedProducts({ products }: FeaturedProductsProps) {
+export default function FeaturedProducts({ products, content }: FeaturedProductsProps) {
   const { addItem } = useCart();
 
   return (
@@ -26,10 +29,10 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
           className="text-center mb-8 md:mb-16"
         >
           <h2 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A] mb-4">
-            Udvalgte Smykker
+            {content.headline}
           </h2>
           <p className="text-[#1A1A1A]/60 font-sans max-w-md mx-auto">
-            Vores mest elskede designs, udvalgt for deres enestående skønhed
+            {content.body}
           </p>
         </motion.div>
 
@@ -126,7 +129,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
             href="/shop"
             className="inline-flex items-center gap-2 text-sm font-sans uppercase tracking-[0.15em] text-[#1A1A1A] hover:text-[#8D6553] transition-colors group"
           >
-            Se Alle Produkter
+            {content.link}
             <svg
               className="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
               fill="none"

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Container from "@/components/ui/Container";
+import type { Copy } from "@/content/copy";
 
 // Outline icons (Tabler shapes), drawn in the current text colour.
 function Icon({ children }: { children: ReactNode }) {
@@ -47,13 +48,9 @@ const TruckIcon = (
 );
 
 // Keep these to facts that can be backed up.
-// `short` is shown below xl, where four (or two) columns leave little width.
-const POINTS = [
-  { icon: ShopIcon, full: "Over 30 år i Aarhus og på Bornholm", short: "30 år i butikker" },
-  { icon: HeartIcon, full: "+20.000 glade kunder", short: "+20.000 kunder" },
-  { icon: DiamondIcon, full: "Håndlavet i 925 sterlingsølv", short: "925 sterlingsølv" },
-  { icon: TruckIcon, full: "Fri fragt og 14 dages returret", short: "Fri fragt i DK" },
-];
+// Texts come from /admin/copy (home.trustBar). `short` is shown below xl,
+// where four (or two) columns leave little width.
+const ICONS = [ShopIcon, HeartIcon, DiamondIcon, TruckIcon];
 
 /**
  * Trust points directly under the hero, each with an icon in the accent colour.
@@ -61,14 +58,21 @@ const POINTS = [
  * subtracts it, so both fit on the first screen. Change the hero's height calc
  * in HeroCarousel if this changes.
  */
-export default function TrustBar() {
+export default function TrustBar({ content }: { content: Copy["home"]["trustBar"] }) {
+  const points = [
+    { full: content.point1, short: content.point1Short },
+    { full: content.point2, short: content.point2Short },
+    { full: content.point3, short: content.point3Short },
+    { full: content.point4, short: content.point4Short },
+  ].map((point, i) => ({ ...point, icon: ICONS[i] }));
+
   return (
     <section aria-label="Om Yunik" className="bg-white border-b border-[#1A1A1A]/10">
       <Container>
         <ul className="h-[5.25rem] md:h-16 grid grid-cols-2 md:grid-cols-4 content-center items-center gap-x-3 gap-y-2.5 md:gap-x-0">
-          {POINTS.map((point) => (
+          {points.map((point, i) => (
             <li
-              key={point.full}
+              key={i}
               className="flex items-center gap-2 md:justify-center md:gap-2.5 whitespace-nowrap font-serif text-[13px] md:text-sm xl:text-[15px] text-[#1A1A1A] md:border-l md:first:border-l-0 md:border-[#1A1A1A]/10"
             >
               {point.icon}

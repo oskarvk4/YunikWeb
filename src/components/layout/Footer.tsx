@@ -2,10 +2,12 @@ import Link from "next/link";
 import Container from "@/components/ui/Container";
 import type { ProductCategory } from "@/types";
 import { getVisibleCategories } from "@/data/products";
+import { getCopy } from "@/lib/copy";
 
 export default async function Footer() {
   const currentYear = new Date().getFullYear();
-  const visibleCategories = await getVisibleCategories();
+  const [visibleCategories, copy] = await Promise.all([getVisibleCategories(), getCopy()]);
+  const text = copy.site.footer;
 
   const shopLinks: { label: string; href: string; category?: ProductCategory }[] = [
     { label: "Alle Smykker", href: "/shop" },
@@ -45,14 +47,12 @@ export default async function Footer() {
                 </h2>
               </Link>
               <p className="text-sm text-white/60 font-sans leading-relaxed max-w-xs mb-4">
-                Tidløs elegance, skabt til den moderne kvinde. Hvert smykke
-                fortæller en historie om raffineret skønhed og individuel
-                udtryk.
+                {text.tagline}
               </p>
               <div className="text-xs text-white/40 font-sans space-y-1">
-                <p>Yunik Jewelry · CVR: 46331060</p>
-                <p>Silkeborgvej 226, 8320 Åbyhøj, Danmark</p>
-                <p>kontakt@yunik.dk · +45 28 57 61 57</p>
+                <p>{text.companyLine}</p>
+                <p>{text.addressLine}</p>
+                <p>{text.contactLine}</p>
               </div>
               {/* Social Links */}
               <div className="flex space-x-4 mt-6">

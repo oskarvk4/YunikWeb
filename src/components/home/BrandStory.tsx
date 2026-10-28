@@ -5,8 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
+import Lines from "@/components/ui/Lines";
+import type { Copy } from "@/content/copy";
 
-export default function BrandStory() {
+// Texts come from /admin/copy (home.brandStory).
+export default function BrandStory({ content }: { content: Copy["home"]["brandStory"] }) {
   return (
     <section className="py-14 md:py-28 bg-white">
       <Container>
@@ -48,20 +51,18 @@ export default function BrandStory() {
             className="lg:pl-8"
           >
             <p className="text-sm font-sans uppercase tracking-[0.3em] text-[#8D6553] mb-4">
-              Et familiearkiv
+              {content.kicker}
             </p>
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light text-[#1A1A1A] leading-tight mb-6">
-              Et univers
-              <br />
-              samlet over tid
+              <Lines text={content.headline} />
             </h2>
             <div className="space-y-3 text-[#1A1A1A]/70 font-sans leading-relaxed mb-8">
-              <p>Samlet gennem årtiers rejser mellem Danmark, Indien og Thailand.</p>
-              <p>Fra stille værksteder til håndplukkede sten.</p>
+              <p>{content.paragraph1}</p>
+              {content.paragraph2 && <p>{content.paragraph2}</p>}
             </div>
             <Link href="/about">
               <Button variant="outline">
-                Læs vores historie
+                {content.button}
               </Button>
             </Link>
           </motion.div>
