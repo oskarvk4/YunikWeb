@@ -90,28 +90,36 @@ const labelClass =
 const sectionClass =
   "font-serif text-lg font-light text-[#1A1A1A] mb-4 pb-2 border-b border-[#1A1A1A]/10";
 
+/** Pulse blocks standing in for the form, while Stripe loads or a session is being created. */
+export function PaymentSkeleton() {
+  return (
+    <div className="space-y-4" aria-busy="true">
+      {[...Array(4)].map((_, i) => (
+        <div key={i} className="h-12 bg-[#1A1A1A]/5 animate-pulse" />
+      ))}
+    </div>
+  );
+}
+
 function PaymentForm({
   amountLabel,
   collectsShippingAddress,
   pickupPointLabel,
+  email,
+  onEmailChange,
 }: {
   amountLabel: string;
   collectsShippingAddress: boolean;
   pickupPointLabel?: string | null;
+  email: string;
+  onEmailChange: (email: string) => void;
 }) {
   const result = useCheckoutElements();
-  const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPaying, setIsPaying] = useState(false);
 
   if (result.type === "loading") {
-    return (
-      <div className="space-y-4" aria-busy="true">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-12 bg-[#1A1A1A]/5 animate-pulse" />
-        ))}
-      </div>
-    );
+    return <PaymentSkeleton />;
   }
 
   if (result.type === "error") {
@@ -156,7 +164,7 @@ function PaymentForm({
           type="email"
           required
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => onEmailChange(e.target.value)}
           placeholder="din@email.dk"
           className="w-full px-[14px] py-3 border border-[#1A1A1A]/20 bg-white text-[15px] font-sans text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 focus:border-[#1A1A1A] focus:outline-none transition-colors"
         />
@@ -218,6 +226,12 @@ interface StripePaymentProps {
   collectsShippingAddress: boolean;
   /** The chosen shop, shown in place of the delivery address fields. */
   pickupPointLabel?: string | null;
+  /**
+   * Held by the checkout page, which creates a new session whenever the basket
+   * or delivery choice changes, so the e-mail survives the form being rebuilt.
+   */
+  email: string;
+  onEmailChange: (email: string) => void;
 }
 
 export default function StripePayment({
@@ -225,6 +239,8 @@ export default function StripePayment({
   amountLabel,
   collectsShippingAddress,
   pickupPointLabel,
+  email,
+  onEmailChange,
 }: StripePaymentProps) {
   return (
     <CheckoutElementsProvider
@@ -247,6 +263,8 @@ export default function StripePayment({
         amountLabel={amountLabel}
         collectsShippingAddress={collectsShippingAddress}
         pickupPointLabel={pickupPointLabel}
+        email={email}
+        onEmailChange={onEmailChange}
       />
     </CheckoutElementsProvider>
   );

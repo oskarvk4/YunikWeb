@@ -1,10 +1,13 @@
 "use client";
 
-const categories: { label: string; value: string }[] = [
+import { giftLabels } from "@/lib/storefront";
+
+// Every category is always shown, even with few or no pieces. Most pieces first.
+export const CATEGORY_FILTERS: { label: string; value: string }[] = [
   { label: "Alle", value: "all" },
+  { label: "Øreringe", value: "earrings" },
   { label: "Ringe", value: "rings" },
   { label: "Halskæder", value: "necklaces" },
-  { label: "Øreringe", value: "earrings" },
   { label: "Armbånd", value: "bracelets" },
 ];
 
@@ -19,11 +22,31 @@ const metals: { label: string; value: string }[] = [
   { label: "Guld", value: "gold" },
 ];
 
+// Outline gift box (Tabler shapes), drawn in the chip's text colour.
+function GiftIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="h-3.5 w-3.5 shrink-0"
+    >
+      <path d="M3 9a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1z" />
+      <path d="M12 8v13" />
+      <path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7" />
+      <path d="M7.5 8a2.5 2.5 0 0 1 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 0 1 0 5" />
+    </svg>
+  );
+}
+
 interface FilterBarProps {
   activeCategory: string;
   activeSort: string;
   activeMetals: string[];
-  availableCategories: string[];
   underPriceActive: boolean;
   onCategoryChange: (category: string) => void;
   onSortChange: (sort: string) => void;
@@ -35,26 +58,19 @@ export default function FilterBar({
   activeCategory,
   activeSort,
   activeMetals,
-  availableCategories,
   underPriceActive,
   onCategoryChange,
   onSortChange,
   onMetalToggle,
   onUnderPriceToggle,
 }: FilterBarProps) {
-  // Categories with too few pieces are hidden, but the active one stays so it can be cleared.
-  const shownCategories = categories.filter(
-    (category) =>
-      category.value === "all" ||
-      category.value === activeCategory ||
-      availableCategories.includes(category.value)
-  );
+  const gift = giftLabels();
 
   return (
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4 mb-6">
       {/* Category + Metal Filters */}
       <div className="flex flex-wrap items-center gap-2">
-        {shownCategories.map((category) => (
+        {CATEGORY_FILTERS.map((category) => (
           <button
             key={category.value}
             onClick={() => onCategoryChange(category.value)}
@@ -101,13 +117,14 @@ export default function FilterBar({
           type="button"
           onClick={onUnderPriceToggle}
           aria-pressed={underPriceActive}
-          className={`shrink-0 px-4 py-2 rounded-full text-xs font-sans uppercase tracking-[0.15em] border transition-all duration-300 ${
+          className={`shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-sans uppercase tracking-[0.15em] border transition-all duration-300 ${
             underPriceActive
               ? "bg-[#1A1A1A] text-white border-[#1A1A1A]"
               : "bg-transparent text-[#1A1A1A] border-[#1A1A1A]/20 hover:border-[#1A1A1A]/40"
           }`}
         >
-          Under 700 kr
+          {gift.christmas && <GiftIcon />}
+          {gift.chip}
         </button>
       </div>
 

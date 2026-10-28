@@ -25,12 +25,12 @@ export default function CookieConsent() {
       role="dialog"
       aria-live="polite"
       aria-label="Cookie samtykke"
-      className="fixed inset-x-0 bottom-0 z-50 bg-[#1A1A1A] text-white shadow-[0_-8px_30px_rgba(0,0,0,0.2)]"
+      // Phones: a compact card that leaves the page visible around it. From md: a full-width bar.
+      className="fixed inset-x-3 bottom-3 z-50 rounded-sm bg-[#1A1A1A] text-white shadow-[0_8px_30px_rgba(0,0,0,0.3)] md:inset-x-0 md:bottom-0 md:rounded-none md:shadow-[0_-8px_30px_rgba(0,0,0,0.2)]"
     >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row md:items-center gap-4">
-        <p className="text-sm text-white/80 font-sans leading-relaxed flex-1">
-          Vi bruger cookies for at få siden til at fungere og for at forbedre
-          din oplevelse. Læs mere i vores{" "}
+      <div className="mx-auto max-w-6xl p-4 flex flex-col gap-3 md:flex-row md:items-center md:gap-4 md:px-6 md:py-3 lg:px-8">
+        <p className="text-[13px] leading-snug text-white/80 font-sans md:text-sm md:leading-relaxed md:flex-1">
+          Vi bruger cookies til statistik og markedsføring. Læs mere i vores{" "}
           <Link
             href="/privacy"
             className="underline hover:text-white transition-colors"
@@ -39,18 +39,19 @@ export default function CookieConsent() {
           </Link>
           .
         </p>
-        <div className="flex gap-2 flex-shrink-0">
+        {/* Rejecting is as easy as accepting: same size, weight and contrast, only the fill differs. */}
+        <div className="flex gap-2 md:flex-shrink-0">
           <button
             type="button"
             onClick={() => dismiss("rejected")}
-            className="px-4 py-2 text-sm font-sans text-white/70 hover:text-white border border-white/20 hover:border-white/40 rounded transition-colors"
+            className="flex-1 md:flex-none px-4 py-2 text-[13px] md:text-sm font-sans font-medium text-white border border-white hover:bg-white/15 rounded transition-colors"
           >
             Kun nødvendige
           </button>
           <button
             type="button"
             onClick={() => dismiss("accepted")}
-            className="px-4 py-2 text-sm font-sans bg-white text-[#1A1A1A] hover:bg-white/90 rounded transition-colors font-medium"
+            className="flex-1 md:flex-none px-4 py-2 text-[13px] md:text-sm font-sans font-medium bg-white text-[#1A1A1A] border border-white hover:bg-white/90 rounded transition-colors"
           >
             Accepter alle
           </button>

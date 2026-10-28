@@ -2,10 +2,10 @@
 
 import { useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import FilterBar from "@/components/shop/FilterBar";
+import FilterBar, { CATEGORY_FILTERS } from "@/components/shop/FilterBar";
 import ProductGrid from "@/components/shop/ProductGrid";
 import { Product } from "@/types";
-import { visibleCategories } from "@/lib/storefront";
+import { GIFT_PRICE_LIMIT } from "@/lib/storefront";
 
 interface ShopContentProps {
   products: Product[];
@@ -13,8 +13,6 @@ interface ShopContentProps {
 
 const VALID_METALS = ["gold", "silver"] as const;
 type Metal = (typeof VALID_METALS)[number];
-
-const UNDER_PRICE_LIMIT = 700;
 
 type UrlChanges = {
   category?: string;
@@ -44,7 +42,13 @@ export default function ShopContent({ products }: ShopContentProps) {
   const minPrice = Number(searchParams.get("minPrice")) || null;
   const maxPrice = Number(searchParams.get("maxPrice")) || null;
 
-  const availableCategories = useMemo(() => visibleCategories(products), [products]);
+  // The selected category, when it has no pieces at all (not merely none left after
+  // the metal or price filters), so the grid can say it is on its way.
+  const emptyCategory = useMemo(() => {
+    if (activeCategory === "all") return undefined;
+    if (products.some((p) => p.category === activeCategory)) return undefined;
+    return CATEGORY_FILTERS.find((c) => c.value === activeCategory);
+  }, [products, activeCategory]);
 
   const updateURL = (changes: UrlChanges) => {
     const category = changes.category ?? activeCategory;
@@ -83,7 +87,7 @@ export default function ShopContent({ products }: ShopContentProps) {
 
   const handleUnderPriceToggle = () => {
     updateURL({
-      maxPrice: maxPrice === UNDER_PRICE_LIMIT ? null : UNDER_PRICE_LIMIT,
+      maxPrice: maxPrice === GIFT_PRICE_LIMIT ? null : GIFT_PRICE_LIMIT,
     });
   };
 
@@ -131,14 +135,13 @@ export default function ShopContent({ products }: ShopContentProps) {
         activeCategory={activeCategory}
         activeSort={activeSort}
         activeMetals={activeMetals}
-        availableCategories={availableCategories}
-        underPriceActive={maxPrice === UNDER_PRICE_LIMIT}
+        underPriceActive={maxPrice === GIFT_PRICE_LIMIT}
         onCategoryChange={handleCategoryChange}
         onSortChange={handleSortChange}
         onMetalToggle={handleMetalToggle}
         onUnderPriceToggle={handleUnderPriceToggle}
       />
-      <ProductGrid products={filteredAndSortedProducts} />
+      <ProductGrid products={filteredAndSortedProducts} emptyCategory={emptyCategory} />
     </>
   );
 }

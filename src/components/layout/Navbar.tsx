@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -85,7 +86,7 @@ export default function Navbar({
       >
         {showAnnouncement && <AnnouncementBar />}
         <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-20 items-center justify-between">
+          <div className="relative flex h-20 items-center justify-between">
 
             {/* Left group: mobile button (mobile) | nav links (desktop) */}
             <div className="flex items-center">
@@ -131,9 +132,14 @@ export default function Navbar({
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto"
               aria-label="Yunik – forside"
             >
-              <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light tracking-[0.25em] text-[#1A1A1A] leading-none">
-                YUNIK
-              </h1>
+              <Image
+                src="/yunik-wordmark.png"
+                alt="Yunik"
+                width={383}
+                height={62}
+                priority
+                className="h-[22px] w-auto md:h-[26px] lg:h-[30px]"
+              />
             </Link>
 
             {/* Right group: nav links + icons */}

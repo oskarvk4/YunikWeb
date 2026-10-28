@@ -69,7 +69,7 @@ export default function CategoryGrid({
                 </div>
 
                 {/* Phones: the name sits under the photo, where light photos can't wash it out. */}
-                <h3 className="md:hidden mt-3 font-serif text-xl font-light text-[#1A1A1A]">
+                <h3 className="md:hidden mt-3 font-serif text-xl font-light text-[#1A1A1A] text-balance">
                   {tile.label}
                 </h3>
               </Link>

@@ -10,6 +10,10 @@ interface Slide {
   srcMobile?: string;
   alt: string;
   position?: string;
+  // Extra shading for this slide only: a soft pool of dark behind the text, for photos
+  // that are light where the text sits. Tailwind classes; phone and desktop differ
+  // because the text is at the bottom on phones and at the left from md.
+  overlay?: string;
 }
 
 interface HeroContent {
@@ -37,17 +41,26 @@ const SLIDES: Slide[] = [
     src: "/jewelry-close-up.webp",
     alt: "Yunik smykker – håndlavet guld",
     position: "object-center",
+    // Ring on pale paper: the text sits on the lightest part of the photo.
+    overlay:
+      "bg-[radial-gradient(ellipse_120%_25%_at_50%_72%,rgba(26,26,26,0.7),transparent)] md:bg-[radial-gradient(ellipse_50%_45%_at_20%_74%,rgba(26,26,26,0.6),transparent)]",
   },
   {
     src: "/hero-bracelet.webp",
     alt: "Yunik armbånd i guld",
     position: "object-center",
+    // Gold chains cross the kicker on phones; the desktop crop is dark enough already.
+    overlay:
+      "bg-[radial-gradient(ellipse_120%_25%_at_50%_72%,rgba(26,26,26,0.35),transparent)] md:bg-none",
   },
   {
     src: "/hero-rings.webp",
     srcMobile: "/luna-pendant.jpg",
     alt: "Yunik ringe og armbånd i guld",
     position: "object-center",
+    // Pale skin behind the text on desktop, light grey stone on phones.
+    overlay:
+      "bg-[radial-gradient(ellipse_120%_25%_at_50%_72%,rgba(26,26,26,0.55),transparent)] md:bg-[radial-gradient(ellipse_50%_45%_at_20%_74%,rgba(26,26,26,0.6),transparent)]",
   },
 ];
 
@@ -249,11 +262,11 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
   return (
     <section
       ref={sectionRef}
-      // Phones: mt-20 starts the photo below the fixed 80px header instead of under it,
-      // so the header never hides the top of the picture (faces sit high in these shots).
-      // Height leaves room for the trust bar below on the first screen: phones subtract
-      // the 2rem announcement strip, 5rem menu and 5.25rem bar; desktop the strip and the 4rem bar.
-      className="relative mt-20 md:mt-0 h-[calc(100svh-12.25rem-1px)] min-h-[360px] max-h-[760px] w-full overflow-hidden touch-pan-y md:h-[calc(100svh-6rem-1px)] md:min-h-[520px] md:max-h-[820px]"
+      // mt-20 starts the photo below the fixed 80px menu instead of under it, so the header
+      // never hides the top of the picture (faces sit high in these shots). The hero fills the
+      // rest of the first screen: 100svh minus 7rem (the 2rem trust bar, whose spacer is in
+      // normal flow above this section, plus the 5rem menu that mt-20 covers).
+      className="relative mt-20 h-[calc(100svh-7rem)] min-h-[360px] max-h-[760px] w-full overflow-hidden touch-pan-y md:min-h-[520px] md:max-h-[820px]"
       aria-roledescription="carousel"
       aria-label="Yunik – udvalgte billeder"
       onMouseEnter={() => setHovered(true)}
@@ -294,20 +307,24 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
                 aria-hidden={isCopy || realIndex !== index}
               >
                 {(i === 1 || restReady) && <SlideImage slide={slide} first={i === 1} />}
+                {slide.overlay && (
+                  <div aria-hidden="true" className={`pointer-events-none absolute inset-0 ${slide.overlay}`} />
+                )}
               </div>
             );
           })}
         </div>
         {/* Overlay: phones shade the bottom, where the text sits; larger screens shade the left. */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/65 via-[#1A1A1A]/15 to-transparent md:bg-gradient-to-r md:from-[#1A1A1A]/50 md:via-[#1A1A1A]/20 md:to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/75 via-[#1A1A1A]/25 to-transparent md:bg-gradient-to-r md:from-[#1A1A1A]/65 md:via-[#1A1A1A]/30 md:to-transparent z-10" />
       </div>
 
-      {/* Content: bottom of the photo on phones. Larger screens: centred, then pushed down
-          12.5% of the hero (top % resolves against the full-height flex row). */}
-      <div className="relative z-20 h-full flex items-end pb-16 md:items-center md:pb-0">
+      {/* Content: bottom of the photo on phones, with pb-36 so the buttons stay above the
+          cookie card (about 130px tall) for first-time visitors. Larger screens: centred, then
+          pushed down 12.5% of the hero (top % resolves against the full-height flex row). */}
+      <div className="relative z-20 h-full flex items-end pb-36 md:items-center md:pb-0">
         <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 md:relative md:top-[12.5%]">
           <div className="max-w-xl md:translate-y-16">
-            <h1 className="text-white/90 text-sm font-sans uppercase tracking-[0.2em] md:tracking-[0.3em] mb-6 md:mb-8">
+            <h1 className="text-white/90 text-sm font-sans uppercase tracking-[0.2em] md:tracking-[0.3em] mb-6 md:mb-8 [text-shadow:0_1px_12px_rgba(0,0,0,0.35)]">
               {content.kicker}
             </h1>
             {content.body && (
@@ -323,7 +340,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
               </Link>
               <Link
                 href="/shop?category=earrings"
-                className="text-sm font-sans uppercase tracking-[0.15em] text-white underline underline-offset-8 decoration-white/40 hover:decoration-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white rounded-sm"
+                className="text-sm font-sans uppercase tracking-[0.15em] text-white underline underline-offset-8 decoration-white/40 hover:decoration-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white rounded-sm [text-shadow:0_1px_12px_rgba(0,0,0,0.35)]"
               >
                 {content.secondaryCta}
               </Link>
