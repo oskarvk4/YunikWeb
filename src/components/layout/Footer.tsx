@@ -22,7 +22,6 @@ export default async function Footer() {
     about: [
       { label: "Vores Historie", href: "/about" },
       { label: "Materialer", href: "/about#materials" },
-      { label: "Bæredygtighed", href: "/about#sustainability" },
     ],
     help: [
       { label: "Kontakt Os", href: "/contact" },

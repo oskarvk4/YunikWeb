@@ -20,7 +20,6 @@ export default async function AboutPage() {
   const values = [
     { title: copy.values.title1, description: copy.values.body1 },
     { title: copy.values.title2, description: copy.values.body2 },
-    { title: copy.values.title3, description: copy.values.body3 },
   ];
 
   return (
@@ -121,7 +120,7 @@ export default async function AboutPage() {
             </h2>
           </FadeIn>
 
-          <div className="grid md:grid-cols-3 gap-8 md:gap-12">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 max-w-3xl mx-auto">
             {values.map((value, index) => (
               <FadeIn
                 key={value.title}
@@ -169,25 +168,6 @@ export default async function AboutPage() {
               />
             </FadeIn>
           </div>
-        </Container>
-      </section>
-
-      {/* Sustainability Section */}
-      <section id="sustainability" className="py-20 md:py-28 bg-[#1A1A1A]">
-        <Container size="narrow">
-          <FadeIn className="text-center">
-            <p className="text-sm font-sans uppercase tracking-[0.3em] text-[#D4A9A5] mb-4">
-              {copy.sustainability.kicker}
-            </p>
-            <h2 className="font-serif text-3xl md:text-4xl font-light text-white mb-8">
-              {copy.sustainability.headline}
-            </h2>
-            <div className="space-y-6 text-white/70 font-sans leading-relaxed text-lg">
-              <p>{copy.sustainability.paragraph1}</p>
-              <p>{copy.sustainability.paragraph2}</p>
-              <p>{copy.sustainability.paragraph3}</p>
-            </div>
-          </FadeIn>
         </Container>
       </section>
     </div>

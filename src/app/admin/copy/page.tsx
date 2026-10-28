@@ -127,26 +127,12 @@ const SECTIONS = [
       { key: "body1", label: "Værdi 1 – beskrivelse", multiline: true },
       { key: "title2", label: "Værdi 2 – titel", multiline: false },
       { key: "body2", label: "Værdi 2 – beskrivelse", multiline: true },
-      { key: "title3", label: "Værdi 3 – titel", multiline: false },
-      { key: "body3", label: "Værdi 3 – beskrivelse", multiline: true },
     ],
   },
   {
     key: "about.materials" as const,
     title: "Om os – Materialer",
     previewHref: "/about#materials",
-    fields: [
-      { key: "kicker", label: "Overtitel", multiline: false },
-      { key: "headline", label: "Overskrift", multiline: false },
-      { key: "paragraph1", label: "Afsnit 1", multiline: true },
-      { key: "paragraph2", label: "Afsnit 2", multiline: true },
-      { key: "paragraph3", label: "Afsnit 3", multiline: true },
-    ],
-  },
-  {
-    key: "about.sustainability" as const,
-    title: "Om os – Bæredygtighed",
-    previewHref: "/about#sustainability",
     fields: [
       { key: "kicker", label: "Overtitel", multiline: false },
       { key: "headline", label: "Overskrift", multiline: false },

@@ -88,9 +88,6 @@ export const defaultCopy = {
       title2: "Tidløst Design",
       body2:
         "Vores designs transcenderer trends og skaber stykker, der bliver elskede dele af din smykkesamling i mange år fremover.",
-      title3: "Bæredygtig Praksis",
-      body3:
-        "Vi er engagerede i etisk sourcing og bæredygtige produktionsmetoder, fordi smukke smykker ikke skal koste jorden.",
     },
     materials: {
       kicker: "Materialer",
@@ -98,19 +95,9 @@ export const defaultCopy = {
       paragraph1:
         "Vi arbejder udelukkende med materialer af høj kvalitet, der tåler tidens tand. Vores sterlingsølv-stykker er fremstillet af 92,5% rent sølv, mens vores guldsmykker indeholder 14 karat og 18 karat guldforgyldning over en sterlingsølv-base.",
       paragraph2:
-        "Hver ædelsten er omhyggeligt udvalgt for sin kvalitet og brillans. Vi sourcer ferskvandsperler fra bæredygtige dambrug og bruger konfliktfrie ædelstene i hele vores kollektioner.",
+        "Hver ædelsten er omhyggeligt udvalgt for sin kvalitet og brillans.",
       paragraph3:
         "Alle vores smykker er hypoallergene og nikkelfri, hvilket gør dem perfekte selv til den mest følsomme hud.",
-    },
-    sustainability: {
-      kicker: "Bæredygtighed",
-      headline: "Vores Løfte",
-      paragraph1:
-        "Vi tror på, at smukke smykker ikke skal koste vores planet. Derfor er vi engagerede i bæredygtige praksisser i hvert trin af vores proces.",
-      paragraph2:
-        "Fra genbrugelige emballagematerialer til etisk sourcede ædelstene bestræber vi os på at minimere vores miljøaftryk, samtidig med at vi maksimerer skønheden og kvaliteten af vores smykker.",
-      paragraph3:
-        "Vores smykker er designet til at holde livet ud, hvilket reducerer behovet for konstant udskiftning og bidrager til en mere bæredygtig modeindustri.",
     },
   },
   contact: {
