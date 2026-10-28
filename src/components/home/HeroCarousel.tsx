@@ -263,10 +263,11 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
     <section
       ref={sectionRef}
       // mt-20 starts the photo below the fixed 80px menu instead of under it, so the header
-      // never hides the top of the picture (faces sit high in these shots). The hero fills the
-      // rest of the first screen: 100svh minus 7rem (the 2rem trust bar, whose spacer is in
-      // normal flow above this section, plus the 5rem menu that mt-20 covers).
-      className="relative mt-20 h-[calc(100svh-7rem)] min-h-[360px] max-h-[760px] w-full overflow-hidden touch-pan-y md:min-h-[520px] md:max-h-[820px]"
+      // never hides the top of the picture (faces sit high in these shots). Height leaves
+      // room for the trust bar below on the first screen: 100svh minus the 2rem strip (its
+      // spacer is in normal flow above this section), the 5rem menu that mt-20 covers and
+      // the trust bar (5.25rem on phones, 4rem from md) with its 1px border.
+      className="relative mt-20 h-[calc(100svh-12.25rem-1px)] min-h-[360px] max-h-[760px] w-full overflow-hidden touch-pan-y md:h-[calc(100svh-11rem-1px)] md:min-h-[520px] md:max-h-[820px]"
       aria-roledescription="carousel"
       aria-label="Yunik – udvalgte billeder"
       onMouseEnter={() => setHovered(true)}
@@ -318,10 +319,11 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
         <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/75 via-[#1A1A1A]/25 to-transparent md:bg-gradient-to-r md:from-[#1A1A1A]/65 md:via-[#1A1A1A]/30 md:to-transparent z-10" />
       </div>
 
-      {/* Content: bottom of the photo on phones, with pb-36 so the buttons stay above the
-          cookie card (about 130px tall) for first-time visitors. Larger screens: centred, then
-          pushed down 12.5% of the hero (top % resolves against the full-height flex row). */}
-      <div className="relative z-20 h-full flex items-end pb-36 md:items-center md:pb-0">
+      {/* Content: bottom of the photo on phones. pb-16 is enough to keep the buttons above
+          the cookie card (about 130px tall) because the trust bar sits below the hero.
+          Larger screens: centred, then pushed down 12.5% of the hero (top % resolves
+          against the full-height flex row). */}
+      <div className="relative z-20 h-full flex items-end pb-16 md:items-center md:pb-0">
         <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 md:relative md:top-[12.5%]">
           <div className="max-w-xl md:translate-y-16">
             <h1 className="text-white/90 text-sm font-sans uppercase tracking-[0.2em] md:tracking-[0.3em] mb-6 md:mb-8 [text-shadow:0_1px_12px_rgba(0,0,0,0.35)]">
