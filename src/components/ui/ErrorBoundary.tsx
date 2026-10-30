@@ -1,10 +1,17 @@
 "use client";
 
 import { Component, ReactNode } from "react";
+import { useCopy } from "@/components/CopyProvider";
+import type { Copy } from "@/content/copy";
 
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
+}
+
+interface InnerProps extends Props {
+  /** The error text from /admin/copy (site.errorBoundary). */
+  text: Copy["site"]["errorBoundary"];
 }
 
 interface State {
@@ -12,8 +19,10 @@ interface State {
   error?: Error;
 }
 
-export default class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
+// A class component can't use hooks, so the wrapper below reads the editable
+// text and hands it down.
+class ErrorBoundaryInner extends Component<InnerProps, State> {
+  constructor(props: InnerProps) {
     super(props);
     this.state = { hasError: false };
   }
@@ -63,23 +72,23 @@ export default class ErrorBoundary extends Component<Props, State> {
               </svg>
             </div>
             <h2 className="font-serif text-2xl text-[#1A1A1A] mb-2">
-              Noget gik galt
+              {this.props.text.title}
             </h2>
             <p className="text-[#1A1A1A]/60 mb-6">
-              Der opstod en fejl. Prøv at genindlæse siden.
+              {this.props.text.message}
             </p>
             <div className="flex gap-4 justify-center">
               <button
                 onClick={this.handleRetry}
                 className="px-6 py-3 bg-[#1A1A1A] text-white font-medium hover:bg-[#1A1A1A]/90 transition-colors"
               >
-                Prøv igen
+                {this.props.text.retry}
               </button>
               <button
                 onClick={() => window.location.reload()}
                 className="px-6 py-3 border border-[#1A1A1A]/20 font-medium hover:border-[#1A1A1A]/40 transition-colors"
               >
-                Genindlæs side
+                {this.props.text.reload}
               </button>
             </div>
             {process.env.NODE_ENV === "development" && this.state.error && (
@@ -101,4 +110,13 @@ export default class ErrorBoundary extends Component<Props, State> {
 
     return this.props.children;
   }
+}
+
+export default function ErrorBoundary({ children, fallback }: Props) {
+  const text = useCopy().site.errorBoundary;
+  return (
+    <ErrorBoundaryInner text={text} fallback={fallback}>
+      {children}
+    </ErrorBoundaryInner>
+  );
 }

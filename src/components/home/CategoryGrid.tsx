@@ -4,11 +4,13 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/components/ui/Container";
+import type { Copy } from "@/content/copy";
 import type { HomeTile } from "@/lib/storefront";
 
 const DEFAULT_CONTENT = {
   headline: "Shop efter Kategori",
   body: "Udforsk vores kuraterede kollektioner af tidløse smykker",
+  explore: "Udforsk",
 };
 
 export default function CategoryGrid({
@@ -16,7 +18,7 @@ export default function CategoryGrid({
   content = DEFAULT_CONTENT,
 }: {
   tiles: HomeTile[];
-  content?: { headline: string; body: string };
+  content?: Copy["home"]["categories"];
 }) {
   return (
     <section className="py-14 md:py-28 bg-white">
@@ -63,7 +65,7 @@ export default function CategoryGrid({
                       {tile.label}
                     </h3>
                     <span className="text-xs font-sans uppercase tracking-[0.2em] text-white/80 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">
-                      Udforsk
+                      {content.explore}
                     </span>
                   </div>
                 </div>

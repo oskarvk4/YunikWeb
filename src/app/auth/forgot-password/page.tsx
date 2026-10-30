@@ -4,8 +4,11 @@ import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useCopy } from "@/components/CopyProvider";
+import EmailText from "@/components/auth/EmailText";
 
 function ForgotPasswordForm() {
+  const copy = useCopy().auth;
   const searchParams = useSearchParams();
   const initialError = searchParams.get("error");
   const [email, setEmail] = useState("");
@@ -55,17 +58,16 @@ function ForgotPasswordForm() {
               </svg>
             </div>
             <h1 className="font-serif text-2xl text-dark mb-2">
-              Tjek din email
+              {copy.forgotSuccess.headline}
             </h1>
             <p className="text-dark/60 mb-6">
-              Hvis der findes en konto med <strong>{email}</strong>, har vi sendt
-              instruktioner til at nulstille din adgangskode.
+              <EmailText text={copy.forgotSuccess.body} email={email} />
             </p>
             <Link
               href="/auth/login"
               className="text-accent hover:underline"
             >
-              Tilbage til login
+              {copy.forgotSuccess.backLink}
             </Link>
           </div>
         </div>
@@ -78,11 +80,10 @@ function ForgotPasswordForm() {
       <div className="w-full max-w-md animate-fade-in-up">
         <div className="bg-white p-8 shadow-sm">
           <h1 className="font-serif text-3xl text-dark text-center mb-2">
-            Glemt adgangskode
+            {copy.forgot.headline}
           </h1>
           <p className="text-dark/60 text-center mb-8">
-            Indtast din email, så sender vi dig et link til at nulstille din
-            adgangskode.
+            {copy.forgot.subhead}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -97,7 +98,7 @@ function ForgotPasswordForm() {
                 htmlFor="email"
                 className="block text-sm font-medium text-dark mb-2"
               >
-                Email
+                {copy.forgot.emailLabel}
               </label>
               <input
                 id="email"
@@ -106,7 +107,7 @@ function ForgotPasswordForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-4 py-3 border border-dark/20 focus:border-accent focus:outline-none transition-colors"
-                placeholder="din@email.dk"
+                placeholder={copy.forgot.emailPlaceholder}
               />
             </div>
 
@@ -115,13 +116,13 @@ function ForgotPasswordForm() {
               disabled={isLoading}
               className="w-full bg-dark text-white py-3 font-medium hover:bg-dark/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Sender..." : "Send nulstillingslink"}
+              {isLoading ? copy.forgot.submitting : copy.forgot.submit}
             </button>
           </form>
 
           <p className="mt-6 text-center text-dark/60">
             <Link href="/auth/login" className="text-accent hover:underline">
-              Tilbage til login
+              {copy.forgot.backLink}
             </Link>
           </p>
         </div>

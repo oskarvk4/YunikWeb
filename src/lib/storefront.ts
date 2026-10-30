@@ -1,4 +1,8 @@
 import type { Product, ProductCategory } from "@/types";
+import type { Copy } from "@/content/copy";
+
+/** The names of the shop's collections (and the gift selection), from /admin/copy (shop.collections). */
+export type CollectionLabels = Copy["shop"]["collections"];
 
 /** A category, tile or filter only appears once it has this many published pieces. */
 export const MIN_PIECES_TO_SHOW = 3;
@@ -45,35 +49,39 @@ export const GIFT_PRICE_LIMIT = 700;
  * Seasonal name for the "under 700 kr" gift filter. It reads as a Christmas
  * selection through Christmas Eve (until 00:00 on 25 December, Danish time),
  * then falls back to the plain name by itself. `christmas` says which is active.
+ * Both sets of names come from /admin/copy (shop.collections); the date switch is here.
  */
-export function giftLabels(now = new Date()) {
+export function giftLabels(labels: CollectionLabels, now = new Date()) {
   const christmas = now < new Date("2026-12-25T00:00:00+01:00");
   return christmas
     ? {
         christmas,
-        tile: "Julegaver under 700 kr",
-        chip: "Julegaver",
-        heading: "Julegaver under 700 kr",
+        tile: labels.christmasTile,
+        chip: labels.christmasChip,
+        heading: labels.christmasHeading,
       }
     : {
         christmas,
-        tile: "Gaver under 700 kr",
-        chip: "Under 700 kr",
-        heading: "Gaver under 700 kr",
+        tile: labels.giftTile,
+        chip: labels.giftChip,
+        heading: labels.giftHeading,
       };
 }
 
 // `image` pins a chosen photo to a tile; tiles without one use a matching piece's photo.
-function homeTiles(now: Date): { label: string; filter: ProductFilter; image?: string }[] {
+function homeTiles(
+  labels: CollectionLabels,
+  now: Date
+): { label: string; filter: ProductFilter; image?: string }[] {
   return [
     {
-      label: "Guldøreringe",
+      label: labels.goldEarrings,
       filter: { category: "earrings", metal: "gold" },
       image: "/kategorier/guldoereringe.webp",
     },
-    { label: "Sølvøreringe", filter: { category: "earrings", metal: "silver" } },
-    { label: giftLabels(now).tile, filter: { maxPrice: GIFT_PRICE_LIMIT } },
-    { label: "Alle smykker", filter: {} },
+    { label: labels.silverEarrings, filter: { category: "earrings", metal: "silver" } },
+    { label: giftLabels(labels, now).tile, filter: { maxPrice: GIFT_PRICE_LIMIT } },
+    { label: labels.allJewelry, filter: {} },
   ];
 }
 
@@ -85,11 +93,16 @@ export type HomeTile = { label: string; href: string; image: string };
  * Homepage tiles that have enough pieces to be worth a click. A tile uses its
  * pinned photo if it has one, otherwise the photo of the first matching piece
  * no earlier tile has used, so the tiles don't repeat a picture.
- * The gift tile's name follows the season (see `giftLabels`).
+ * The tiles' names come from /admin/copy (shop.collections) as `labels`; the
+ * gift tile's name follows the season (see `giftLabels`).
  */
-export function buildHomeTiles(products: Product[], now = new Date()): HomeTile[] {
+export function buildHomeTiles(
+  products: Product[],
+  labels: CollectionLabels,
+  now = new Date()
+): HomeTile[] {
   const used = new Set<string>();
-  return homeTiles(now).flatMap(({ label, filter, image: pinned }) => {
+  return homeTiles(labels, now).flatMap(({ label, filter, image: pinned }) => {
     const matches = products.filter((product) => matchesFilter(product, filter));
     if (matches.length < MIN_PIECES_TO_SHOW) return [];
     const photos = matches.map((product) => product.images[0]).filter(Boolean);

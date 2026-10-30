@@ -4,8 +4,10 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useCopy } from "@/components/CopyProvider";
 
 function LoginForm() {
+  const copy = useCopy().auth;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +31,7 @@ function LoginForm() {
       if (error) {
         setError(
           error.message === "Invalid login credentials"
-            ? "Forkert email eller adgangskode"
+            ? copy.loginErrors.wrongCredentials
             : error.message
         );
         setIsLoading(false);
@@ -41,12 +43,12 @@ function LoginForm() {
         await supabase.auth.getSession();
         window.location.href = redirect;
       } else {
-        setError("Login mislykkedes. Prøv igen.");
+        setError(copy.loginErrors.failed);
         setIsLoading(false);
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError("Netværksfejl. Tjek din internetforbindelse og prøv igen.");
+      setError(copy.loginErrors.network);
       setIsLoading(false);
     }
   };
@@ -55,10 +57,10 @@ function LoginForm() {
     <div className="w-full max-w-md animate-fade-in-up">
       <div className="bg-white p-8 shadow-sm">
         <h1 className="font-serif text-3xl text-brand-black text-center mb-2">
-          Log ind
+          {copy.login.headline}
         </h1>
         <p className="text-brand-black/60 text-center mb-8">
-          Velkommen tilbage til Yunik
+          {copy.login.subhead}
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -73,7 +75,7 @@ function LoginForm() {
               htmlFor="email"
               className="block text-sm font-medium text-brand-black mb-2"
             >
-              Email
+              {copy.login.emailLabel}
             </label>
             <input
               id="email"
@@ -82,7 +84,7 @@ function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full px-4 py-3 border border-dark/20 focus:border-accent focus:outline-none transition-colors"
-              placeholder="din@email.dk"
+              placeholder={copy.login.emailPlaceholder}
             />
           </div>
 
@@ -91,7 +93,7 @@ function LoginForm() {
               htmlFor="password"
               className="block text-sm font-medium text-brand-black mb-2"
             >
-              Adgangskode
+              {copy.login.passwordLabel}
             </label>
             <input
               id="password"
@@ -100,7 +102,7 @@ function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               required
               className="w-full px-4 py-3 border border-dark/20 focus:border-accent focus:outline-none transition-colors"
-              placeholder="••••••••"
+              placeholder={copy.login.passwordPlaceholder}
             />
           </div>
 
@@ -109,7 +111,7 @@ function LoginForm() {
               href="/auth/forgot-password"
               className="text-sm text-accent hover:underline"
             >
-              Glemt adgangskode?
+              {copy.login.forgotLink}
             </Link>
           </div>
 
@@ -118,14 +120,14 @@ function LoginForm() {
             disabled={isLoading}
             className="w-full bg-brand-black text-brand-white py-3 font-medium hover:bg-brand-black/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Logger ind..." : "Log ind"}
+            {isLoading ? copy.login.submitting : copy.login.submit}
           </button>
         </form>
 
         <p className="mt-6 text-center text-brand-black/60">
-          Har du ikke en konto?{" "}
+          {copy.login.noAccount}{" "}
           <Link href="/auth/signup" className="text-accent hover:underline">
-            Opret konto
+            {copy.login.signupLink}
           </Link>
         </p>
       </div>

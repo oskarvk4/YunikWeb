@@ -8,7 +8,9 @@ import ProductInfo from "@/components/product/ProductInfo";
 import StickyAddToCart from "@/components/product/StickyAddToCart";
 import RelatedProductsLoader from "@/components/product/RelatedProductsLoader";
 import { getProductBySlug, getAllProductSlugs } from "@/data/products";
-import { getCategoryLabel } from "@/constants/categories";
+import { getCopy } from "@/lib/copy";
+import { categoryLabel, fillText } from "@/lib/copy-text";
+import { SITE_URL, absoluteUrl } from "@/lib/site";
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
@@ -25,11 +27,11 @@ export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const [product, copy] = await Promise.all([getProductBySlug(slug), getCopy()]);
 
   if (!product) {
     return {
-      title: "Produkt Ikke Fundet",
+      title: copy.product.meta.notFoundTitle,
     };
   }
 
@@ -37,7 +39,7 @@ export async function generateMetadata({
     title: product.name,
     description: product.description,
     openGraph: {
-      title: `${product.name} | Yunik`,
+      title: fillText(copy.product.meta.socialTitle, { name: product.name }),
       description: product.description,
       images: [
         {
@@ -61,10 +63,10 @@ export async function generateMetadata({
     },
     keywords: [
       product.name,
-      getCategoryLabel(product.category),
-      "smykker",
+      categoryLabel(copy.site, product.category),
+      copy.product.meta.keywordJewelry,
       "Yunik",
-      "håndlavet",
+      copy.product.meta.keywordHandmade,
       product.category,
     ],
   };
@@ -72,7 +74,7 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const [product, copy] = await Promise.all([getProductBySlug(slug), getCopy()]);
 
   if (!product) {
     notFound();
@@ -84,7 +86,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     "@type": "Product",
     name: product.name,
     description: product.description,
-    image: product.images.map((img) => `https://yunik.dk${img}`),
+    image: product.images.map((img) => absoluteUrl(img)),
     sku: product.id,
     brand: {
       "@type": "Brand",
@@ -92,7 +94,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     },
     offers: {
       "@type": "Offer",
-      url: `https://yunik.dk/product/${product.slug}`,
+      url: `${SITE_URL}/product/${product.slug}`,
       priceCurrency: "DKK",
       price: product.price,
       availability: product.stockQuantity > 0
@@ -137,26 +139,26 @@ export default async function ProductPage({ params }: ProductPageProps) {
       {
         "@type": "ListItem",
         position: 1,
-        name: "Forside",
-        item: "https://yunik.dk",
+        name: copy.product.meta.breadcrumbHome,
+        item: SITE_URL,
       },
       {
         "@type": "ListItem",
         position: 2,
-        name: "Shop",
-        item: "https://yunik.dk/shop",
+        name: copy.product.meta.breadcrumbShop,
+        item: `${SITE_URL}/shop`,
       },
       {
         "@type": "ListItem",
         position: 3,
-        name: getCategoryLabel(product.category),
-        item: `https://yunik.dk/shop?category=${product.category}`,
+        name: categoryLabel(copy.site, product.category),
+        item: `${SITE_URL}/shop?category=${product.category}`,
       },
       {
         "@type": "ListItem",
         position: 4,
         name: product.name,
-        item: `https://yunik.dk/product/${product.slug}`,
+        item: `${SITE_URL}/product/${product.slug}`,
       },
     ],
   };

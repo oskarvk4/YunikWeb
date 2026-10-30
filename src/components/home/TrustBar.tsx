@@ -67,7 +67,7 @@ export default function TrustBar({ content }: { content: Copy["home"]["trustBar"
   ].map((point, i) => ({ ...point, icon: ICONS[i] }));
 
   return (
-    <section aria-label="Om Yunik" className="bg-white border-b border-[#1A1A1A]/10">
+    <section aria-label={content.ariaLabel} className="bg-white border-b border-[#1A1A1A]/10">
       <Container>
         <ul className="h-[5.25rem] md:h-16 grid grid-cols-2 md:grid-cols-4 content-center items-center gap-x-3 gap-y-2.5 md:gap-x-0">
           {points.map((point, i) => (

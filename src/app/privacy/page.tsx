@@ -1,15 +1,48 @@
 import type { Metadata } from "next";
 import Container from "@/components/ui/Container";
 import FadeIn from "@/components/ui/FadeIn";
+import Lines from "@/components/ui/Lines";
+import RichText from "@/components/ui/RichText";
+import { getCopy } from "@/lib/copy";
 
-export const metadata: Metadata = {
-  title: "Privatlivspolitik",
-  description: "Yunik Jewelry — privatlivspolitik og GDPR-information. CVR: 46331060.",
-  alternates: { canonical: "/privacy" },
-  robots: { index: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = (await getCopy()).privacy.page;
+  return {
+    title: copy.metaTitle,
+    description: copy.metaDescription,
+    alternates: { canonical: "/privacy" },
+    robots: { index: false },
+  };
+}
 
-export default function PrivacyPage() {
+function Heading({ text }: { text: string }) {
+  return (
+    <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
+      {text}
+    </h2>
+  );
+}
+
+/** A long editable text: paragraphs and bullet lists. */
+function Body({ text }: { text: string }) {
+  return <RichText text={text} listClassName="" />;
+}
+
+/** A bullet list where each item starts with a bold label. */
+function LabelList({ items }: { items: [string, string][] }) {
+  return (
+    <ul>
+      {items.map(([label, text], i) => (
+        <li key={i}><strong>{label}</strong> {text}</li>
+      ))}
+    </ul>
+  );
+}
+
+export default async function PrivacyPage() {
+  const copy = (await getCopy()).privacy;
+  const { page, s1, s2, s4, s6, s10 } = copy;
+
   return (
     <div className="pt-20">
       {/* Header */}
@@ -17,10 +50,10 @@ export default function PrivacyPage() {
         <Container size="narrow">
           <FadeIn inView={false} duration={0.6} className="text-center">
             <h1 className="font-serif text-4xl md:text-5xl font-light text-[#1A1A1A] mb-4">
-              Privatlivspolitik
+              {page.title}
             </h1>
             <p className="text-[#1A1A1A]/60 font-sans">
-              Sidst opdateret: Februar 2025
+              {page.updated}
             </p>
           </FadeIn>
         </Container>
@@ -35,130 +68,81 @@ export default function PrivacyPage() {
             delay={0.2}
             className="prose prose-lg max-w-none font-sans text-[#1A1A1A]/80"
           >
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              1. Dataansvarlig
-            </h2>
+            <Heading text={s1.heading} />
             <p>
-              Yunik er dataansvarlig for behandlingen af de personoplysninger, som vi modtager om dig.
+              {s1.intro}
             </p>
             <p>
-              <strong>Virksomhed:</strong> Yunik Jewelry<br />
-              <strong>CVR:</strong> 46331060<br />
-              <strong>Adresse:</strong> Silkeborgvej 226, 8320 Åbyhøj<br />
-              <strong>Email:</strong> kontakt@yunik.dk
+              <strong>{s1.companyLabel}</strong> {s1.company}<br />
+              <strong>{s1.cvrLabel}</strong> {s1.cvr}<br />
+              <strong>{s1.addressLabel}</strong> {s1.address}<br />
+              <strong>{s1.emailLabel}</strong> {s1.email}
             </p>
 
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              2. Hvilke oplysninger indsamler vi?
-            </h2>
-            <p>Vi indsamler og behandler følgende typer personoplysninger:</p>
-            <ul>
-              <li><strong>Kontaktoplysninger:</strong> Navn, email, telefonnummer, leveringsadresse</li>
-              <li><strong>Ordreoplysninger:</strong> Købshistorik, betalingsoplysninger (vi gemmer ikke kortoplysninger)</li>
-              <li><strong>Kommunikation:</strong> Henvendelser via email eller kontaktformular</li>
-              <li><strong>Tekniske data:</strong> IP-adresse, browsertype, besøgsdata via cookies</li>
-            </ul>
+            <Heading text={s2.heading} />
+            <p>{s2.intro}</p>
+            <LabelList
+              items={[
+                [s2.item1Label, s2.item1],
+                [s2.item2Label, s2.item2],
+                [s2.item3Label, s2.item3],
+                [s2.item4Label, s2.item4],
+              ]}
+            />
 
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              3. Formål med behandlingen
-            </h2>
-            <p>Vi behandler dine personoplysninger til følgende formål:</p>
-            <ul>
-              <li>At levere de varer, du har bestilt</li>
-              <li>At kommunikere med dig om din ordre</li>
-              <li>At sende nyhedsbreve (kun hvis du har tilmeldt dig)</li>
-              <li>At forbedre vores hjemmeside og kundeservice</li>
-              <li>At overholde lovkrav (bogføring, garanti mv.)</li>
-            </ul>
+            <Heading text={copy.s3.heading} />
+            <Body text={copy.s3.body} />
 
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              4. Retsgrundlag
-            </h2>
-            <p>Vi behandler dine oplysninger på følgende retsgrundlag:</p>
-            <ul>
-              <li><strong>Kontrakt:</strong> For at opfylde vores aftale med dig (leverance af varer)</li>
-              <li><strong>Samtykke:</strong> Til nyhedsbreve og markedsføring</li>
-              <li><strong>Legitime interesser:</strong> Til at forbedre vores tjenester</li>
-              <li><strong>Lovkrav:</strong> Bogføringsloven kræver opbevaring i 5 år</li>
-            </ul>
+            <Heading text={s4.heading} />
+            <p>{s4.intro}</p>
+            <LabelList
+              items={[
+                [s4.item1Label, s4.item1],
+                [s4.item2Label, s4.item2],
+                [s4.item3Label, s4.item3],
+                [s4.item4Label, s4.item4],
+              ]}
+            />
 
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              5. Opbevaringsperiode
-            </h2>
+            <Heading text={copy.s5.heading} />
+            <Body text={copy.s5.body} />
+
+            <Heading text={s6.heading} />
+            <p>{s6.intro}</p>
+            <LabelList
+              items={[
+                [s6.item1Label, s6.item1],
+                [s6.item2Label, s6.item2],
+                [s6.item3Label, s6.item3],
+                [s6.item4Label, s6.item4],
+                [s6.item5Label, s6.item5],
+                [s6.item6Label, s6.item6],
+              ]}
+            />
             <p>
-              Vi opbevarer dine personoplysninger så længe, det er nødvendigt for de formål,
-              de blev indsamlet til:
-            </p>
-            <ul>
-              <li>Ordredata: 5 år (bogføringsloven)</li>
-              <li>Nyhedsbrevstilmelding: Indtil du afmelder dig</li>
-              <li>Kundeservicehenvendelser: 2 år</li>
-            </ul>
-
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              6. Dine rettigheder
-            </h2>
-            <p>Du har følgende rettigheder i henhold til GDPR:</p>
-            <ul>
-              <li><strong>Indsigt:</strong> Du kan få oplyst, hvilke data vi har om dig</li>
-              <li><strong>Berigtigelse:</strong> Du kan få rettet forkerte oplysninger</li>
-              <li><strong>Sletning:</strong> Du kan i visse tilfælde få slettet dine data</li>
-              <li><strong>Begrænsning:</strong> Du kan bede om begrænset behandling</li>
-              <li><strong>Dataportabilitet:</strong> Du kan få udleveret dine data</li>
-              <li><strong>Indsigelse:</strong> Du kan gøre indsigelse mod behandling</li>
-            </ul>
-            <p>
-              Kontakt os på kontakt@yunik.dk for at udøve dine rettigheder.
+              {s6.outro}
             </p>
 
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              7. Cookies
-            </h2>
-            <p>
-              Vi bruger cookies til at forbedre din oplevelse på vores hjemmeside.
-              Se vores cookie-politik for mere information om, hvilke cookies vi bruger.
-            </p>
+            <Heading text={copy.s7.heading} />
+            <Body text={copy.s7.body} />
 
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              8. Tredjeparter
-            </h2>
-            <p>Vi deler kun dine oplysninger med betroede tredjeparter:</p>
-            <ul>
-              <li>Betalingsudbydere (til sikker betalingsbehandling)</li>
-              <li>Fragtfirmaer (til levering af din ordre)</li>
-              <li>Email-tjenester (til nyhedsbreve, kun med dit samtykke)</li>
-            </ul>
+            <Heading text={copy.s8.heading} />
+            <Body text={copy.s8.body} />
 
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              9. Sikkerhed
-            </h2>
-            <p>
-              Vi tager datasikkerhed alvorligt og bruger passende tekniske og organisatoriske
-              foranstaltninger til at beskytte dine personoplysninger mod uautoriseret adgang,
-              tab eller misbrug.
-            </p>
+            <Heading text={copy.s9.heading} />
+            <Body text={copy.s9.body} />
 
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              10. Klager
-            </h2>
+            <Heading text={s10.heading} />
             <p>
-              Hvis du er utilfreds med vores behandling af dine personoplysninger, kan du
-              klage til Datatilsynet:
+              {s10.intro}
             </p>
             <p>
-              <strong>Datatilsynet</strong><br />
-              Carl Jacobsens Vej 35<br />
-              2500 Valby<br />
-              dt@datatilsynet.dk
+              <strong>{s10.authorityName}</strong><br />
+              <Lines text={s10.authorityAddress} />
             </p>
 
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              11. Ændringer
-            </h2>
-            <p>
-              Vi forbeholder os retten til at opdatere denne privatlivspolitik.
-              Ved væsentlige ændringer vil vi informere dig via email eller på vores hjemmeside.
-            </p>
+            <Heading text={copy.s11.heading} />
+            <Body text={copy.s11.body} />
           </FadeIn>
         </Container>
       </section>

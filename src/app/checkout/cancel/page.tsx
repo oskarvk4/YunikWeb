@@ -1,8 +1,11 @@
 import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
+import { getCopy } from "@/lib/copy";
 
-export default function CheckoutCancelPage() {
+export default async function CheckoutCancelPage() {
+  const text = (await getCopy()).checkout.cancel;
+
   return (
     <div className="pt-20">
       <section className="py-16 md:py-24">
@@ -25,39 +28,38 @@ export default function CheckoutCancelPage() {
             </div>
 
             <h1 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A] mb-4">
-              Betaling annulleret
+              {text.heading}
             </h1>
 
             <p className="text-[#1A1A1A]/70 font-sans leading-relaxed mb-8 max-w-md mx-auto">
-              Din betaling blev ikke gennemført. Bare rolig - dine varer ligger
-              stadig i kurven, og du kan prøve igen når du er klar.
+              {text.body}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/checkout">
                 <Button variant="primary" size="lg">
-                  Prøv igen
+                  {text.retry}
                 </Button>
               </Link>
               <Link href="/shop">
                 <Button variant="outline" size="lg">
-                  Fortsæt Shopping
+                  {text.continueShopping}
                 </Button>
               </Link>
             </div>
 
             <div className="mt-12 p-6 bg-[#F5F0EB] rounded-sm">
               <h2 className="font-serif text-lg text-[#1A1A1A] mb-2">
-                Brug for hjælp?
+                {text.helpHeading}
               </h2>
               <p className="text-[#1A1A1A]/70 font-sans text-sm mb-3">
-                Hvis du oplever problemer med betalingen, er du velkommen til at kontakte os.
+                {text.helpBody}
               </p>
               <a
                 href="/contact"
                 className="text-[#8D6553] font-sans text-sm hover:underline"
               >
-                Kontakt kundeservice →
+                {text.helpLink}
               </a>
             </div>
           </div>

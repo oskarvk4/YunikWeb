@@ -7,6 +7,8 @@ import Container from "@/components/ui/Container";
 import Badge from "@/components/ui/Badge";
 import { formatPrice, Product } from "@/types";
 import { useCart } from "@/lib/cart";
+import { useCopy } from "@/components/CopyProvider";
+import { fillText } from "@/lib/copy-text";
 import type { Copy } from "@/content/copy";
 
 interface FeaturedProductsProps {
@@ -17,6 +19,7 @@ interface FeaturedProductsProps {
 
 export default function FeaturedProducts({ products, content }: FeaturedProductsProps) {
   const { addItem } = useCart();
+  const card = useCopy().home.productCard;
 
   return (
     <section className="py-14 md:py-28 bg-[#F5F0EB]">
@@ -57,9 +60,9 @@ export default function FeaturedProducts({ products, content }: FeaturedProducts
                 >
                   {/* Badges */}
                   <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-                    {product.newArrival && <Badge variant="new">Ny</Badge>}
+                    {product.newArrival && <Badge variant="new">{card.badgeNew}</Badge>}
                     {product.featured && !product.newArrival && (
-                      <Badge variant="bestseller">Bestseller</Badge>
+                      <Badge variant="bestseller">{card.badgeBestseller}</Badge>
                     )}
                   </div>
 
@@ -79,7 +82,7 @@ export default function FeaturedProducts({ products, content }: FeaturedProducts
                   {product.images[1] && (
                     <Image
                       src={product.images[1]}
-                      alt={`${product.name} - alternativt billede`}
+                      alt={fillText(card.altImage, { name: product.name })}
                       fill
                       className="object-cover transition-all duration-700 opacity-0 group-hover:opacity-100 scale-105 group-hover:scale-100"
                       sizes="(max-width: 768px) 50vw, 25vw"
@@ -96,7 +99,7 @@ export default function FeaturedProducts({ products, content }: FeaturedProducts
                       disabled={isOutOfStock}
                       className="w-full py-3 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.15em] hover:bg-[#333] transition-colors disabled:cursor-not-allowed disabled:bg-[#1A1A1A]/45"
                     >
-                      {isOutOfStock ? "Udsolgt" : "Tilføj til Kurv"}
+                      {isOutOfStock ? card.soldOut : card.addToCart}
                     </button>
                   </div>
                 </Link>

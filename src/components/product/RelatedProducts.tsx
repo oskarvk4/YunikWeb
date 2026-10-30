@@ -6,6 +6,7 @@ import Image from "next/image";
 import Container from "@/components/ui/Container";
 import { Product, formatPrice } from "@/types";
 import { useCart } from "@/lib/cart";
+import { useCopy } from "@/components/CopyProvider";
 
 interface RelatedProductsProps {
   products: Product[];
@@ -13,6 +14,7 @@ interface RelatedProductsProps {
 
 export default function RelatedProducts({ products }: RelatedProductsProps) {
   const { addItem } = useCart();
+  const { related } = useCopy().product;
 
   if (products.length === 0) return null;
 
@@ -27,7 +29,7 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
           className="text-center mb-10"
         >
           <h2 className="font-serif text-2xl md:text-3xl font-light text-[#1A1A1A]">
-            Måske Kan Du Også Lide
+            {related.heading}
           </h2>
         </motion.div>
 
@@ -68,7 +70,7 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
                       disabled={isOutOfStock}
                       className="w-full py-2.5 bg-[#1A1A1A] text-white text-xs font-sans uppercase tracking-[0.1em] hover:bg-[#333] transition-colors disabled:cursor-not-allowed disabled:bg-[#1A1A1A]/45"
                     >
-                      {isOutOfStock ? "Udsolgt" : "Tilføj Hurtigt"}
+                      {isOutOfStock ? related.soldOut : related.quickAdd}
                     </button>
                   </div>
                 </Link>

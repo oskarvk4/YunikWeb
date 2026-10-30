@@ -3,8 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useCopy } from "@/components/CopyProvider";
+import EmailText from "@/components/auth/EmailText";
 
 export default function SignupPage() {
+  const copy = useCopy().auth;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -16,12 +19,12 @@ export default function SignupPage() {
     setError(null);
 
     if (password !== confirmPassword) {
-      setError("Adgangskoderne matcher ikke");
+      setError(copy.passwordErrors.mismatch);
       return;
     }
 
     if (password.length < 6) {
-      setError("Adgangskoden skal være mindst 6 tegn");
+      setError(copy.passwordErrors.tooShort);
       return;
     }
 
@@ -68,17 +71,16 @@ export default function SignupPage() {
               </svg>
             </div>
             <h1 className="font-serif text-2xl text-dark mb-2">
-              Tjek din email
+              {copy.signupSuccess.headline}
             </h1>
             <p className="text-dark/60 mb-6">
-              Vi har sendt en bekræftelsesmail til <strong>{email}</strong>.
-              Klik på linket i emailen for at aktivere din konto.
+              <EmailText text={copy.signupSuccess.body} email={email} />
             </p>
             <Link
               href="/auth/login"
               className="text-accent hover:underline"
             >
-              Tilbage til login
+              {copy.signupSuccess.backLink}
             </Link>
           </div>
         </div>
@@ -91,10 +93,10 @@ export default function SignupPage() {
       <div className="w-full max-w-md animate-fade-in-up">
         <div className="bg-white p-8 shadow-sm">
           <h1 className="font-serif text-3xl text-dark text-center mb-2">
-            Opret konto
+            {copy.signup.headline}
           </h1>
           <p className="text-dark/60 text-center mb-8">
-            Bliv en del af Yunik familien
+            {copy.signup.subhead}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -109,7 +111,7 @@ export default function SignupPage() {
                 htmlFor="email"
                 className="block text-sm font-medium text-dark mb-2"
               >
-                Email
+                {copy.signup.emailLabel}
               </label>
               <input
                 id="email"
@@ -118,7 +120,7 @@ export default function SignupPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-4 py-3 border border-dark/20 focus:border-accent focus:outline-none transition-colors"
-                placeholder="din@email.dk"
+                placeholder={copy.signup.emailPlaceholder}
               />
             </div>
 
@@ -127,7 +129,7 @@ export default function SignupPage() {
                 htmlFor="password"
                 className="block text-sm font-medium text-dark mb-2"
               >
-                Adgangskode
+                {copy.signup.passwordLabel}
               </label>
               <input
                 id="password"
@@ -137,7 +139,7 @@ export default function SignupPage() {
                 required
                 minLength={6}
                 className="w-full px-4 py-3 border border-dark/20 focus:border-accent focus:outline-none transition-colors"
-                placeholder="Mindst 6 tegn"
+                placeholder={copy.signup.passwordPlaceholder}
               />
             </div>
 
@@ -146,7 +148,7 @@ export default function SignupPage() {
                 htmlFor="confirmPassword"
                 className="block text-sm font-medium text-dark mb-2"
               >
-                Bekræft adgangskode
+                {copy.signup.confirmLabel}
               </label>
               <input
                 id="confirmPassword"
@@ -155,7 +157,7 @@ export default function SignupPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 className="w-full px-4 py-3 border border-dark/20 focus:border-accent focus:outline-none transition-colors"
-                placeholder="Gentag adgangskode"
+                placeholder={copy.signup.confirmPlaceholder}
               />
             </div>
 
@@ -164,14 +166,14 @@ export default function SignupPage() {
               disabled={isLoading}
               className="w-full bg-dark text-white py-3 font-medium hover:bg-dark/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Opretter konto..." : "Opret konto"}
+              {isLoading ? copy.signup.submitting : copy.signup.submit}
             </button>
           </form>
 
           <p className="mt-6 text-center text-dark/60">
-            Har du allerede en konto?{" "}
+            {copy.signup.haveAccount}{" "}
             <Link href="/auth/login" className="text-accent hover:underline">
-              Log ind
+              {copy.signup.loginLink}
             </Link>
           </p>
         </div>

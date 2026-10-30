@@ -6,9 +6,11 @@ import {
   SHIPPING_OPTION_LIST,
   formatDeliveryEstimate,
   formatShippingPrice,
+  shippingTexts,
   type PickupPointSnapshot,
   type ShippingOptionKey,
 } from "@/constants/shipping";
+import { useCopy } from "@/components/CopyProvider";
 
 interface PickupPoint {
   number: string;
@@ -31,19 +33,9 @@ function formatDistance(metres: number | null): string | null {
     : `${Math.round(metres)} m`;
 }
 
-const DANISH_DAYS: Record<string, string> = {
-  Monday: "Mandag",
-  Tuesday: "Tirsdag",
-  Wednesday: "Onsdag",
-  Thursday: "Torsdag",
-  Friday: "Fredag",
-  Saturday: "Lørdag",
-  Sunday: "Søndag",
-};
-
-/** Shipmondo returns "Monday: 08:00-20:00". */
-const toDanishHours = (entry: string): string =>
-  entry.replace(/^(\w+):/, (match, day: string) => `${DANISH_DAYS[day] ?? day}:`);
+/** Shipmondo returns "Monday: 08:00-20:00". `days` maps the English day names to the edited ones. */
+const toDanishHours = (entry: string, days: Record<string, string>): string =>
+  entry.replace(/^(\w+):/, (match, day: string) => `${days[day] ?? day}:`);
 
 const toSnapshot = (point: PickupPoint): PickupPointSnapshot => ({
   number: point.number,
@@ -73,6 +65,19 @@ export default function DeliveryPicker({
   pickupPoint,
   onPickupPointChange,
 }: DeliveryPickerProps) {
+  const text = useCopy().checkout;
+  // Day names for the opening hours, which Shipmondo sends in English.
+  const dayNames: Record<string, string> = {
+    Monday: text.days.monday,
+    Tuesday: text.days.tuesday,
+    Wednesday: text.days.wednesday,
+    Thursday: text.days.thursday,
+    Friday: text.days.friday,
+    Saturday: text.days.saturday,
+    Sunday: text.days.sunday,
+  };
+  const lookupFailed = text.pickup.lookupError;
+  const noneFound = text.pickup.noneFound;
   const [zipcode, setZipcode] = useState("");
   const [points, setPoints] = useState<PickupPoint[]>([]);
   const [searched, setSearched] = useState(false);
@@ -90,22 +95,22 @@ export default function DeliveryPicker({
 
       if (!response.ok) {
         setPoints([]);
-        setError(data.error || "Kunne ikke hente pakkeshops.");
+        setError(data.error || lookupFailed);
         return;
       }
 
       setPoints(data.points ?? []);
       if ((data.points ?? []).length === 0) {
-        setError("Vi fandt ingen pakkeshops på det postnummer.");
+        setError(noneFound);
       }
     } catch {
       setPoints([]);
-      setError("Kunne ikke hente pakkeshops.");
+      setError(lookupFailed);
     } finally {
       setSearched(true);
       setLoading(false);
     }
-  }, []);
+  }, [lookupFailed, noneFound]);
 
   const selectOption = (next: ShippingOptionKey) => {
     onOptionChange(next);
@@ -115,11 +120,14 @@ export default function DeliveryPicker({
 
   return (
     <div className="border-t border-[#1A1A1A]/10 pt-6 mt-6">
-      <h2 className="font-serif text-lg text-[#1A1A1A] mb-4">Levering</h2>
+      <h2 className="font-serif text-lg text-[#1A1A1A] mb-4">
+        {text.delivery.heading}
+      </h2>
 
       <div className="space-y-2">
         {SHIPPING_OPTION_LIST.map((entry) => {
           const isActive = entry.key === option;
+          const entryText = shippingTexts(text.delivery, entry.key);
 
           return (
             <label
@@ -141,14 +149,14 @@ export default function DeliveryPicker({
               <span className="flex-1">
                 <span className="flex items-baseline justify-between gap-3">
                   <span className="font-sans text-sm font-medium text-[#1A1A1A]">
-                    {entry.label}
+                    {entryText.label}
                   </span>
                   <span className="font-sans text-sm text-[#1A1A1A]">
-                    {formatShippingPrice(entry)}
+                    {formatShippingPrice(entry, text.delivery)}
                   </span>
                 </span>
                 <span className="block font-sans text-sm text-[#1A1A1A]/60">
-                  {entry.description} · {formatDeliveryEstimate(entry)}
+                  {entryText.description} · {formatDeliveryEstimate(entry, text.delivery)}
                 </span>
               </span>
             </label>
@@ -161,7 +169,7 @@ export default function DeliveryPicker({
           {pickupPoint ? (
             <div className="px-4 py-3 border border-[#8D6553] bg-[#8D6553]/5 rounded-sm mb-4">
               <p className="font-sans text-xs uppercase tracking-wide text-[#8D6553] mb-1">
-                Valgt pakkeshop
+                {text.pickup.selectedHeading}
               </p>
               <p className="font-sans text-sm text-[#1A1A1A]">
                 {pickupPoint.name}
@@ -183,11 +191,11 @@ export default function DeliveryPicker({
               className="block font-sans text-sm font-medium text-[#1A1A1A] mb-1"
             >
               {pickupPoint
-                ? "Søg efter en anden pakkeshop"
-                : "Find din pakkeshop"}
+                ? text.pickup.searchAnother
+                : text.pickup.findHeading}
             </label>
             <p className="font-sans text-sm text-[#1A1A1A]/60 mb-3">
-              Indtast dit postnummer, så viser vi pakkeshops i nærheden.
+              {text.pickup.zipcodeHelp}
             </p>
             <div className="flex gap-2">
               <input
@@ -204,7 +212,7 @@ export default function DeliveryPicker({
                 }}
                 inputMode="numeric"
                 maxLength={4}
-                placeholder="F.eks. 5000"
+                placeholder={text.pickup.zipcodePlaceholder}
                 // text-base keeps iOS Safari from zooming in on focus.
                 className="w-36 border border-[#1A1A1A]/25 px-3 py-2.5 text-base font-sans rounded-sm outline-none transition-colors focus:border-[#8D6553] focus:ring-1 focus:ring-[#8D6553]"
               />
@@ -214,7 +222,7 @@ export default function DeliveryPicker({
                 disabled={loading || !/^\d{4}$/.test(zipcode)}
                 className="px-6 py-2.5 text-sm font-sans text-white bg-[#8D6553] rounded-sm transition-colors hover:bg-[#7A5646] disabled:bg-[#1A1A1A]/20 disabled:cursor-not-allowed"
               >
-                {loading ? "Søger…" : "Søg"}
+                {loading ? text.pickup.searching : text.pickup.searchButton}
               </button>
             </div>
           </div>
@@ -253,7 +261,7 @@ export default function DeliveryPicker({
                           </p>
                           {point.requiresApp && (
                             <p className="font-sans text-xs text-[#1A1A1A]/50 mt-1">
-                              Pakkeboks · åbnes med PostNord-appen
+                              {text.pickup.locker}
                             </p>
                           )}
                           {isSelected && point.openingHours.length > 0 && (
@@ -263,7 +271,7 @@ export default function DeliveryPicker({
                                   key={entry}
                                   className="font-sans text-xs text-[#1A1A1A]/50"
                                 >
-                                  {toDanishHours(entry)}
+                                  {toDanishHours(entry, dayNames)}
                                 </li>
                               ))}
                             </ul>
@@ -277,7 +285,7 @@ export default function DeliveryPicker({
                           )}
                           {isSelected && (
                             <p className="font-sans text-xs text-[#8D6553]">
-                              Valgt
+                              {text.pickup.selected}
                             </p>
                           )}
                         </div>
@@ -291,7 +299,7 @@ export default function DeliveryPicker({
 
           {searched && !loading && !error && points.length > 0 && (
             <p className="font-sans text-xs text-[#1A1A1A]/50 mt-3">
-              Pakkeshops leveres af PostNord.
+              {text.pickup.carrierNote}
             </p>
           )}
         </div>

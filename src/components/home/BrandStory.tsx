@@ -25,7 +25,7 @@ export default function BrandStory({ content }: { content: Copy["home"]["brandSt
             <div className="relative aspect-[4/5] overflow-hidden">
               <Image
                 src="/StoryPics/gemstones.webp"
-                alt="Håndplukkede blågrønne ædelsten med pincet"
+                alt={content.image1Alt}
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 50vw, 25vw"
@@ -34,7 +34,7 @@ export default function BrandStory({ content }: { content: Copy["home"]["brandSt
             <div className="relative aspect-[4/5] overflow-hidden">
               <Image
                 src="/StoryPics/workbench.webp"
-                alt="Perler, sten og værktøj på arbejdsbordet"
+                alt={content.image2Alt}
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 50vw, 25vw"

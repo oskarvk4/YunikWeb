@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { getCopy } from "@/lib/copy";
+import { fillText } from "@/lib/copy-text";
 import { formatPrice } from "@/types";
 import { getCarrierLabel, getTrackingUrl } from "@/constants/carriers";
 import {
@@ -9,11 +12,15 @@ import {
 } from "@/constants/shipping";
 import type { Order } from "@/types/supabase";
 
-export const metadata = {
-  title: "Mine Ordrer",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = (await getCopy()).account;
+  return {
+    title: copy.metadata.ordersTitle,
+  };
+}
 
 export default async function OrdersPage() {
+  const copy = (await getCopy()).account;
   const supabase = await createClient();
 
   const {
@@ -39,13 +46,13 @@ export default async function OrdersPage() {
         <div className="mb-8">
           <nav className="text-sm text-dark/60 mb-4">
             <Link href="/account" className="hover:text-accent">
-              Min Konto
+              {copy.orders.breadcrumbAccount}
             </Link>
             <span className="mx-2">/</span>
-            <span className="text-dark">Mine Ordrer</span>
+            <span className="text-dark">{copy.orders.headline}</span>
           </nav>
           <h1 className="font-serif text-3xl md:text-4xl text-dark">
-            Mine Ordrer
+            {copy.orders.headline}
           </h1>
         </div>
 
@@ -77,7 +84,7 @@ export default async function OrdersPage() {
                       <div className="flex flex-wrap gap-6">
                         <div>
                           <p className="text-xs text-dark/60 uppercase tracking-wide">
-                            Ordre nummer
+                            {copy.orderCard.numberLabel}
                           </p>
                           <p className="font-medium text-dark">
                             #{order.id.slice(0, 8)}
@@ -85,7 +92,7 @@ export default async function OrdersPage() {
                         </div>
                         <div>
                           <p className="text-xs text-dark/60 uppercase tracking-wide">
-                            Dato
+                            {copy.orderCard.dateLabel}
                           </p>
                           <p className="font-medium text-dark">
                             {new Date(order.created_at).toLocaleDateString("da-DK", {
@@ -97,7 +104,7 @@ export default async function OrdersPage() {
                         </div>
                         <div>
                           <p className="text-xs text-dark/60 uppercase tracking-wide">
-                            Total
+                            {copy.orderCard.totalLabel}
                           </p>
                           <p className="font-medium text-dark">
                             {formatPrice(order.total_amount)}
@@ -115,14 +122,14 @@ export default async function OrdersPage() {
                           }`}
                         >
                           {order.status === "completed"
-                            ? "Gennemført"
+                            ? copy.statuses.completed
                             : order.status === "pending"
-                            ? "Afventer"
+                            ? copy.statuses.pending
                             : order.status}
                         </span>
                         {order.fulfillment_status === "shipped" && (
                           <span className="inline-block px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700">
-                            Afsendt
+                            {copy.statuses.shipped}
                           </span>
                         )}
                       </div>
@@ -151,7 +158,7 @@ export default async function OrdersPage() {
                               {item.name}
                             </p>
                             <p className="text-sm text-dark/60">
-                              Antal: {item.quantity}
+                              {fillText(copy.orderCard.quantity, { quantity: item.quantity })}
                             </p>
                           </div>
                           <div className="text-right">
@@ -168,15 +175,20 @@ export default async function OrdersPage() {
                   {order.fulfillment_status === "shipped" && (
                     <div className="px-6 py-4 border-t border-dark/10">
                       <p className="text-xs text-dark/60 uppercase tracking-wide mb-2">
-                        Forsendelse
+                        {copy.orderCard.shipmentLabel}
                       </p>
                       <p className="text-sm text-dark">
-                        Sendt med {getCarrierLabel(order.carrier)}
-                        {order.shipped_at &&
-                          ` den ${new Date(order.shipped_at).toLocaleDateString("da-DK", {
-                            day: "numeric",
-                            month: "long",
-                          })}`}
+                        {order.shipped_at
+                          ? fillText(copy.orderCard.shippedWithDate, {
+                              carrier: getCarrierLabel(order.carrier),
+                              date: new Date(order.shipped_at).toLocaleDateString("da-DK", {
+                                day: "numeric",
+                                month: "long",
+                              }),
+                            })
+                          : fillText(copy.orderCard.shippedWith, {
+                              carrier: getCarrierLabel(order.carrier),
+                            })}
                       </p>
                       {order.tracking_number && (
                         <p className="text-sm text-dark/60 font-mono mt-1">
@@ -190,7 +202,7 @@ export default async function OrdersPage() {
                           rel="noopener noreferrer"
                           className="inline-block text-sm text-accent hover:underline mt-2"
                         >
-                          Spor din pakke →
+                          {copy.orderCard.trackLink}
                         </a>
                       )}
                     </div>
@@ -200,7 +212,7 @@ export default async function OrdersPage() {
                   {shippingOption.key === "pickup" && pickupPoint && (
                     <div className="px-6 py-4 border-t border-dark/10">
                       <p className="text-xs text-dark/60 uppercase tracking-wide mb-2">
-                        Afhentes hos
+                        {copy.orderCard.pickupLabel}
                       </p>
                       <p className="text-sm text-dark">
                         {pickupPoint.name}
@@ -224,7 +236,7 @@ export default async function OrdersPage() {
                   {shippingOption.key !== "pickup" && order.shipping_address && (
                     <div className="px-6 py-4 border-t border-dark/10">
                       <p className="text-xs text-dark/60 uppercase tracking-wide mb-2">
-                        Leveringsadresse
+                        {copy.orderCard.addressLabel}
                       </p>
                       <p className="text-sm text-dark">
                         {(order.shipping_address as { line1?: string; line2?: string; city?: string; postal_code?: string }).line1}
@@ -256,16 +268,16 @@ export default async function OrdersPage() {
               </svg>
             </div>
             <h2 className="font-serif text-xl text-dark mb-2">
-              Ingen ordrer endnu
+              {copy.ordersEmpty.headline}
             </h2>
             <p className="text-dark/60 mb-6">
-              Når du afgiver din første ordre, vil den blive vist her.
+              {copy.ordersEmpty.body}
             </p>
             <Link
               href="/shop"
               className="inline-block bg-dark text-white px-8 py-3 font-medium hover:bg-dark/90 transition-colors"
             >
-              Udforsk vores kollektion
+              {copy.ordersEmpty.button}
             </Link>
           </div>
         )}

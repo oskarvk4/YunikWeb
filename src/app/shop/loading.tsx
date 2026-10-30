@@ -1,4 +1,7 @@
+"use client";
+
 import Container from "@/components/ui/Container";
+import { useCopy } from "@/components/CopyProvider";
 
 function ProductCardSkeleton() {
   return (
@@ -11,6 +14,8 @@ function ProductCardSkeleton() {
 }
 
 export default function ShopLoading() {
+  const copy = useCopy();
+
   return (
     <div className="pt-20">
       {/* Hero Section */}
@@ -18,10 +23,10 @@ export default function ShopLoading() {
         <Container>
           <div className="text-center">
             <h1 className="font-serif text-2xl md:text-3xl font-light text-[#1A1A1A] mb-1">
-              Alle Smykker
+              {copy.shop.heading.title}
             </h1>
             <p className="text-[#1A1A1A]/60 font-sans text-sm max-w-md mx-auto">
-              Udforsk vores komplette kollektion af håndlavede smykker
+              {copy.shop.heading.intro}
             </p>
           </div>
         </Container>

@@ -6,9 +6,11 @@ import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import { useCart } from "@/lib/cart";
 import { trackPurchase } from "@/lib/analytics";
+import { useCopy } from "@/components/CopyProvider";
 
 export default function CheckoutSuccessPage() {
   const { items, getTotal, clearCart } = useCart();
+  const text = useCopy().checkout.success;
   const hasTracked = useRef(false);
 
   useEffect(() => {
@@ -59,42 +61,41 @@ export default function CheckoutSuccessPage() {
             </div>
 
             <h1 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A] mb-4">
-              Tak for din ordre!
+              {text.heading}
             </h1>
 
             <p className="text-[#1A1A1A]/70 font-sans leading-relaxed mb-8 max-w-md mx-auto">
-              Vi har modtaget din ordre og sender dig en bekræftelse på email.
-              Du kan forvente at modtage dine smykker inden for 2-5 hverdage.
+              {text.body}
             </p>
 
             <div className="bg-[#F5F0EB] p-6 md:p-8 rounded-sm mb-8">
               <h2 className="font-serif text-lg text-[#1A1A1A] mb-4">
-                Hvad sker der nu?
+                {text.stepsHeading}
               </h2>
               <ul className="text-left space-y-3 text-[#1A1A1A]/70 font-sans text-sm">
                 <li className="flex items-start gap-3">
                   <span className="w-6 h-6 bg-[#8D6553] text-white rounded-full flex items-center justify-center text-xs flex-shrink-0">
                     1
                   </span>
-                  <span>Du modtager en ordrebekræftelse på email</span>
+                  <span>{text.step1}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-6 h-6 bg-[#8D6553] text-white rounded-full flex items-center justify-center text-xs flex-shrink-0">
                     2
                   </span>
-                  <span>Vi pakker dine smykker med omhu</span>
+                  <span>{text.step2}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-6 h-6 bg-[#8D6553] text-white rounded-full flex items-center justify-center text-xs flex-shrink-0">
                     3
                   </span>
-                  <span>Du får besked når din pakke er afsendt</span>
+                  <span>{text.step3}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-6 h-6 bg-[#8D6553] text-white rounded-full flex items-center justify-center text-xs flex-shrink-0">
                     4
                   </span>
-                  <span>Din pakke leveres inden for 2-5 hverdage</span>
+                  <span>{text.step4}</span>
                 </li>
               </ul>
             </div>
@@ -102,18 +103,18 @@ export default function CheckoutSuccessPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/shop">
                 <Button variant="primary" size="lg">
-                  Fortsæt Shopping
+                  {text.continueShopping}
                 </Button>
               </Link>
               <Link href="/">
                 <Button variant="outline" size="lg">
-                  Tilbage til Forsiden
+                  {text.backHome}
                 </Button>
               </Link>
             </div>
 
             <p className="mt-8 text-sm text-[#1A1A1A]/50 font-sans">
-              Spørgsmål? Kontakt os på{" "}
+              {text.contactPrompt}{" "}
               <a href="mailto:kontakt@yunik.dk" className="text-[#8D6553] hover:underline">
                 kontakt@yunik.dk
               </a>

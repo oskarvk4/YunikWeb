@@ -10,13 +10,16 @@ import Badge from "@/components/ui/Badge";
 import Accordion from "./Accordion";
 import SizeGuide from "./SizeGuide";
 import TrustBadges from "./TrustBadges";
-import { getCategoryLabel } from "@/constants/categories";
+import { useCopy } from "@/components/CopyProvider";
+import { categoryLabel, fillText } from "@/lib/copy-text";
 
 interface ProductInfoProps {
   product: Product;
 }
 
 export default function ProductInfo({ product }: ProductInfoProps) {
+  const copy = useCopy();
+  const { info, accordion } = copy.product;
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
   const maxQuantity = Math.max(0, product.stockQuantity);
@@ -39,16 +42,16 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   // The description is already shown under the price, so the first panel is the materials.
   const accordionItems = [
     {
-      title: "Materialer & Pleje",
+      title: accordion.materialsTitle,
       content: product.materials,
     },
     {
-      title: "Hvad er i æsken",
-      content: "Dit smykke leveres i en elegant Yunik-smykkeboks med silkeforet interiør. Inkluderet er også et plejekort med vedligeholdelsesinstruktioner, så dit smykke bevarer sin skønhed i mange år.",
+      title: accordion.boxTitle,
+      content: accordion.boxText,
     },
     {
-      title: "Levering & Retur",
-      content: "Gratis fragt på alle ordrer i Danmark — både til pakkeshop og til døren, 2-5 hverdage. Ekspres til døren 1-2 hverdage koster 49 DKK. Du har 14 dages fuld returret. Se vores leveringspolitik for mere information.",
+      title: accordion.deliveryTitle,
+      content: accordion.deliveryText,
     },
   ];
 
@@ -61,9 +64,9 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     >
       {/* Badges */}
       <div className="flex gap-2 mb-4">
-        {product.oneOfOne && <Badge variant="unique">Unik</Badge>}
-        {product.newArrival && <Badge variant="new">Nyhed</Badge>}
-        {product.featured && <Badge variant="bestseller">Bestseller</Badge>}
+        {product.oneOfOne && <Badge variant="unique">{copy.shop.card.badgeUnique}</Badge>}
+        {product.newArrival && <Badge variant="new">{copy.shop.card.badgeNew}</Badge>}
+        {product.featured && <Badge variant="bestseller">{copy.shop.card.badgeBestseller}</Badge>}
       </div>
 
       {/* Product Name */}
@@ -74,13 +77,13 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       {/* One-of-one provenance line */}
       {product.oneOfOne && (
         <p className="font-serif italic text-base text-[#8D6553] mb-3">
-          Et af ét eksemplar — kan ikke gentages.
+          {info.oneOfOneNote}
         </p>
       )}
 
       {/* Category */}
       <p className="text-sm font-sans text-[#1A1A1A]/50 uppercase tracking-[0.15em] mb-4">
-        {getCategoryLabel(product.category)}
+        {categoryLabel(copy.site, product.category)}
       </p>
 
       {/* Price */}
@@ -90,10 +93,10 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       <p className="text-sm font-sans text-[#1A1A1A]/60 mb-6">
         {isOutOfStock
-          ? "Udsolgt"
+          ? info.soldOut
           : maxQuantity <= 3
-          ? `Kun ${maxQuantity} tilbage`
-          : "På lager · sendes inden for 1–2 hverdage"}
+          ? fillText(copy.shop.card.onlyLeft, { count: maxQuantity })
+          : info.inStock}
       </p>
 
       {/* Short Description */}
@@ -105,21 +108,21 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       {product.category === "rings" && (
         <div className="mb-6">
           <p className="text-xs font-sans uppercase tracking-[0.1em] text-[#1A1A1A]/60 mb-3">
-            Størrelse
+            {info.sizeLabel}
           </p>
           {/* Grouped left rather than spread across the column — at desktop
               width justify-between pushed the guide link ~700px from its label. */}
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <span className="font-serif text-lg text-[#1A1A1A]">
               {product.ringSize
-                ? `EU ${product.ringSize}`
-                : "Kontakt os for størrelse"}
+                ? fillText(info.sizeValue, { size: product.ringSize })
+                : info.sizeContact}
             </span>
             <SizeGuide category={product.category} ringSize={product.ringSize} />
           </div>
           {product.ringSize && (
             <p className="mt-2 text-sm font-sans text-[#1A1A1A]/50">
-              Findes kun i denne størrelse.
+              {info.sizeOnlyThis}
             </p>
           )}
         </div>
@@ -128,14 +131,14 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       {/* Quantity Selector */}
       <div className="mb-6">
         <label className="block text-xs font-sans uppercase tracking-[0.1em] text-[#1A1A1A]/60 mb-3">
-          Antal
+          {info.quantityLabel}
         </label>
         <div className="flex items-center gap-4">
           <button
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
             disabled={isOutOfStock}
             className="w-10 h-10 border border-[#1A1A1A]/20 flex items-center justify-center text-lg hover:border-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2"
-            aria-label="Reducer antal"
+            aria-label={info.decreaseQuantity}
           >
             -
           </button>
@@ -146,7 +149,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
             onClick={() => setQuantity(Math.min(maxQuantity, quantity + 1))}
             disabled={isOutOfStock || quantity >= maxQuantity}
             className="w-10 h-10 border border-[#1A1A1A]/20 flex items-center justify-center text-lg hover:border-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40"
-            aria-label="Øg antal"
+            aria-label={info.increaseQuantity}
           >
             +
           </button>
@@ -164,12 +167,12 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         disabled={isOutOfStock}
       >
         {isOutOfStock
-          ? "Udsolgt"
-          : `Læg i Kurv — ${formatPrice(product.price * quantity)}`}
+          ? info.soldOutButton
+          : fillText(info.addToCart, { price: formatPrice(product.price * quantity) })}
       </Button>
 
       <p className="mb-6 text-center text-xs font-sans text-[#1A1A1A]/60">
-        Gratis fragt · 2–5 hverdage · 14 dages retur
+        {info.shippingNote}
       </p>
 
       {/* Trust Badges */}

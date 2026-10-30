@@ -4,16 +4,20 @@ import Container from "@/components/ui/Container";
 import FadeIn from "@/components/ui/FadeIn";
 import { getCopy } from "@/lib/copy";
 
-export const metadata: Metadata = {
-  title: "Vores Historie",
-  description: "Lær Yunik at kende — håndlavede smykker skabt med inspiration fra 30 års rejser mellem Danmark, Indien og Thailand. Skandinavisk design møder globale traditioner.",
-  alternates: { canonical: "/about" },
-  openGraph: {
-    title: "Vores Historie | Yunik",
-    description: "Lær Yunik at kende — håndlavede smykker skabt med inspiration fra 30 års rejser.",
-    images: [{ url: "/jewelry-close-up.webp", width: 1200, height: 800, alt: "Yunik smykker" }],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const text = (await getCopy()).about.metadata;
+
+  return {
+    title: text.title,
+    description: text.description,
+    alternates: { canonical: "/about" },
+    openGraph: {
+      title: text.shareTitle,
+      description: text.shareDescription,
+      images: [{ url: "/jewelry-close-up.webp", width: 1200, height: 800, alt: text.shareImageAlt }],
+    },
+  };
+}
 
 export default async function AboutPage() {
   const copy = (await getCopy()).about;
@@ -28,7 +32,7 @@ export default async function AboutPage() {
       <section className="relative h-[60vh] min-h-[400px] max-h-[600px] overflow-hidden">
         <Image
           src="/about-hero.jpeg"
-          alt="Yunik smykkekollektion"
+          alt={copy.images.heroAlt}
           fill
           priority
           className="object-cover"
@@ -69,7 +73,7 @@ export default async function AboutPage() {
       <section className="relative h-[70vh] min-h-[480px] max-h-[720px] overflow-hidden">
         <Image
           src="/StoryPics/travel.webp"
-          alt="Pas, telefon og smykker — samlet over årtiers rejser"
+          alt={copy.images.heritageAlt}
           fill
           className="object-cover"
           sizes="100vw"
@@ -93,7 +97,7 @@ export default async function AboutPage() {
           <FadeIn direction="left" className="relative aspect-square md:aspect-[4/3]">
             <Image
               src="/butik/yunik-stand.webp"
-              alt="Yuniks stand med sten, smykker og tøj, set ovenfra"
+              alt={copy.images.standAlt}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -102,7 +106,7 @@ export default async function AboutPage() {
           <FadeIn direction="right" delay={0.2} className="relative aspect-square md:aspect-[4/3]">
             <Image
               src="/butik/ole-messe.webp"
-              alt="Manden bag Yunik ved standen på en messe"
+              alt={copy.images.messeAlt}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -161,7 +165,7 @@ export default async function AboutPage() {
             <FadeIn direction="right" delay={0.2} className="relative aspect-square">
               <Image
                 src="/jewelry-close-up.webp"
-                alt="Yunik smykkematerialer"
+                alt={copy.images.materialsAlt}
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"

@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://yunik.dk/sitemap.xml
+Sitemap: https://www.yunik.dk/sitemap.xml
 
 # Disallow admin/private paths (if any in future)
 # Disallow: /admin/

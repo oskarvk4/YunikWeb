@@ -6,16 +6,39 @@
  * everywhere at once instead of drifting between checkout and copy.
  */
 
+import type { Copy } from "@/content/copy";
+import { fillText } from "@/lib/copy-text";
+
 export type ShippingOptionKey = "pickup" | "home" | "express";
 
 export interface ShippingOption {
   key: ShippingOptionKey;
+  /**
+   * Default name. The emails and admin views read it as it is. What customers see
+   * in checkout and in Stripe is edited in /admin/copy (checkout.delivery), via
+   * shippingTexts() below.
+   */
   label: string;
   /** DKK incl. moms. */
   price: number;
   minDays: number;
   maxDays: number;
+  /** Default description; see `label`. */
   description: string;
+}
+
+/** The delivery texts from /admin/copy (checkout.delivery). */
+export type DeliveryCopy = Copy["checkout"]["delivery"];
+
+/** Name and description of a delivery option as customers see them, from /admin/copy. */
+export function shippingTexts(
+  delivery: DeliveryCopy,
+  key: ShippingOptionKey
+): { label: string; description: string } {
+  return {
+    label: delivery[`${key}Label` as const],
+    description: delivery[`${key}Description` as const],
+  };
 }
 
 export const SHIPPING_OPTIONS: Record<ShippingOptionKey, ShippingOption> = {
@@ -51,11 +74,24 @@ export const SHIPPING_OPTION_LIST: ShippingOption[] = [
   SHIPPING_OPTIONS.express,
 ];
 
-export const formatDeliveryEstimate = (option: ShippingOption): string =>
-  `${option.minDays}-${option.maxDays} hverdage`;
+/** "2-5 hverdage". Pass the /admin/copy delivery texts to use the edited wording. */
+export const formatDeliveryEstimate = (
+  option: ShippingOption,
+  delivery?: Pick<DeliveryCopy, "estimate">
+): string =>
+  fillText(delivery?.estimate ?? "{min}-{max} hverdage", {
+    min: option.minDays,
+    max: option.maxDays,
+  });
 
-export const formatShippingPrice = (option: ShippingOption): string =>
-  option.price === 0 ? "Gratis" : `${option.price} DKK`;
+/** "Gratis" or "49 DKK". Pass the /admin/copy delivery texts to use the edited wording. */
+export const formatShippingPrice = (
+  option: ShippingOption,
+  delivery?: Pick<DeliveryCopy, "free" | "price">
+): string =>
+  option.price === 0
+    ? (delivery?.free ?? "Gratis")
+    : fillText(delivery?.price ?? "{price} DKK", { price: option.price });
 
 /**
  * Orders placed before parcel shops existed stored "free" for home delivery.

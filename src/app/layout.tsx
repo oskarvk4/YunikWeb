@@ -5,6 +5,8 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { getVisibleCategories } from "@/data/products";
 import { getCopy } from "@/lib/copy";
+import { toClientCopy } from "@/lib/copy-text";
+import { CopyProvider } from "@/components/CopyProvider";
 import { HideOnAdmin } from "@/components/layout/SiteChrome";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import AuthErrorHandler from "@/components/auth/AuthErrorHandler";
@@ -13,6 +15,7 @@ import MetaPixel from "@/components/analytics/MetaPixel";
 import CookieConsent from "@/components/layout/CookieConsent";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import "./globals.css";
+import { SITE_URL, absoluteUrl } from "@/lib/site";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -28,62 +31,65 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Yunik | Tidløs Elegance",
-    template: "%s | Yunik",
-  },
-  description: "Opdag unikke, håndlavede smykker der fejrer individualitet. Shop ringe, halskæder, øreringe og armbånd fra Yunik.",
-  keywords: ["smykker", "luksus", "håndlavet", "ringe", "halskæder", "øreringe", "armbånd", "danske smykker", "yunik"],
-  authors: [{ name: "Yunik" }],
-  creator: "Yunik",
-  publisher: "Yunik",
-  metadataBase: new URL("https://yunik.dk"),
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    type: "website",
-    locale: "da_DK",
-    url: "https://yunik.dk",
-    siteName: "Yunik",
-    title: "Yunik | Tidløs Elegance",
-    description: "Opdag unikke, håndlavede smykker der fejrer individualitet.",
-    images: [
-      {
-        url: "/hero-bracelet.webp",
-        width: 1200,
-        height: 630,
-        alt: "Yunik Smykker",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Yunik | Tidløs Elegance",
-    description: "Opdag unikke, håndlavede smykker der fejrer individualitet.",
-    images: ["/hero-bracelet.webp"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+export async function generateMetadata(): Promise<Metadata> {
+  const text = (await getCopy()).site.metadata;
+
+  return {
+    title: {
+      default: text.title,
+      template: text.titleTemplate,
+    },
+    description: text.description,
+    keywords: ["smykker", "luksus", "håndlavet", "ringe", "halskæder", "øreringe", "armbånd", "danske smykker", "yunik"],
+    authors: [{ name: "Yunik" }],
+    creator: "Yunik",
+    publisher: "Yunik",
+    metadataBase: new URL(SITE_URL),
+    // No site-wide canonical: each page sets its own. A default of "/" here made
+    // every page without one (login, checkout, 404…) claim to be the homepage.
+    openGraph: {
+      type: "website",
+      locale: "da_DK",
+      url: SITE_URL,
+      siteName: "Yunik",
+      title: text.shareTitle,
+      description: text.shareDescription,
+      images: [
+        {
+          url: "/hero-bracelet.webp",
+          width: 1200,
+          height: 630,
+          alt: text.shareImageAlt,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: text.shareTitle,
+      description: text.shareDescription,
+      images: ["/hero-bracelet.webp"],
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
-  },
-};
+  };
+}
 
 // Organization JSON-LD Schema
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Yunik",
-  url: "https://yunik.dk",
-  logo: "https://yunik.dk/hero-bracelet.webp",
+  url: SITE_URL,
+  logo: absoluteUrl("/hero-bracelet.webp"),
   description: "Håndlavede smykker med tidløs elegance. Ringe, halskæder, øreringe og armbånd.",
   address: {
     "@type": "PostalAddress",
@@ -106,7 +112,7 @@ const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "Yunik",
-  url: "https://yunik.dk",
+  url: SITE_URL,
 };
 
 export default async function RootLayout({
@@ -145,22 +151,24 @@ export default async function RootLayout({
         className={`${cormorant.variable} ${dmSans.variable} antialiased`}
       >
         <AuthProvider>
-          <AuthErrorHandler />
-          <Navbar
-            visibleCategories={visibleCategories}
-            announcement={[copy.site.announcement.message1, copy.site.announcement.message2]}
-          />
-          {/* overflow-x-clip stops slide-in animations (BrandStory, FadeIn) from widening
-              the page on phones; unlike overflow-hidden it keeps position: sticky working. */}
-          <main className="min-h-screen overflow-x-clip">
-            <ErrorBoundary>
-              {children}
-            </ErrorBoundary>
-          </main>
-          <HideOnAdmin>
-            <Footer />
-            <CookieConsent />
-          </HideOnAdmin>
+          <CopyProvider copy={toClientCopy(copy)}>
+            <AuthErrorHandler />
+            <Navbar
+              visibleCategories={visibleCategories}
+              announcement={[copy.site.announcement.message1, copy.site.announcement.message2]}
+            />
+            {/* overflow-x-clip stops slide-in animations (BrandStory, FadeIn) from widening
+                the page on phones; unlike overflow-hidden it keeps position: sticky working. */}
+            <main className="min-h-screen overflow-x-clip">
+              <ErrorBoundary>
+                {children}
+              </ErrorBoundary>
+            </main>
+            <HideOnAdmin>
+              <Footer />
+              <CookieConsent />
+            </HideOnAdmin>
+          </CopyProvider>
         </AuthProvider>
       </body>
     </html>

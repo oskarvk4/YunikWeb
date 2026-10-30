@@ -4,11 +4,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
+import { useCopy } from "@/components/CopyProvider";
+import { fillText } from "@/lib/copy-text";
 
+// Each slide's alt text comes from /admin/copy (home.carousel.slideNAlt), in this order.
 interface Slide {
   src: string;
   srcMobile?: string;
-  alt: string;
   position?: string;
   // Extra shading for this slide only: a soft pool of dark behind the text, for photos
   // that are light where the text sits. Tailwind classes; phone and desktop differ
@@ -33,13 +35,11 @@ const DEFAULT_CONTENT: HeroContent = {
 const SLIDES: Slide[] = [
   {
     src: "/hero-carousel-collection.webp",
-    alt: "Yunik smykker – ny kollektion",
     // Her face is at the photo's left edge; on narrow phones a centred crop cuts it off.
     position: "object-[15%_50%] md:object-center",
   },
   {
     src: "/jewelry-close-up.webp",
-    alt: "Yunik smykker – håndlavet guld",
     position: "object-center",
     // Ring on pale paper: the text sits on the lightest part of the photo.
     overlay:
@@ -47,7 +47,6 @@ const SLIDES: Slide[] = [
   },
   {
     src: "/hero-bracelet.webp",
-    alt: "Yunik armbånd i guld",
     position: "object-center",
     // Gold chains cross the kicker on phones; the desktop crop is dark enough already.
     overlay:
@@ -56,7 +55,6 @@ const SLIDES: Slide[] = [
   {
     src: "/hero-rings.webp",
     srcMobile: "/luna-pendant.jpg",
-    alt: "Yunik ringe og armbånd i guld",
     position: "object-center",
     // Pale skin behind the text on desktop, light grey stone on phones.
     overlay:
@@ -79,7 +77,7 @@ const SLIDE_MS = 550;
 // priority. The others are only rendered once the page has loaded (see `restReady`):
 // React preloads every non-lazy <img> it streams, so rendering them up front made
 // all four photos compete with the first one for bandwidth.
-function SlideImage({ slide, first }: { slide: Slide; first: boolean }) {
+function SlideImage({ slide, alt, first }: { slide: Slide; alt: string; first: boolean }) {
   const className = `object-cover ${slide.position ?? "object-center"}`;
   const fetchPriority = first ? ("high" as const) : ("low" as const);
 
@@ -87,7 +85,7 @@ function SlideImage({ slide, first }: { slide: Slide; first: boolean }) {
     return (
       <Image
         src={slide.src}
-        alt={slide.alt}
+        alt={alt}
         fill
         draggable={false}
         quality={80}
@@ -102,7 +100,7 @@ function SlideImage({ slide, first }: { slide: Slide; first: boolean }) {
   // A different photo on phones: one <picture>, so only the matching file downloads.
   // No preload here: a preload can't follow the <source> media switch.
   const shared = {
-    alt: slide.alt,
+    alt,
     fill: true,
     quality: 80,
     sizes: "100vw",
@@ -115,12 +113,14 @@ function SlideImage({ slide, first }: { slide: Slide; first: boolean }) {
   return (
     <picture>
       <source media="(max-width: 767px)" srcSet={mobile.srcSet} sizes="100vw" />
-      <img {...desktop} alt={slide.alt} draggable={false} />
+      <img {...desktop} alt={alt} draggable={false} />
     </picture>
   );
 }
 
 export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: HeroContent }) {
+  const carousel = useCopy().home.carousel;
+  const slideAlts = [carousel.slide1Alt, carousel.slide2Alt, carousel.slide3Alt, carousel.slide4Alt];
   const sectionRef = useRef<HTMLElement>(null);
   // Position in TRACK (1 = first real photo) and whether moves are animated.
   const [pos, setPos] = useState(1);
@@ -269,7 +269,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
       // the trust bar (5.25rem on phones, 4rem from md) with its 1px border.
       className="relative mt-20 h-[calc(100svh-12.25rem-1px)] min-h-[360px] max-h-[760px] w-full overflow-hidden touch-pan-y md:h-[calc(100svh-11rem-1px)] md:min-h-[520px] md:max-h-[820px]"
       aria-roledescription="carousel"
-      aria-label="Yunik – udvalgte billeder"
+      aria-label={carousel.ariaLabel}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onTouchStart={onTouchStart}
@@ -307,7 +307,9 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
                 style={{ width: `${SLOT_PCT}%` }}
                 aria-hidden={isCopy || realIndex !== index}
               >
-                {(i === 1 || restReady) && <SlideImage slide={slide} first={i === 1} />}
+                {(i === 1 || restReady) && (
+                  <SlideImage slide={slide} alt={slideAlts[realIndex]} first={i === 1} />
+                )}
                 {slide.overlay && (
                   <div aria-hidden="true" className={`pointer-events-none absolute inset-0 ${slide.overlay}`} />
                 )}
@@ -358,7 +360,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
           setSteppedThrough(true);
           step(-1);
         }}
-        aria-label="Forrige billede"
+        aria-label={carousel.prevLabel}
         className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-sm text-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -371,7 +373,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
           setSteppedThrough(true);
           step(1);
         }}
-        aria-label="Næste billede"
+        aria-label={carousel.nextLabel}
         className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-sm text-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -389,7 +391,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
               setSteppedThrough(true);
               slideTo(i + 1);
             }}
-            aria-label={`Gå til billede ${i + 1}`}
+            aria-label={fillText(carousel.dotLabel, { number: i + 1 })}
             aria-current={i === index}
             className={`h-1.5 rounded-full transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-white ${
               i === index ? "w-8 bg-white" : "w-4 bg-white/40 hover:bg-white/70"

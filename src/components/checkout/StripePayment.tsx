@@ -10,6 +10,8 @@ import {
   ShippingAddressElement,
 } from "@stripe/react-stripe-js/checkout";
 import Button from "@/components/ui/Button";
+import { useCopy } from "@/components/CopyProvider";
+import { fillText } from "@/lib/copy-text";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -115,6 +117,7 @@ function PaymentForm({
   onEmailChange: (email: string) => void;
 }) {
   const result = useCheckoutElements();
+  const text = useCopy().checkout.form;
   const [error, setError] = useState<string | null>(null);
   const [isPaying, setIsPaying] = useState(false);
 
@@ -155,9 +158,9 @@ function PaymentForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       <div>
-        <h3 className={sectionClass}>Kontakt</h3>
+        <h3 className={sectionClass}>{text.contactHeading}</h3>
         <label htmlFor="checkout-email" className={labelClass}>
-          E-mail
+          {text.emailLabel}
         </label>
         <input
           id="checkout-email"
@@ -165,35 +168,35 @@ function PaymentForm({
           required
           value={email}
           onChange={(e) => onEmailChange(e.target.value)}
-          placeholder="din@email.dk"
+          placeholder={text.emailPlaceholder}
           className="w-full px-[14px] py-3 border border-[#1A1A1A]/20 bg-white text-[15px] font-sans text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 focus:border-[#1A1A1A] focus:outline-none transition-colors"
         />
       </div>
 
       {collectsShippingAddress ? (
         <div>
-          <h3 className={sectionClass}>Leveringsadresse</h3>
+          <h3 className={sectionClass}>{text.shippingHeading}</h3>
           <ShippingAddressElement />
         </div>
       ) : (
         <div>
-          <h3 className={sectionClass}>Afhentning</h3>
+          <h3 className={sectionClass}>{text.pickupHeading}</h3>
           <p className="text-[15px] font-sans text-[#1A1A1A]">
             {pickupPointLabel}
           </p>
           <p className="text-sm font-sans text-[#1A1A1A]/60 mt-1">
-            Du får besked, når pakken er klar til afhentning.
+            {text.pickupNote}
           </p>
         </div>
       )}
 
       <div>
-        <h3 className={sectionClass}>Faktureringsadresse</h3>
+        <h3 className={sectionClass}>{text.billingHeading}</h3>
         <BillingAddressElement />
       </div>
 
       <div>
-        <h3 className={sectionClass}>Betalingsmetode</h3>
+        <h3 className={sectionClass}>{text.methodHeading}</h3>
         <PaymentElement />
       </div>
 
@@ -210,7 +213,7 @@ function PaymentForm({
         fullWidth
         disabled={isPaying}
       >
-        {isPaying ? "Behandler…" : `Betal ${amountLabel}`}
+        {isPaying ? text.processing : fillText(text.payButton, { amount: amountLabel })}
       </Button>
     </form>
   );

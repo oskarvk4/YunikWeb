@@ -6,9 +6,16 @@ import Link from "next/link";
 import { useCart } from "@/lib/cart";
 import { formatPrice } from "@/types";
 import Button from "@/components/ui/Button";
+import { useCopy } from "@/components/CopyProvider";
+import { categoryLabel, fillText } from "@/lib/copy-text";
+import { useLockBodyScroll } from "@/lib/use-lock-body-scroll";
 
 export default function CartDrawer() {
-  const { items, isOpen, closeCart, removeItem, updateQuantity, getTotal } = useCart();
+  const { items, isOpen, closeCart, removeItem, updateQuantity, getTotal, getItemCount } =
+    useCart();
+  const copy = useCopy();
+  const { drawer, empty } = copy.cart;
+  useLockBodyScroll(isOpen);
 
   return (
     <AnimatePresence>
@@ -20,27 +27,28 @@ export default function CartDrawer() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[60]"
             onClick={closeCart}
           />
 
-          {/* Drawer */}
+          {/* Drawer. z-[60] puts it above the cookie banner (z-50), which would
+              otherwise cover the checkout button on phones. */}
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "tween", duration: 0.4, ease: "easeInOut" }}
-            className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white z-50 flex flex-col"
+            className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white z-[60] flex flex-col"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-[#1A1A1A]/10">
               <h2 className="font-serif text-xl font-light tracking-wide text-[#1A1A1A]">
-                Din Kurv ({items.length})
+                {fillText(drawer.title, { count: getItemCount() })}
               </h2>
               <button
                 onClick={closeCart}
                 className="p-2 -mr-2 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm"
-                aria-label="Luk kurv"
+                aria-label={drawer.closeLabel}
               >
                 <svg
                   className="w-6 h-6"
@@ -76,10 +84,10 @@ export default function CartDrawer() {
                     />
                   </svg>
                   <p className="text-[#1A1A1A]/60 font-sans mb-6">
-                    Din kurv er tom
+                    {empty.message}
                   </p>
                   <Button variant="outline" onClick={closeCart}>
-                    Fortsæt Shopping
+                    {empty.button}
                   </Button>
                 </div>
               ) : (
@@ -109,12 +117,9 @@ export default function CartDrawer() {
                           {item.name}
                         </h3>
                         <p className="text-xs text-[#1A1A1A]/60 font-sans mt-1 capitalize">
-                          {item.category === "rings" && "Ringe"}
-                          {item.category === "necklaces" && "Halskæder"}
-                          {item.category === "earrings" && "Øreringe"}
-                          {item.category === "bracelets" && "Armbånd"}
+                          {categoryLabel(copy.site, item.category)}
                           {item.category === "rings" && item.ringSize
-                            ? ` · str. ${item.ringSize}`
+                            ? ` · ${fillText(drawer.ringSize, { size: item.ringSize })}`
                             : ""}
                         </p>
                         <p className="text-sm font-sans font-medium text-[#1A1A1A] mt-2">
@@ -126,7 +131,7 @@ export default function CartDrawer() {
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
                             className="w-7 h-7 border border-[#1A1A1A]/20 flex items-center justify-center text-sm hover:border-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-1"
-                            aria-label="Reducer antal"
+                            aria-label={drawer.decreaseLabel}
                           >
                             -
                           </button>
@@ -137,7 +142,7 @@ export default function CartDrawer() {
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             disabled={item.quantity >= item.stockQuantity}
                             className="w-7 h-7 border border-[#1A1A1A]/20 flex items-center justify-center text-sm hover:border-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
-                            aria-label="Øg antal"
+                            aria-label={drawer.increaseLabel}
                           >
                             +
                           </button>
@@ -148,7 +153,7 @@ export default function CartDrawer() {
                       <button
                         onClick={() => removeItem(item.id)}
                         className="p-1 text-[#1A1A1A]/40 hover:text-[#1A1A1A] transition-colors self-start cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-1 rounded-sm"
-                        aria-label="Fjern vare"
+                        aria-label={drawer.removeLabel}
                       >
                         <svg
                           className="w-5 h-5"
@@ -175,25 +180,25 @@ export default function CartDrawer() {
               <div className="border-t border-[#1A1A1A]/10 p-6 space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-sans text-[#1A1A1A]/60">
-                    Subtotal
+                    {drawer.subtotal}
                   </span>
                   <span className="font-serif text-lg font-medium text-[#1A1A1A]">
                     {formatPrice(getTotal())}
                   </span>
                 </div>
                 <p className="text-xs text-[#1A1A1A]/50 font-sans">
-                  Gratis fragt på alle ordrer
+                  {drawer.freeShipping}
                 </p>
                 <Link href="/checkout" onClick={closeCart}>
                   <Button fullWidth variant="primary" size="lg">
-                    Gå til Kassen
+                    {drawer.checkoutButton}
                   </Button>
                 </Link>
                 <button
                   onClick={closeCart}
                   className="w-full text-center text-sm font-sans text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition-colors py-2 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm"
                 >
-                  Fortsæt Shopping
+                  {drawer.continueShopping}
                 </button>
               </div>
             )}

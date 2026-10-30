@@ -6,6 +6,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Product, formatPrice } from "@/types";
 import Badge from "@/components/ui/Badge";
+import { useCopy } from "@/components/CopyProvider";
+import { fillText } from "@/lib/copy-text";
 
 interface ProductCardProps {
   product: Product;
@@ -18,6 +20,8 @@ const BLUR_DATA_URL =
 const IMAGE_SIZES = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw";
 
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
+  const { card } = useCopy().shop;
+  const alternateViewAlt = fillText(card.alternateViewAlt, { name: product.name });
   const hasSecondImage = Boolean(product.images[1]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -59,10 +63,10 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       >
         {/* Badges */}
         <div className="absolute top-3 left-3 z-20 flex flex-col gap-2">
-          {product.oneOfOne && <Badge variant="unique">Unik</Badge>}
-          {product.newArrival && !product.oneOfOne && <Badge variant="new">Nyhed</Badge>}
+          {product.oneOfOne && <Badge variant="unique">{card.badgeUnique}</Badge>}
+          {product.newArrival && !product.oneOfOne && <Badge variant="new">{card.badgeNew}</Badge>}
           {product.featured && !product.newArrival && !product.oneOfOne && (
-            <Badge variant="bestseller">Bestseller</Badge>
+            <Badge variant="bestseller">{card.badgeBestseller}</Badge>
           )}
         </div>
 
@@ -83,7 +87,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           {hasSecondImage && (
             <Image
               src={product.images[1]}
-              alt={`${product.name} - alternate view`}
+              alt={alternateViewAlt}
               fill
               className="object-cover transition-all duration-700 opacity-0 group-hover:opacity-100 scale-105 group-hover:scale-100"
               sizes={IMAGE_SIZES}
@@ -119,7 +123,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               >
                 <Image
                   src={product.images[1]}
-                  alt={`${product.name} - alternate view`}
+                  alt={alternateViewAlt}
                   fill
                   className="object-cover"
                   sizes={IMAGE_SIZES}
@@ -161,14 +165,14 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           </h3>
         </Link>
         <p className="mt-1 text-xs font-sans uppercase tracking-[0.12em] text-[#1A1A1A]/50">
-          {product.metal === "gold" ? "Forgyldt sølv" : "Sølv"}
+          {product.metal === "gold" ? card.metalGold : card.metalSilver}
         </p>
         <p className="text-sm font-sans text-[#1A1A1A]/70 mt-1">
           {formatPrice(product.price)}
         </p>
         {product.stockQuantity > 0 && product.stockQuantity <= 3 && (
           <p className="text-xs font-sans text-[#8D6553] mt-1">
-            Kun {product.stockQuantity} tilbage
+            {fillText(card.onlyLeft, { count: product.stockQuantity })}
           </p>
         )}
       </div>

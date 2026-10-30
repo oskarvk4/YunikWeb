@@ -1,144 +1,54 @@
-"use client";
-
-import { useState } from "react";
 import Container from "@/components/ui/Container";
-
-interface FAQItem {
-  question: string;
-  answer: string;
-}
+import { getCopy } from "@/lib/copy";
+import FAQAccordion, { type FAQItem } from "./FAQAccordion";
 
 interface FAQCategory {
   title: string;
   items: FAQItem[];
 }
 
-const faqData: FAQCategory[] = [
-  {
-    title: "Ordre & Levering",
-    items: [
-      {
-        question: "Hvor lang tid tager leveringen?",
-        answer: "Pakkeshop og levering til døren tager 2-5 hverdage. Vælger du ekspres til døren, er den hos dig inden for 1-2 hverdage. Du modtager en tracking-email, når din ordre er afsendt.",
-      },
-      {
-        question: "Hvad koster fragten?",
-        answer: "Både pakkeshop og levering til døren er gratis på alle ordrer — uanset beløb. Kun ekspres til døren koster ekstra: 49 DKK.",
-      },
-      {
-        question: "Kan jeg spore min ordre?",
-        answer: "Ja! Når din ordre er afsendt, modtager du en email med et tracking-nummer, så du kan følge pakken hele vejen.",
-      },
-      {
-        question: "Hvordan vælger jeg pakkeshop?",
-        answer: "Du vælger den i kurven, før du betaler. Vælg Pakkeshop under Levering, indtast dit postnummer, og vælg blandt pakkeshops i nærheden. Din pakke sendes derhen, og du får besked, når den er klar til afhentning.",
-      },
-      {
-        question: "Sender I internationalt?",
-        answer: "Lige nu sender vi kun til danske adresser. Vi udvider til resten af Norden på sigt.",
-      },
-    ],
-  },
-  {
-    title: "Returnering & Bytte",
-    items: [
-      {
-        question: "Hvad er jeres returpolitik?",
-        answer: "Du har 14 dages fuld returret fra den dag, du modtager varen. Varen skal være ubrugt og i original stand. Kontakt os på kontakt@yunik.dk for at starte en retur.",
-      },
-      {
-        question: "Kan jeg bytte til en anden størrelse?",
-        answer: "Ja, hvis du har bestilt en forkert størrelse, hjælper vi gerne med at bytte. Kontakt os, og vi finder en løsning.",
-      },
-      {
-        question: "Hvem betaler returfragt?",
-        answer: "Ved almindelig fortrydelse betaler du selv returfragten. Hvis varen er defekt eller vi har sendt en forkert vare, betaler vi naturligvis fragten.",
-      },
-      {
-        question: "Hvornår får jeg mine penge tilbage?",
-        answer: "Vi refunderer inden 14 dage efter, vi har modtaget din retur. Pengene tilbageføres til den oprindelige betalingsmetode.",
-      },
-    ],
-  },
-  {
-    title: "Produkter & Størrelser",
-    items: [
-      {
-        question: "Hvordan finder jeg min ringstørrelse?",
-        answer: "Du kan bruge en eksisterende ring og måle dens indvendige diameter. Se vores størrelsesguide på produktsiden for at finde den rigtige størrelse.",
-      },
-      {
-        question: "Hvilke materialer bruger I?",
-        answer: "Vi bruger primært sterlingsølv (92,5% sølv) og 14/18 karat guldbelægning. Alle vores smykker er nikkelfri og hypoallergene.",
-      },
-      {
-        question: "Er jeres smykker hypoallergene?",
-        answer: "Ja, alle vores smykker er nikkelfri og egnet til følsom hud. Vi bruger kun materialer af høj kvalitet.",
-      },
-      {
-        question: "Hvordan plejer jeg mine smykker?",
-        answer: "Opbevar dine smykker tørt og adskilt. Undgå kontakt med parfume, hårlak og kemikalier. Se vores plejeguide for detaljerede instruktioner.",
-      },
-    ],
-  },
-  {
-    title: "Betaling & Sikkerhed",
-    items: [
-      {
-        question: "Hvilke betalingsmetoder accepterer I?",
-        answer: "Vi accepterer Visa, Mastercard, MobilePay og bankoverførsel. Alle betalinger håndteres sikkert.",
-      },
-      {
-        question: "Er det sikkert at handle hos jer?",
-        answer: "Ja, vi bruger SSL-kryptering og sikre betalingsløsninger. Vi gemmer aldrig dine kortoplysninger.",
-      },
-      {
-        question: "Hvornår trækkes pengene?",
-        answer: "Beløbet trækkes først, når din ordre afsendes. Ved forudbestilling kan beløbet dog trækkes ved bestilling.",
-      },
-    ],
-  },
-];
+export default async function FAQPage() {
+  const copy = (await getCopy()).faq;
 
-function FAQAccordion({ item }: { item: FAQItem }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const faqData: FAQCategory[] = [
+    {
+      title: copy.delivery.headline,
+      items: [
+        { question: copy.delivery.q1, answer: copy.delivery.a1 },
+        { question: copy.delivery.q2, answer: copy.delivery.a2 },
+        { question: copy.delivery.q3, answer: copy.delivery.a3 },
+        { question: copy.delivery.q4, answer: copy.delivery.a4 },
+        { question: copy.delivery.q5, answer: copy.delivery.a5 },
+      ],
+    },
+    {
+      title: copy.returns.headline,
+      items: [
+        { question: copy.returns.q1, answer: copy.returns.a1 },
+        { question: copy.returns.q2, answer: copy.returns.a2 },
+        { question: copy.returns.q3, answer: copy.returns.a3 },
+        { question: copy.returns.q4, answer: copy.returns.a4 },
+      ],
+    },
+    {
+      title: copy.products.headline,
+      items: [
+        { question: copy.products.q1, answer: copy.products.a1 },
+        { question: copy.products.q2, answer: copy.products.a2 },
+        { question: copy.products.q3, answer: copy.products.a3 },
+        { question: copy.products.q4, answer: copy.products.a4 },
+      ],
+    },
+    {
+      title: copy.payment.headline,
+      items: [
+        { question: copy.payment.q1, answer: copy.payment.a1 },
+        { question: copy.payment.q2, answer: copy.payment.a2 },
+        { question: copy.payment.q3, answer: copy.payment.a3 },
+      ],
+    },
+  ];
 
-  return (
-    <div className="border-b border-[#1A1A1A]/10">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full py-5 flex items-center justify-between text-left"
-        aria-expanded={isOpen}
-      >
-        <span className="font-sans text-[#1A1A1A] pr-4">{item.question}</span>
-        <svg
-          className="w-5 h-5 text-[#8D6553] flex-shrink-0 transition-transform duration-200"
-          style={{ transform: isOpen ? "rotate(180deg)" : "none" }}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-      <div
-        className="grid transition-[grid-template-rows,opacity] duration-200 ease-out"
-        style={{
-          gridTemplateRows: isOpen ? "1fr" : "0fr",
-          opacity: isOpen ? 1 : 0,
-        }}
-      >
-        <div className="overflow-hidden">
-          <p className="pb-5 text-[#1A1A1A]/70 font-sans leading-relaxed">
-            {item.answer}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default function FAQPage() {
   return (
     <div className="pt-20">
       {/* Header */}
@@ -146,10 +56,10 @@ export default function FAQPage() {
         <Container size="narrow">
           <div className="text-center animate-fade-in-up">
             <h1 className="font-serif text-4xl md:text-5xl font-light text-[#1A1A1A] mb-4">
-              Ofte Stillede Spørgsmål
+              {copy.header.headline}
             </h1>
             <p className="text-[#1A1A1A]/60 font-sans">
-              Find svar på de mest almindelige spørgsmål
+              {copy.header.subhead}
             </p>
           </div>
         </Container>
@@ -162,8 +72,8 @@ export default function FAQPage() {
             className="space-y-12 animate-fade-in-up"
             style={{ animationDelay: "0.2s" }}
           >
-            {faqData.map((category) => (
-              <div key={category.title}>
+            {faqData.map((category, categoryIndex) => (
+              <div key={categoryIndex}>
                 <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mb-6">
                   {category.title}
                 </h2>
@@ -182,16 +92,16 @@ export default function FAQPage() {
             style={{ animationDelay: "0.4s" }}
           >
             <h3 className="font-serif text-xl text-[#1A1A1A] mb-3">
-              Fandt du ikke svaret?
+              {copy.contact.headline}
             </h3>
             <p className="text-[#1A1A1A]/70 font-sans mb-6">
-              Vi er altid klar til at hjælpe dig
+              {copy.contact.body}
             </p>
             <a
               href="/contact"
               className="inline-block px-8 py-3 bg-[#1A1A1A] text-white font-sans text-sm uppercase tracking-wider hover:bg-[#333] transition-colors"
             >
-              Kontakt Os
+              {copy.contact.button}
             </a>
           </div>
         </Container>

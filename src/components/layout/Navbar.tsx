@@ -7,6 +7,8 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { useCopy } from "@/components/CopyProvider";
+import { categoryLabel } from "@/lib/copy-text";
 import MobileMenu from "./MobileMenu";
 import CartDrawer from "./CartDrawer";
 import AnnouncementBar from "./AnnouncementBar";
@@ -14,11 +16,11 @@ import { CATEGORY_VALUES } from "@/lib/storefront";
 import type { ProductCategory } from "@/types";
 
 // Category links for the mobile menu. Each one only appears while it has enough pieces.
-const CATEGORY_LINKS: { category: ProductCategory; href: string; label: string }[] = [
-  { category: "rings", href: "/shop?category=rings", label: "Ringe" },
-  { category: "necklaces", href: "/shop?category=necklaces", label: "Halskæder" },
-  { category: "earrings", href: "/shop?category=earrings", label: "Øreringe" },
-  { category: "bracelets", href: "/shop?category=bracelets", label: "Armbånd" },
+const CATEGORY_LINKS: { category: ProductCategory; href: string }[] = [
+  { category: "rings", href: "/shop?category=rings" },
+  { category: "necklaces", href: "/shop?category=necklaces" },
+  { category: "earrings", href: "/shop?category=earrings" },
+  { category: "bracelets", href: "/shop?category=bracelets" },
 ];
 
 export default function Navbar({
@@ -33,6 +35,9 @@ export default function Navbar({
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { openCart, getItemCount, hasHydrated } = useCart();
   const { user, isLoading, isAdmin, signOut } = useAuth();
+  const copy = useCopy();
+  const menu = copy.site.menu;
+  const userMenu = copy.site.userMenu;
   const itemCount = getItemCount();
   const userMenuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -57,21 +62,24 @@ export default function Navbar({
   };
 
   const desktopLeftLinks = [
-    { href: "/shop", label: "Shop" },
-    { href: "/about", label: "Om Yunik" },
+    { href: "/shop", label: menu.shop },
+    { href: "/care", label: menu.care },
   ];
 
   const desktopRightLinks = [
-    { href: "/care", label: "Pleje" },
-    { href: "/contact", label: "Kontakt" },
+    { href: "/about", label: menu.about },
+    { href: "/contact", label: menu.contact },
   ];
 
   const mobileLinks = [
-    { href: "/shop", label: "Shop" },
-    ...CATEGORY_LINKS.filter((link) => visibleCategories.includes(link.category)),
-    { href: "/about", label: "Om Yunik" },
-    { href: "/care", label: "Pleje" },
-    { href: "/contact", label: "Kontakt" },
+    { href: "/shop", label: menu.shop },
+    ...CATEGORY_LINKS.filter((link) => visibleCategories.includes(link.category)).map((link) => ({
+      href: link.href,
+      label: categoryLabel(copy.site, link.category),
+    })),
+    { href: "/about", label: menu.about },
+    { href: "/care", label: menu.care },
+    { href: "/contact", label: menu.contact },
   ];
 
   if (pathname?.startsWith("/admin")) {
@@ -98,7 +106,7 @@ export default function Navbar({
                 className={`lg:hidden p-2 -ml-2 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm transition-colors duration-300 ${
                   isSolid ? "text-[#1A1A1A]" : "text-white"
                 }`}
-                aria-label="Åbn menu"
+                aria-label={menu.openMenuAria}
               >
                 <svg
                   className="w-6 h-6"
@@ -133,7 +141,7 @@ export default function Navbar({
             <Link
               href="/"
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto"
-              aria-label="Yunik – forside"
+              aria-label={menu.homeAria}
             >
               <Image
                 src="/yunik-wordmark.png"
@@ -169,7 +177,7 @@ export default function Navbar({
                       ? "border-[#8D6553] text-[#8D6553] hover:bg-[#8D6553] hover:text-white"
                       : "border-white text-white hover:bg-white hover:text-[#1A1A1A]"
                   }`}
-                  aria-label="Gå til admin panel"
+                  aria-label={menu.adminButtonAria}
                 >
                   <svg
                     className="w-3.5 h-3.5"
@@ -190,7 +198,7 @@ export default function Navbar({
                       d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                   </svg>
-                  Admin
+                  {menu.adminButton}
                 </Link>
               )}
 
@@ -204,7 +212,7 @@ export default function Navbar({
                         className={`p-2 hover:text-[#8D6553] transition-colors duration-300 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm ${
                           isSolid ? "text-[#1A1A1A]" : "text-white"
                         }`}
-                        aria-label="Brugermenu"
+                        aria-label={userMenu.buttonAria}
                       >
                         <svg
                           className="w-6 h-6"
@@ -239,7 +247,7 @@ export default function Navbar({
                                 onClick={() => setIsUserMenuOpen(false)}
                                 className="block px-4 py-2 text-sm hover:bg-gray-50 text-[#8D6553] font-medium focus:outline-none focus-visible:bg-gray-100"
                               >
-                                Admin Panel
+                                {userMenu.admin}
                               </Link>
                             )}
                             <Link
@@ -247,20 +255,20 @@ export default function Navbar({
                               onClick={() => setIsUserMenuOpen(false)}
                               className="block px-4 py-2 text-sm hover:bg-gray-50 focus:outline-none focus-visible:bg-gray-100"
                             >
-                              Min Konto
+                              {userMenu.account}
                             </Link>
                             <Link
                               href="/account/orders"
                               onClick={() => setIsUserMenuOpen(false)}
                               className="block px-4 py-2 text-sm hover:bg-gray-50 focus:outline-none focus-visible:bg-gray-100"
                             >
-                              Mine Ordrer
+                              {userMenu.orders}
                             </Link>
                             <button
                               onClick={handleSignOut}
                               className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 text-red-600 cursor-pointer focus:outline-none focus-visible:bg-gray-100"
                             >
-                              Log ud
+                              {userMenu.logout}
                             </button>
                           </motion.div>
                         )}
@@ -273,7 +281,7 @@ export default function Navbar({
                         isSolid ? "text-[#1A1A1A]" : "text-white"
                       }`}
                     >
-                      Log ind
+                      {userMenu.login}
                     </Link>
                   )}
                 </div>
@@ -285,7 +293,7 @@ export default function Navbar({
                 className={`relative p-2 -mr-2 lg:mr-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-2 rounded-sm transition-colors duration-300 ${
                   isSolid ? "text-[#1A1A1A]" : "text-white"
                 }`}
-                aria-label="Åbn kurv"
+                aria-label={menu.cartAria}
               >
                 <svg
                   className="w-6 h-6"

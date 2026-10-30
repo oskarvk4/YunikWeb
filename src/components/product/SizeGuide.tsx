@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { RING_SIZE_TABLE } from "@/constants/ring-sizes";
+import { useCopy } from "@/components/CopyProvider";
+import { fillText } from "@/lib/copy-text";
 
 interface SizeGuideProps {
   category: string;
@@ -11,20 +13,12 @@ interface SizeGuideProps {
   ringSize?: number | null;
 }
 
-const steps = [
-  "Find en ring der passer godt på den finger, du vil måle",
-  "Mål ringens indvendige diameter i millimeter — eller mål omkredsen af din finger, som svarer direkte til EU-størrelsen",
-  "Find din størrelse i tabellen nedenfor",
-];
-
-const tips = [
-  "Mål ved stuetemperatur — fingre ændrer størrelse i varme og kulde",
-  "Mål flere gange på forskellige tidspunkter af dagen",
-  "Er du i tvivl, vælg den større størrelse",
-];
-
 export default function SizeGuide({ category, ringSize }: SizeGuideProps) {
+  const { sizeGuide } = useCopy().product;
   const [isOpen, setIsOpen] = useState(false);
+
+  const steps = [sizeGuide.step1, sizeGuide.step2, sizeGuide.step3];
+  const tips = [sizeGuide.tip1, sizeGuide.tip2, sizeGuide.tip3];
 
   useEffect(() => {
     if (!isOpen) return;
@@ -70,18 +64,18 @@ export default function SizeGuide({ category, ringSize }: SizeGuideProps) {
             transition={{ duration: 0.2 }}
             role="dialog"
             aria-modal="true"
-            aria-label="Størrelsesguide for ringe"
+            aria-label={sizeGuide.dialogLabel}
             className="fixed inset-x-4 top-4 bottom-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-md md:max-h-[85vh] bg-white z-[70] rounded-sm flex flex-col overflow-hidden"
           >
             {/* Header stays put while the body scrolls — on mobile the close
                 button used to scroll out of reach. */}
             <div className="flex items-center justify-between gap-4 px-6 md:px-8 py-5 border-b border-[#1A1A1A]/10 shrink-0">
               <h2 className="font-serif text-xl font-light text-[#1A1A1A]">
-                Størrelsesguide
+                {sizeGuide.title}
               </h2>
               <button
                 onClick={() => setIsOpen(false)}
-                aria-label="Luk størrelsesguide"
+                aria-label={sizeGuide.close}
                 className="p-2 -mr-2 text-[#1A1A1A]/50 hover:text-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] rounded-sm"
               >
                 <svg
@@ -103,14 +97,16 @@ export default function SizeGuide({ category, ringSize }: SizeGuideProps) {
             <div className="overflow-y-auto overscroll-contain px-6 md:px-8 py-5">
               {ringSize && (
                 <p className="mb-5 text-sm font-sans text-[#1A1A1A]/70 leading-relaxed">
-                  Denne ring er{" "}
-                  <span className="text-[#1A1A1A]">str. {ringSize}</span> — en
-                  indvendig omkreds på {ringSize} mm.
+                  {sizeGuide.thisRingPrefix}{" "}
+                  <span className="text-[#1A1A1A]">
+                    {fillText(sizeGuide.thisRingSize, { size: ringSize })}
+                  </span>{" "}
+                  {fillText(sizeGuide.thisRingSuffix, { size: ringSize })}
                 </p>
               )}
 
               <h3 className="text-xs font-sans uppercase tracking-[0.1em] text-[#1A1A1A]/50 mb-3">
-                Sådan måler du
+                {sizeGuide.howToTitle}
               </h3>
               <ol className="space-y-2.5 mb-6">
                 {steps.map((step, i) => (
@@ -127,19 +123,19 @@ export default function SizeGuide({ category, ringSize }: SizeGuideProps) {
               </ol>
 
               <h3 className="text-xs font-sans uppercase tracking-[0.1em] text-[#1A1A1A]/50 mb-3">
-                Størrelsestabel
+                {sizeGuide.tableTitle}
               </h3>
               <table className="w-full text-sm font-sans mb-6">
                 <thead>
                   <tr className="border-b border-[#1A1A1A]/10 text-[#1A1A1A]/50">
                     <th className="py-2 text-left font-normal text-xs uppercase tracking-[0.08em]">
-                      EU
+                      {sizeGuide.columnEu}
                     </th>
                     <th className="py-2 text-left font-normal text-xs uppercase tracking-[0.08em]">
-                      US
+                      {sizeGuide.columnUs}
                     </th>
                     <th className="py-2 text-right font-normal text-xs uppercase tracking-[0.08em]">
-                      Diameter
+                      {sizeGuide.columnDiameter}
                     </th>
                   </tr>
                 </thead>
@@ -159,7 +155,7 @@ export default function SizeGuide({ category, ringSize }: SizeGuideProps) {
                           {size.eu}
                           {isThisRing && (
                             <span className="ml-2 text-xs font-normal text-[#8D6553]">
-                              denne ring
+                              {sizeGuide.thisRingMark}
                             </span>
                           )}
                         </td>
@@ -180,12 +176,12 @@ export default function SizeGuide({ category, ringSize }: SizeGuideProps) {
               </ul>
 
               <p className="mt-5 pt-5 border-t border-[#1A1A1A]/10 text-sm text-[#1A1A1A]/60 font-sans">
-                Stadig i tvivl?{" "}
+                {sizeGuide.doubt}{" "}
                 <a
                   href="/contact"
                   className="text-[#8D6553] hover:underline outline-none focus-visible:ring-2 focus-visible:ring-[#8D6553] rounded-sm"
                 >
-                  Kontakt os
+                  {sizeGuide.contactLink}
                 </a>
               </p>
             </div>
@@ -201,7 +197,7 @@ export default function SizeGuide({ category, ringSize }: SizeGuideProps) {
         onClick={() => setIsOpen(true)}
         className="text-sm font-sans text-[#8D6553] underline underline-offset-4 decoration-[#8D6553]/30 hover:decoration-[#8D6553] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#8D6553] focus-visible:ring-offset-2 rounded-sm"
       >
-        Størrelsesguide
+        {sizeGuide.link}
       </button>
 
       {typeof document !== "undefined"

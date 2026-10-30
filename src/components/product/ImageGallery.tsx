@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { useCopy } from "@/components/CopyProvider";
+import { fillText } from "@/lib/copy-text";
 
 interface ImageGalleryProps {
   images: string[];
@@ -10,6 +12,7 @@ interface ImageGalleryProps {
 }
 
 export default function ImageGallery({ images, productName }: ImageGalleryProps) {
+  const { gallery } = useCopy().product;
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
@@ -81,7 +84,7 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
             >
               <Image
                 src={image}
-                alt={`${productName} - Image ${index + 1}`}
+                alt={fillText(gallery.imageAlt, { name: productName, number: index + 1 })}
                 fill
                 priority={index === 0}
                 className="object-cover"
@@ -97,7 +100,7 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
                     <button
                       key={index}
                       type="button"
-                      aria-label={`Vis billede ${index + 1}`}
+                      aria-label={fillText(gallery.showImage, { number: index + 1 })}
                       onClick={() => {
                         setIsZoomed(false);
                         const el = mobileScrollRef.current;
@@ -134,7 +137,7 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
             >
               <Image
                 src={images[selectedIndex]}
-                alt={`${productName} - Image ${selectedIndex + 1}`}
+                alt={fillText(gallery.imageAlt, { name: productName, number: selectedIndex + 1 })}
                 fill
                 priority
                 placeholder="blur"
@@ -158,7 +161,7 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
               <button
                 type="button"
                 onClick={goPrev}
-                aria-label="Forrige billede"
+                aria-label={gallery.previous}
                 className="absolute left-3 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-white/85 backdrop-blur text-[#1A1A1A] shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer hover:bg-white focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A]"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -168,7 +171,7 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
               <button
                 type="button"
                 onClick={goNext}
-                aria-label="Næste billede"
+                aria-label={gallery.next}
                 className="absolute right-3 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-white/85 backdrop-blur text-[#1A1A1A] shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer hover:bg-white focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A]"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -196,7 +199,7 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
               >
                 <Image
                   src={image}
-                  alt={`${productName} - Thumbnail ${index + 1}`}
+                  alt={fillText(gallery.thumbnailAlt, { name: productName, number: index + 1 })}
                   fill
                   className="object-cover"
                   sizes="80px"

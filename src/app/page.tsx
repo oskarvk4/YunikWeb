@@ -18,6 +18,8 @@ const Newsletter = dynamic(() => import("@/components/home/Newsletter"), {
   ),
 });
 
+export const metadata = { alternates: { canonical: "/" } };
+
 export default async function Home() {
   const [allProducts, copy] = await Promise.all([
     getAllProducts(),
@@ -29,7 +31,7 @@ export default async function Home() {
       <HeroCarousel content={copy.home.hero} />
       <TrustBar content={copy.home.trustBar} />
       <FeaturedProducts products={pickHomeProducts(allProducts, 10)} content={copy.home.featured} />
-      <CategoryGrid tiles={buildHomeTiles(allProducts)} content={copy.home.categories} />
+      <CategoryGrid tiles={buildHomeTiles(allProducts, copy.shop.collections)} content={copy.home.categories} />
       <ShopWindow content={copy.home.shops} />
       <BrandStory content={copy.home.brandStory} />
       <Newsletter />

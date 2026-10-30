@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { createClient } from "@/lib/supabase/server";
 import { getAllProducts } from "@/data/products";
+import { getCopy } from "@/lib/copy";
+import { fillText } from "@/lib/copy-text";
 import {
   SHIPPING_OPTIONS,
   pickupPointToMetadata,
   readPickupPoint,
+  shippingTexts,
   type ShippingOptionKey,
 } from "@/constants/shipping";
 
@@ -21,6 +24,10 @@ const isShippingOptionKey = (value: unknown): value is ShippingOptionKey =>
   typeof value === "string" && value in SHIPPING_OPTIONS;
 
 export async function POST(request: NextRequest) {
+  // Messages the customer may see come from /admin/copy (checkout.errors).
+  const copy = await getCopy();
+  const errors = copy.checkout.errors;
+
   try {
     const { items, shippingOption, pickupPoint, uiMode } =
       (await request.json()) as {
@@ -42,7 +49,7 @@ export async function POST(request: NextRequest) {
 
     if (!items || items.length === 0) {
       return NextResponse.json(
-        { error: "Kurven er tom" },
+        { error: errors.emptyCart },
         { status: 400 }
       );
     }
@@ -54,10 +61,13 @@ export async function POST(request: NextRequest) {
       ? SHIPPING_OPTIONS[shippingOption]
       : SHIPPING_OPTIONS.home;
 
+    // The name customers see in Stripe comes from /admin/copy (checkout.delivery).
+    const shippingLabel = shippingTexts(copy.checkout.delivery, option.key).label;
+
     const point = option.key === "pickup" ? readPickupPoint(pickupPoint) : null;
     if (option.key === "pickup" && !point) {
       return NextResponse.json(
-        { error: "Vælg en pakkeshop for at fortsætte" },
+        { error: errors.pickupRequired },
         { status: 400 }
       );
     }
@@ -71,28 +81,33 @@ export async function POST(request: NextRequest) {
       const product = productMap.get(item.id);
       if (!product) {
         return NextResponse.json(
-          { error: `Produkt ikke fundet: ${item.id}` },
+          { error: fillText(errors.productNotFound, { id: item.id }) },
           { status: 400 }
         );
       }
 
       if (item.quantity <= 0) {
         return NextResponse.json(
-          { error: `Ugyldigt antal for ${product.name}` },
+          { error: fillText(errors.invalidQuantity, { name: product.name }) },
           { status: 400 }
         );
       }
 
       if (product.stockQuantity <= 0) {
         return NextResponse.json(
-          { error: `${product.name} er udsolgt` },
+          { error: fillText(errors.soldOut, { name: product.name }) },
           { status: 400 }
         );
       }
 
       if (item.quantity > product.stockQuantity) {
         return NextResponse.json(
-          { error: `Kun ${product.stockQuantity} stk. tilbage af ${product.name}` },
+          {
+            error: fillText(errors.fewLeft, {
+              stock: product.stockQuantity,
+              name: product.name,
+            }),
+          },
           { status: 400 }
         );
       }
@@ -154,8 +169,8 @@ export async function POST(request: NextRequest) {
               currency: "dkk",
             },
             display_name: point
-              ? `${option.label} — ${point.name}`
-              : option.label,
+              ? `${shippingLabel} — ${point.name}`
+              : shippingLabel,
             metadata: { option: option.key },
             delivery_estimate: {
               minimum: {
@@ -208,7 +223,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Stripe checkout error:", error);
     return NextResponse.json(
-      { error: "Der opstod en fejl ved oprettelse af betalingen" },
+      { error: errors.sessionFailed },
       { status: 500 }
     );
   }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Product, formatPrice } from "@/types";
 import { useCart } from "@/lib/cart";
+import { useCopy } from "@/components/CopyProvider";
 
 interface StickyAddToCartProps {
   product: Product;
@@ -11,6 +12,7 @@ interface StickyAddToCartProps {
 
 export default function StickyAddToCart({ product }: StickyAddToCartProps) {
   const { addItem } = useCart();
+  const { sticky } = useCopy().product;
   const isOutOfStock = product.stockQuantity <= 0;
   const [isVisible, setIsVisible] = useState(false);
 
@@ -59,7 +61,7 @@ export default function StickyAddToCart({ product }: StickyAddToCartProps) {
               disabled={isOutOfStock}
               className="flex-shrink-0 px-6 py-3 bg-[#1A1A1A] text-white text-sm font-sans uppercase tracking-wider hover:bg-[#333] transition-colors disabled:cursor-not-allowed disabled:bg-[#1A1A1A]/45"
             >
-              {isOutOfStock ? "Udsolgt" : "Tilføj"}
+              {isOutOfStock ? sticky.soldOut : sticky.add}
             </button>
           </div>
         </motion.div>

@@ -9,12 +9,14 @@ import DeliveryPicker from "@/components/checkout/DeliveryPicker";
 import StripePayment, { PaymentSkeleton } from "@/components/checkout/StripePayment";
 import { useCart } from "@/lib/cart";
 import { formatPrice, type CartItem } from "@/types";
-import { getCategoryLabel } from "@/constants/categories";
+import { useCopy } from "@/components/CopyProvider";
+import { categoryLabel, fillText } from "@/lib/copy-text";
 import { trackBeginCheckout } from "@/lib/analytics";
 import {
   SHIPPING_OPTIONS,
   formatPickupPoint,
   formatShippingPrice,
+  shippingTexts,
   type PickupPointSnapshot,
   type ShippingOptionKey,
 } from "@/constants/shipping";
@@ -41,7 +43,8 @@ interface CheckoutRequest {
 
 /** Asks the server for a Stripe session; resolves with its clientSecret or hosted url. */
 async function requestCheckout(
-  body: CheckoutRequest
+  body: CheckoutRequest,
+  fallbackError: string
 ): Promise<{ clientSecret?: string; url?: string }> {
   const response = await fetch("/api/checkout", {
     method: "POST",
@@ -50,16 +53,18 @@ async function requestCheckout(
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data.error || "Der opstod en fejl");
+    throw new Error(data.error || fallbackError);
   }
   return data;
 }
 
-const errorMessage = (err: unknown) =>
-  err instanceof Error ? err.message : "Der opstod en fejl ved betaling";
+const errorMessage = (err: unknown, fallback: string) =>
+  err instanceof Error ? err.message : fallback;
 
 export default function CheckoutPage() {
   const { items, getTotal, getItemCount, removeItem, updateQuantity } = useCart();
+  const copy = useCopy();
+  const text = copy.checkout;
   const totalItemCount = getItemCount();
   const [shippingOption, setShippingOption] =
     useState<ShippingOptionKey>("home");
@@ -88,6 +93,7 @@ export default function CheckoutPage() {
   const trackedBeginCheckout = useRef(false);
 
   const shipping = SHIPPING_OPTIONS[shippingOption];
+  const shippingLabel = shippingTexts(text.delivery, shippingOption).label;
   const needsPickupPoint = shippingOption === "pickup" && !pickupPoint;
 
   const cartSignature = useMemo(
@@ -133,18 +139,24 @@ export default function CheckoutPage() {
     let cancelled = false;
     const timer = window.setTimeout(async () => {
       try {
-        const data = await requestCheckout({
-          items,
-          shippingOption,
-          pickupPoint: shippingOption === "pickup" ? pickupPoint : null,
-          uiMode: "embedded",
-        });
+        const data = await requestCheckout(
+          {
+            items,
+            shippingOption,
+            pickupPoint: shippingOption === "pickup" ? pickupPoint : null,
+            uiMode: "embedded",
+          },
+          text.errors.generic
+        );
         if (cancelled) return;
-        if (!data.clientSecret) throw new Error("Betalingen kunne ikke startes");
+        if (!data.clientSecret) throw new Error(text.errors.startFailed);
         setSession({ clientSecret: data.clientSecret, signature: cartSignature });
       } catch (err) {
         if (cancelled) return;
-        setFailure({ signature: cartSignature, message: errorMessage(err) });
+        setFailure({
+          signature: cartSignature,
+          message: errorMessage(err, text.errors.payment),
+        });
       }
     }, SESSION_DEBOUNCE_MS);
 
@@ -160,6 +172,9 @@ export default function CheckoutPage() {
     items,
     shippingOption,
     pickupPoint,
+    text.errors.generic,
+    text.errors.startFailed,
+    text.errors.payment,
   ]);
 
   const retry = () => {
@@ -175,16 +190,22 @@ export default function CheckoutPage() {
     setFailure(null);
 
     try {
-      const data = await requestCheckout({
-        items,
-        shippingOption,
-        pickupPoint: shippingOption === "pickup" ? pickupPoint : null,
-        uiMode: "hosted",
-      });
-      if (!data.url) throw new Error("Betalingen kunne ikke startes");
+      const data = await requestCheckout(
+        {
+          items,
+          shippingOption,
+          pickupPoint: shippingOption === "pickup" ? pickupPoint : null,
+          uiMode: "hosted",
+        },
+        text.errors.generic
+      );
+      if (!data.url) throw new Error(text.errors.startFailed);
       window.location.href = data.url;
     } catch (err) {
-      setFailure({ signature: cartSignature, message: errorMessage(err) });
+      setFailure({
+        signature: cartSignature,
+        message: errorMessage(err, text.errors.payment),
+      });
       setIsRedirecting(false);
     }
   };
@@ -211,14 +232,14 @@ export default function CheckoutPage() {
                 </svg>
               </div>
               <h1 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A] mb-4">
-                Din kurv er tom
+                {text.empty.heading}
               </h1>
               <p className="text-[#1A1A1A]/60 font-sans mb-8">
-                Tilføj nogle smykker til din kurv for at fortsætte
+                {text.empty.body}
               </p>
               <Link href="/shop">
                 <Button variant="primary" size="lg">
-                  Gå til Shop
+                  {text.empty.button}
                 </Button>
               </Link>
             </div>
@@ -241,7 +262,7 @@ export default function CheckoutPage() {
   if (needsPickupPoint) {
     paymentArea = (
       <p className="font-sans text-sm text-[#1A1A1A]/60">
-        Vælg en pakkeshop ovenfor for at fortsætte til betaling.
+        {text.payment.choosePickupPoint}
       </p>
     );
   } else if (HOSTED_CHECKOUT) {
@@ -255,7 +276,7 @@ export default function CheckoutPage() {
           onClick={handleHostedCheckout}
           disabled={isRedirecting}
         >
-          {isRedirecting ? "Behandler..." : "Gå til betaling"}
+          {isRedirecting ? text.payment.hostedProcessing : text.payment.hostedButton}
         </Button>
       </div>
     );
@@ -271,7 +292,7 @@ export default function CheckoutPage() {
       <div className="space-y-4">
         {failureBox}
         <Button variant="outline" size="md" onClick={retry}>
-          Prøv igen
+          {text.payment.retry}
         </Button>
       </div>
     );
@@ -298,7 +319,7 @@ export default function CheckoutPage() {
         <Container>
           <div className="animate-fade-in-up">
             <h1 className="font-serif text-3xl md:text-4xl font-light text-[#1A1A1A]">
-              Checkout
+              {text.header.title}
             </h1>
           </div>
         </Container>
@@ -315,7 +336,10 @@ export default function CheckoutPage() {
                 style={{ animationDelay: "0.2s" }}
               >
                 <h2 className="font-serif text-xl font-light text-[#1A1A1A] mb-6">
-                  Din Ordre ({totalItemCount} {totalItemCount === 1 ? "vare" : "varer"})
+                  {fillText(
+                    totalItemCount === 1 ? text.order.headingOne : text.order.headingMany,
+                    { count: totalItemCount }
+                  )}
                 </h2>
 
                 <div className="space-y-5">
@@ -342,13 +366,13 @@ export default function CheckoutPage() {
                               {item.name}
                             </h3>
                             <p className="text-sm text-[#1A1A1A]/60 font-sans capitalize mt-1">
-                              {getCategoryLabel(item.category)}
+                              {categoryLabel(copy.site, item.category)}
                             </p>
                           </div>
                           <button
                             onClick={() => removeItem(item.id)}
                             className="p-2 text-[#1A1A1A]/40 hover:text-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-1 rounded-sm"
-                            aria-label="Fjern vare"
+                            aria-label={text.order.removeLabel}
                           >
                             <svg
                               className="w-5 h-5"
@@ -371,7 +395,7 @@ export default function CheckoutPage() {
                             <button
                               onClick={() => updateQuantity(item.id, item.quantity - 1)}
                               className="w-8 h-8 border border-[#1A1A1A]/20 flex items-center justify-center text-sm hover:border-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-1"
-                              aria-label="Reducer antal"
+                              aria-label={text.order.decreaseLabel}
                             >
                               -
                             </button>
@@ -382,7 +406,7 @@ export default function CheckoutPage() {
                               onClick={() => updateQuantity(item.id, item.quantity + 1)}
                               disabled={item.quantity >= item.stockQuantity}
                               className="w-8 h-8 border border-[#1A1A1A]/20 flex items-center justify-center text-sm hover:border-[#1A1A1A] transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A] focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
-                              aria-label="Øg antal"
+                              aria-label={text.order.increaseLabel}
                             >
                               +
                             </button>
@@ -404,7 +428,9 @@ export default function CheckoutPage() {
                 />
 
                 <div className="border-t border-[#1A1A1A]/10 pt-6 mt-6">
-                  <h2 className="font-serif text-lg text-[#1A1A1A] mb-4">Betaling</h2>
+                  <h2 className="font-serif text-lg text-[#1A1A1A] mb-4">
+                    {text.payment.heading}
+                  </h2>
                   {paymentArea}
                 </div>
 
@@ -425,7 +451,7 @@ export default function CheckoutPage() {
                       d="M15 19l-7-7 7-7"
                     />
                   </svg>
-                  Fortsæt shopping
+                  {text.order.continueShopping}
                 </Link>
               </div>
             </div>
@@ -437,18 +463,18 @@ export default function CheckoutPage() {
                 style={{ animationDelay: "0.3s" }}
               >
                 <h2 className="font-serif text-xl font-light text-[#1A1A1A] mb-6">
-                  Ordreoversigt
+                  {text.summary.heading}
                 </h2>
 
                 <div className="space-y-4 border-b border-[#1A1A1A]/10 pb-4 mb-4">
                   <div className="flex justify-between font-sans text-sm">
-                    <span className="text-[#1A1A1A]/60">Subtotal</span>
+                    <span className="text-[#1A1A1A]/60">{text.summary.subtotal}</span>
                     <span className="text-[#1A1A1A]">{formatPrice(getTotal())}</span>
                   </div>
                   <div className="flex justify-between font-sans text-sm">
-                    <span className="text-[#1A1A1A]/60">{shipping.label}</span>
+                    <span className="text-[#1A1A1A]/60">{shippingLabel}</span>
                     <span className="text-[#1A1A1A]">
-                      {formatShippingPrice(shipping)}
+                      {formatShippingPrice(shipping, text.delivery)}
                     </span>
                   </div>
                   {pickupPoint && (
@@ -460,7 +486,7 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="font-serif text-lg text-[#1A1A1A]">Total</span>
+                  <span className="font-serif text-lg text-[#1A1A1A]">{text.summary.total}</span>
                   <span className="font-serif text-2xl text-[#1A1A1A]">
                     {formatPrice(getTotal() + shipping.price)}
                   </span>
@@ -475,7 +501,7 @@ export default function CheckoutPage() {
                       d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                     />
                   </svg>
-                  <span className="text-xs font-sans">Sikker betaling med Stripe</span>
+                  <span className="text-xs font-sans">{text.summary.secure}</span>
                 </div>
               </div>
             </div>

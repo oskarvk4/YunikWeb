@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useCopy } from "@/components/CopyProvider";
 
 export default function ResetPasswordPage() {
+  const copy = useCopy().auth;
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -49,12 +51,12 @@ export default function ResetPasswordPage() {
     setError(null);
 
     if (password !== confirmPassword) {
-      setError("Adgangskoderne matcher ikke");
+      setError(copy.passwordErrors.mismatch);
       return;
     }
 
     if (password.length < 6) {
-      setError("Adgangskoden skal være mindst 6 tegn");
+      setError(copy.passwordErrors.tooShort);
       return;
     }
 
@@ -102,10 +104,10 @@ export default function ResetPasswordPage() {
               </svg>
             </div>
             <h1 className="font-serif text-2xl text-dark mb-2">
-              Adgangskode opdateret
+              {copy.resetSuccess.headline}
             </h1>
             <p className="text-dark/60">
-              Din adgangskode er blevet ændret. Du bliver nu sendt videre...
+              {copy.resetSuccess.body}
             </p>
           </div>
         </div>
@@ -116,7 +118,7 @@ export default function ResetPasswordPage() {
   if (isCheckingSession) {
     return (
       <div className="min-h-screen bg-light flex items-center justify-center px-4 py-16">
-        <p className="text-dark/60">Indlæser...</p>
+        <p className="text-dark/60">{copy.reset.loading}</p>
       </div>
     );
   }
@@ -142,17 +144,16 @@ export default function ResetPasswordPage() {
               </svg>
             </div>
             <h1 className="font-serif text-2xl text-dark mb-2">
-              Ugyldigt link
+              {copy.resetInvalid.headline}
             </h1>
             <p className="text-dark/60 mb-6">
-              Dette link er udløbet eller ugyldigt. Bed om et nyt
-              nulstillingslink.
+              {copy.resetInvalid.body}
             </p>
             <Link
               href="/auth/forgot-password"
               className="inline-block bg-dark text-white px-6 py-3 font-medium hover:bg-dark/90 transition-colors"
             >
-              Anmod om nyt link
+              {copy.resetInvalid.button}
             </Link>
           </div>
         </div>
@@ -165,10 +166,10 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-md animate-fade-in-up">
         <div className="bg-white p-8 shadow-sm">
           <h1 className="font-serif text-3xl text-dark text-center mb-2">
-            Ny adgangskode
+            {copy.reset.headline}
           </h1>
           <p className="text-dark/60 text-center mb-8">
-            Indtast din nye adgangskode nedenfor.
+            {copy.reset.subhead}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -183,7 +184,7 @@ export default function ResetPasswordPage() {
                 htmlFor="password"
                 className="block text-sm font-medium text-dark mb-2"
               >
-                Ny adgangskode
+                {copy.reset.passwordLabel}
               </label>
               <input
                 id="password"
@@ -193,7 +194,7 @@ export default function ResetPasswordPage() {
                 required
                 minLength={6}
                 className="w-full px-4 py-3 border border-dark/20 focus:border-accent focus:outline-none transition-colors"
-                placeholder="Mindst 6 tegn"
+                placeholder={copy.reset.passwordPlaceholder}
               />
             </div>
 
@@ -202,7 +203,7 @@ export default function ResetPasswordPage() {
                 htmlFor="confirmPassword"
                 className="block text-sm font-medium text-dark mb-2"
               >
-                Bekræft ny adgangskode
+                {copy.reset.confirmLabel}
               </label>
               <input
                 id="confirmPassword"
@@ -211,7 +212,7 @@ export default function ResetPasswordPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 className="w-full px-4 py-3 border border-dark/20 focus:border-accent focus:outline-none transition-colors"
-                placeholder="Gentag adgangskode"
+                placeholder={copy.reset.confirmPlaceholder}
               />
             </div>
 
@@ -220,7 +221,7 @@ export default function ResetPasswordPage() {
               disabled={isLoading}
               className="w-full bg-dark text-white py-3 font-medium hover:bg-dark/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Opdaterer..." : "Opdater adgangskode"}
+              {isLoading ? copy.reset.submitting : copy.reset.submit}
             </button>
           </form>
         </div>

@@ -2,10 +2,12 @@
 
 import { useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import FilterBar, { CATEGORY_FILTERS } from "@/components/shop/FilterBar";
+import FilterBar, { CATEGORY_FILTER_VALUES } from "@/components/shop/FilterBar";
 import ProductGrid from "@/components/shop/ProductGrid";
 import { Product } from "@/types";
 import { GIFT_PRICE_LIMIT } from "@/lib/storefront";
+import { useCopy } from "@/components/CopyProvider";
+import { categoryLabel } from "@/lib/copy-text";
 
 interface ShopContentProps {
   products: Product[];
@@ -30,6 +32,7 @@ function parseMetals(value: string | null): Metal[] {
 }
 
 export default function ShopContent({ products }: ShopContentProps) {
+  const copy = useCopy();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -47,8 +50,9 @@ export default function ShopContent({ products }: ShopContentProps) {
   const emptyCategory = useMemo(() => {
     if (activeCategory === "all") return undefined;
     if (products.some((p) => p.category === activeCategory)) return undefined;
-    return CATEGORY_FILTERS.find((c) => c.value === activeCategory);
-  }, [products, activeCategory]);
+    if (!(CATEGORY_FILTER_VALUES as readonly string[]).includes(activeCategory)) return undefined;
+    return { value: activeCategory, label: categoryLabel(copy.site, activeCategory) };
+  }, [products, activeCategory, copy.site]);
 
   const updateURL = (changes: UrlChanges) => {
     const category = changes.category ?? activeCategory;

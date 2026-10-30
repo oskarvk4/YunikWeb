@@ -1,7 +1,8 @@
 import { MetadataRoute } from "next";
 import { getAllProductSlugs } from "@/data/products";
+import { SITE_URL } from "@/lib/site";
 
-const BASE_URL = "https://yunik.dk";
+const BASE_URL = SITE_URL;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let productSlugs: string[] = [];

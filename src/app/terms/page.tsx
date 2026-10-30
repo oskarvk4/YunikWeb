@@ -1,15 +1,37 @@
 import type { Metadata } from "next";
 import Container from "@/components/ui/Container";
 import FadeIn from "@/components/ui/FadeIn";
+import Lines from "@/components/ui/Lines";
+import RichText from "@/components/ui/RichText";
+import { getCopy } from "@/lib/copy";
 
-export const metadata: Metadata = {
-  title: "Handelsbetingelser",
-  description: "Yunik Jewelry — handelsbetingelser, betalingsbetingelser og øvrige vilkår for køb på yunik.dk.",
-  alternates: { canonical: "/terms" },
-  robots: { index: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = (await getCopy()).terms.page;
+  return {
+    title: copy.metaTitle,
+    description: copy.metaDescription,
+    alternates: { canonical: "/terms" },
+    robots: { index: false },
+  };
+}
 
-export default function TermsPage() {
+function Heading({ text }: { text: string }) {
+  return (
+    <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
+      {text}
+    </h2>
+  );
+}
+
+/** A long editable text: paragraphs and bullet lists. */
+function Body({ text }: { text: string }) {
+  return <RichText text={text} listClassName="" />;
+}
+
+export default async function TermsPage() {
+  const copy = (await getCopy()).terms;
+  const { page, s1, s3, s10 } = copy;
+
   return (
     <div className="pt-20">
       {/* Header */}
@@ -17,10 +39,10 @@ export default function TermsPage() {
         <Container size="narrow">
           <FadeIn inView={false} duration={0.6} className="text-center">
             <h1 className="font-serif text-4xl md:text-5xl font-light text-[#1A1A1A] mb-4">
-              Handelsbetingelser
+              {page.title}
             </h1>
             <p className="text-[#1A1A1A]/60 font-sans">
-              Sidst opdateret: Februar 2025
+              {page.updated}
             </p>
           </FadeIn>
         </Container>
@@ -35,145 +57,62 @@ export default function TermsPage() {
             delay={0.2}
             className="prose prose-lg max-w-none font-sans text-[#1A1A1A]/80"
           >
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              1. Generelle oplysninger
-            </h2>
+            <Heading text={s1.heading} />
             <p>
-              <strong>Virksomhed:</strong> Yunik Jewelry<br />
-              <strong>CVR:</strong> 46331060<br />
-              <strong>Adresse:</strong> Silkeborgvej 226, 8320 Åbyhøj<br />
-              <strong>Email:</strong> kontakt@yunik.dk<br />
-              <strong>Telefon:</strong> +45 28 57 61 57
+              <strong>{s1.companyLabel}</strong> {s1.company}<br />
+              <strong>{s1.cvrLabel}</strong> {s1.cvr}<br />
+              <strong>{s1.addressLabel}</strong> {s1.address}<br />
+              <strong>{s1.emailLabel}</strong> {s1.email}<br />
+              <strong>{s1.phoneLabel}</strong> {s1.phone}
             </p>
 
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              2. Priser og betaling
-            </h2>
+            <Heading text={copy.s2.heading} />
+            <Body text={copy.s2.body} />
+
+            <Heading text={s3.heading} />
             <p>
-              Alle priser på yunik.dk er angivet i danske kroner (DKK) inklusiv moms.
+              {s3.intro}
             </p>
-            <p>Vi accepterer følgende betalingsmetoder:</p>
-            <ul>
-              <li>Kreditkort (Visa, Mastercard)</li>
-              <li>MobilePay</li>
-              <li>Bankoverførsel</li>
-            </ul>
             <p>
-              Beløbet trækkes først, når varen afsendes. Ved forudbestilling kan
-              beløbet dog trækkes ved bestilling.
+              <strong>{s3.ratesLabel}</strong>
+            </p>
+            <Body text={s3.rates} />
+            <p>
+              {s3.trackingNote}
             </p>
 
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              3. Levering
-            </h2>
+            <Heading text={copy.s4.heading} />
+            <Body text={copy.s4.body} />
+
+            <Heading text={copy.s5.heading} />
+            <Body text={copy.s5.body} />
+
+            <Heading text={copy.s6.heading} />
+            <Body text={copy.s6.body} />
+
+            <Heading text={copy.s7.heading} />
+            <Body text={copy.s7.body} />
+
+            <Heading text={copy.s8.heading} />
+            <Body text={copy.s8.body} />
+
+            <Heading text={copy.s9.heading} />
+            <Body text={copy.s9.body} />
+
+            <Heading text={s10.heading} />
             <p>
-              Vi leverer til hele Danmark. Leveringstiden er typisk
-              2-5 hverdage.
+              {s10.intro}
             </p>
             <p>
-              <strong>Fragtpriser:</strong>
+              <strong>{s10.authorityName}</strong><br />
+              <Lines text={s10.authorityAddress} />
             </p>
-            <ul>
-              <li>Pakkeshop: gratis (2-5 hverdage)</li>
-              <li>Levering til døren: gratis (2-5 hverdage)</li>
-              <li>Ekspres til døren: 49 DKK (1-2 hverdage)</li>
-            </ul>
             <p>
-              Du modtager en email med tracking-information, når din ordre er afsendt.
+              {s10.outro}
             </p>
 
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              4. Fortrydelsesret
-            </h2>
-            <p>
-              Du har 14 dages fortrydelsesret i henhold til forbrugeraftaleloven.
-              Fristen regnes fra den dag, du modtager varen.
-            </p>
-            <p>For at benytte fortrydelsesretten skal du:</p>
-            <ul>
-              <li>Give os besked inden 14 dage (email til kontakt@yunik.dk)</li>
-              <li>Returnere varen inden 14 dage efter du har givet besked</li>
-              <li>Varen skal være i ubrugt og original stand</li>
-            </ul>
-            <p>
-              Du betaler selv returfragt. Vi refunderer købsbeløbet inden 14 dage
-              efter modtagelse af returvaren.
-            </p>
-
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              5. Reklamationsret
-            </h2>
-            <p>
-              Du har 2 års reklamationsret i henhold til købeloven. Det betyder,
-              at du kan få repareret, ombyttet, pengene tilbage eller afslag i prisen,
-              hvis varen har en mangel.
-            </p>
-            <p>
-              Reklamationen skal ske inden rimelig tid efter, at du har opdaget manglen.
-              Kontakt os på kontakt@yunik.dk.
-            </p>
-
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              6. Garanti
-            </h2>
-            <p>
-              Udover din lovbestemte reklamationsret yder vi 1 års garanti på alle
-              vores smykker mod fabrikationsfejl. Garantien dækker ikke:
-            </p>
-            <ul>
-              <li>Normal slitage</li>
-              <li>Skader forårsaget af forkert brug eller pleje</li>
-              <li>Skader fra kemikalier, parfume eller vand</li>
-            </ul>
-
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              7. Persondata
-            </h2>
-            <p>
-              Vi behandler dine personoplysninger i overensstemmelse med GDPR.
-              Læs vores fulde privatlivspolitik for mere information.
-            </p>
-
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              8. Immaterielle rettigheder
-            </h2>
-            <p>
-              Alt indhold på yunik.dk, herunder tekst, billeder, logoer og design,
-              er beskyttet af ophavsret og tilhører Yunik. Uautoriseret brug er forbudt.
-            </p>
-
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              9. Ansvarsfraskrivelse
-            </h2>
-            <p>
-              Vi bestræber os på at holde alle produktoplysninger opdaterede, men
-              tager forbehold for trykfejl, prisændringer og udsolgte varer.
-            </p>
-
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              10. Tvister
-            </h2>
-            <p>
-              Ved uenighed kan du klage til Nævnenes Hus:
-            </p>
-            <p>
-              <strong>Nævnenes Hus</strong><br />
-              Toldboden 2<br />
-              8800 Viborg<br />
-              naevneneshus.dk
-            </p>
-            <p>
-              Du kan også benytte EU-Kommissionens online klageportal:
-              ec.europa.eu/odr
-            </p>
-
-            <h2 className="font-serif text-2xl font-light text-[#1A1A1A] mt-8 mb-4">
-              11. Lovvalg
-            </h2>
-            <p>
-              Disse handelsbetingelser er underlagt dansk ret, og eventuelle tvister
-              skal afgøres ved de danske domstole.
-            </p>
+            <Heading text={copy.s11.heading} />
+            <Body text={copy.s11.body} />
           </FadeIn>
         </Container>
       </section>

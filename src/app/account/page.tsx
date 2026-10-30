@@ -1,13 +1,20 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { getCopy } from "@/lib/copy";
+import { fillText } from "@/lib/copy-text";
 import type { UserProfile, Order } from "@/types/supabase";
 
-export const metadata = {
-  title: "Min Konto",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = (await getCopy()).account;
+  return {
+    title: copy.metadata.title,
+  };
+}
 
 export default async function AccountPage() {
+  const copy = (await getCopy()).account;
   const supabase = await createClient();
 
   const {
@@ -40,10 +47,10 @@ export default async function AccountPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="font-serif text-3xl md:text-4xl text-dark mb-2">
-            Min Konto
+            {copy.overview.headline}
           </h1>
           <p className="text-dark/60">
-            Velkommen tilbage, {user.email}
+            {fillText(copy.overview.welcome, { email: user.email ?? "" })}
           </p>
         </div>
 
@@ -70,8 +77,8 @@ export default async function AccountPage() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-medium text-dark">Mine Ordrer</h3>
-                <p className="text-sm text-dark/60">Se ordrehistorik</p>
+                <h3 className="font-medium text-dark">{copy.links.ordersTitle}</h3>
+                <p className="text-sm text-dark/60">{copy.links.ordersBody}</p>
               </div>
             </div>
           </Link>
@@ -97,8 +104,8 @@ export default async function AccountPage() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-medium text-dark">Shop</h3>
-                <p className="text-sm text-dark/60">Udforsk vores kollektion</p>
+                <h3 className="font-medium text-dark">{copy.links.shopTitle}</h3>
+                <p className="text-sm text-dark/60">{copy.links.shopBody}</p>
               </div>
             </div>
           </Link>
@@ -124,8 +131,8 @@ export default async function AccountPage() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-medium text-dark">Kontakt</h3>
-                <p className="text-sm text-dark/60">Har du spørgsmål?</p>
+                <h3 className="font-medium text-dark">{copy.links.contactTitle}</h3>
+                <p className="text-sm text-dark/60">{copy.links.contactBody}</p>
               </div>
             </div>
           </Link>
@@ -133,14 +140,14 @@ export default async function AccountPage() {
 
         {/* Account Info */}
         <div className="bg-white p-6 shadow-sm mb-8">
-          <h2 className="font-serif text-xl text-dark mb-4">Kontoinformation</h2>
+          <h2 className="font-serif text-xl text-dark mb-4">{copy.info.headline}</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-dark/60 mb-1">Email</label>
+              <label className="block text-sm text-dark/60 mb-1">{copy.info.emailLabel}</label>
               <p className="text-dark">{user.email}</p>
             </div>
             <div>
-              <label className="block text-sm text-dark/60 mb-1">Medlem siden</label>
+              <label className="block text-sm text-dark/60 mb-1">{copy.info.memberSinceLabel}</label>
               <p className="text-dark">
                 {profile?.created_at
                   ? new Date(profile.created_at).toLocaleDateString("da-DK", {
@@ -148,7 +155,7 @@ export default async function AccountPage() {
                       month: "long",
                       day: "numeric",
                     })
-                  : "Ukendt"}
+                  : copy.info.unknownDate}
               </p>
             </div>
           </div>
@@ -157,12 +164,12 @@ export default async function AccountPage() {
         {/* Recent Orders */}
         <div className="bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-serif text-xl text-dark">Seneste Ordrer</h2>
+            <h2 className="font-serif text-xl text-dark">{copy.recent.headline}</h2>
             <Link
               href="/account/orders"
               className="text-sm text-accent hover:underline"
             >
-              Se alle
+              {copy.recent.viewAll}
             </Link>
           </div>
 
@@ -175,7 +182,7 @@ export default async function AccountPage() {
                 >
                   <div>
                     <p className="font-medium text-dark">
-                      Ordre #{order.id.slice(0, 8)}
+                      {fillText(copy.recent.orderNumber, { number: order.id.slice(0, 8) })}
                     </p>
                     <p className="text-sm text-dark/60">
                       {new Date(order.created_at).toLocaleDateString("da-DK")}
@@ -195,9 +202,9 @@ export default async function AccountPage() {
                       }`}
                     >
                       {order.status === "completed"
-                        ? "Gennemført"
+                        ? copy.statuses.completed
                         : order.status === "pending"
-                        ? "Afventer"
+                        ? copy.statuses.pending
                         : order.status}
                     </span>
                   </div>
@@ -206,12 +213,12 @@ export default async function AccountPage() {
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-dark/60 mb-4">Du har ingen ordrer endnu</p>
+              <p className="text-dark/60 mb-4">{copy.recent.emptyText}</p>
               <Link
                 href="/shop"
                 className="inline-block bg-dark text-white px-6 py-2 text-sm hover:bg-dark/90 transition-colors"
               >
-                Start shopping
+                {copy.recent.emptyButton}
               </Link>
             </div>
           )}

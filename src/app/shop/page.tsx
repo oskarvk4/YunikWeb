@@ -3,11 +3,17 @@ import Container from "@/components/ui/Container";
 import ShopContent from "@/components/shop/ShopContent";
 import ShopHeading from "@/components/shop/ShopHeading";
 import { getAllProducts } from "@/data/products";
+import { getCopy } from "@/lib/copy";
 
 const HEADING_CLASS = "font-serif text-3xl md:text-4xl font-light text-[#1A1A1A]";
 
+export async function generateMetadata() {
+  const { seo } = (await getCopy()).shop;
+  return { title: seo.title, description: seo.description, alternates: { canonical: "/shop" } };
+}
+
 export default async function ShopPage() {
-  const products = await getAllProducts();
+  const [products, copy] = await Promise.all([getAllProducts(), getCopy()]);
 
   return (
     <div className="pt-20">
@@ -16,7 +22,7 @@ export default async function ShopPage() {
         <Container>
           <div className="text-center">
             {/* Reads the URL, so it sits in Suspense; the plain heading is what the static page shows. */}
-            <Suspense fallback={<h1 className={HEADING_CLASS}>Alle Smykker</h1>}>
+            <Suspense fallback={<h1 className={HEADING_CLASS}>{copy.shop.heading.title}</h1>}>
               <ShopHeading className={HEADING_CLASS} />
             </Suspense>
           </div>
@@ -29,7 +35,7 @@ export default async function ShopPage() {
           <Suspense
             fallback={
               <div className="text-center py-20">
-                <p className="text-[#1A1A1A]/60 font-sans">Indlæser produkter...</p>
+                <p className="text-[#1A1A1A]/60 font-sans">{copy.shop.grid.loading}</p>
               </div>
             }
           >

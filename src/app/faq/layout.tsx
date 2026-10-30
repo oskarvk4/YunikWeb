@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
+import { getCopy } from "@/lib/copy";
 
-export const metadata: Metadata = {
-  title: "FAQ",
-  description: "Svar på de mest stillede spørgsmål om Yunik-smykker — levering, returnering, størrelser, materialer og meget mere.",
-  alternates: { canonical: "/faq" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { seo } = (await getCopy()).faq;
+  return {
+    title: seo.title,
+    description: seo.description,
+    alternates: { canonical: "/faq" },
+  };
+}
 
 export default function FAQLayout({ children }: { children: React.ReactNode }) {
   return children;

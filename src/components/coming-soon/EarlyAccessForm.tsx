@@ -1,10 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useCopy } from "@/components/CopyProvider";
 
 type Status = "idle" | "loading" | "success" | "error";
 
 export default function EarlyAccessForm() {
+  const copy = useCopy().comingSoon.signup;
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -31,7 +33,7 @@ export default function EarlyAccessForm() {
       const data = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        throw new Error(data.error || "Noget gik galt. Prøv igen.");
+        throw new Error(data.error || copy.defaultError);
       }
 
       setStatus("success");
@@ -39,7 +41,7 @@ export default function EarlyAccessForm() {
     } catch (error) {
       setStatus("error");
       setErrorMessage(
-        error instanceof Error ? error.message : "Noget gik galt. Prøv igen."
+        error instanceof Error ? error.message : copy.defaultError
       );
     }
   };
@@ -47,7 +49,7 @@ export default function EarlyAccessForm() {
   return (
     <div className="w-full max-w-md">
       <p className="text-white/90 text-base sm:text-lg font-sans font-light leading-relaxed tracking-wide mb-7">
-        En unik mulighed for tidlig adgang til shoppen
+        {copy.intro}
       </p>
 
       {/* Form and confirmation share one grid cell so the swap crossfades in
@@ -75,11 +77,11 @@ export default function EarlyAccessForm() {
               name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="din@email.dk"
+              placeholder={copy.emailPlaceholder}
               autoComplete="email"
               required
               disabled={status === "loading"}
-              aria-label="Emailadresse"
+              aria-label={copy.emailAriaLabel}
               // Padding is symmetric so the centered text stays optically
               // centered despite the arrow sitting in the right gutter.
               className="w-full bg-transparent border-b border-white/40 px-12 pb-4 text-center text-white placeholder:text-white/50 font-sans text-base sm:text-lg tracking-wide outline-none transition-colors duration-500 hover:border-white/60 focus:border-white disabled:opacity-50"
@@ -88,7 +90,7 @@ export default function EarlyAccessForm() {
             <button
               type="submit"
               disabled={status === "loading"}
-              aria-label="Tilmeld"
+              aria-label={copy.submitAriaLabel}
               className="absolute right-0 bottom-0 pb-4 pl-3 text-white/70 transition-all duration-300 hover:text-white hover:translate-x-1 focus-visible:text-white focus-visible:outline-none disabled:opacity-40 disabled:translate-x-0"
             >
               {status === "loading" ? (
@@ -113,10 +115,10 @@ export default function EarlyAccessForm() {
         {status === "success" && (
           <div className="[grid-area:1/1] self-center animate-fade-in">
             <p className="font-serif text-2xl sm:text-3xl font-light text-white">
-              Du er på listen.
+              {copy.successHeadline}
             </p>
             <p className="mt-2 text-white/70 text-base font-sans font-light">
-              Vi skriver, når dørene åbner.
+              {copy.successBody}
             </p>
           </div>
         )}

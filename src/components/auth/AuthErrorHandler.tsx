@@ -2,9 +2,11 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useCopy } from "@/components/CopyProvider";
 
 export default function AuthErrorHandler() {
   const router = useRouter();
+  const expiredLink = useCopy().auth.forgot.expiredLink;
 
   useEffect(() => {
     if (!window.location.hash.includes("error=")) return;
@@ -16,10 +18,10 @@ export default function AuthErrorHandler() {
     history.replaceState(null, "", window.location.pathname + window.location.search);
 
     if (errorCode === "otp_expired" || errorCode === "access_denied") {
-      const message = errorDescription ?? "Linket er udløbet eller ugyldigt.";
+      const message = errorDescription ?? expiredLink;
       router.replace(`/auth/forgot-password?error=${encodeURIComponent(message)}`);
     }
-  }, [router]);
+  }, [router, expiredLink]);
 
   return null;
 }

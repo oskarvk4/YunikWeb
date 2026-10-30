@@ -38,7 +38,7 @@ export default function ShopWindow({ content }: { content: Copy["home"]["shops"]
           <div className="relative aspect-square overflow-hidden">
             <Image
               src="/butik/butik-vindue-3x2.webp"
-              alt="Yuniks butik om aftenen, set udefra gennem vinduet"
+              alt={content.windowImageAlt}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 50vw, 440px"
@@ -47,7 +47,7 @@ export default function ShopWindow({ content }: { content: Copy["home"]["shops"]
           <div className="relative aspect-square overflow-hidden">
             <Image
               src="/butik/ole-stand.webp"
-              alt="Manden bag Yunik ved sin stand med sten og smykker"
+              alt={content.standImageAlt}
               fill
               className="object-cover object-[50%_35%]"
               sizes="(max-width: 768px) 50vw, 440px"

@@ -1,26 +1,14 @@
 "use client";
 
 import { giftLabels } from "@/lib/storefront";
+import { useCopy } from "@/components/CopyProvider";
+import { categoryLabel, metalLabel } from "@/lib/copy-text";
 
 // Every category is always shown, even with few or no pieces. Most pieces first.
-export const CATEGORY_FILTERS: { label: string; value: string }[] = [
-  { label: "Alle", value: "all" },
-  { label: "Øreringe", value: "earrings" },
-  { label: "Ringe", value: "rings" },
-  { label: "Halskæder", value: "necklaces" },
-  { label: "Armbånd", value: "bracelets" },
-];
+// The names come from /admin/copy (site.categories); "Alle" from shop.filters.all.
+export const CATEGORY_FILTER_VALUES = ["earrings", "rings", "necklaces", "bracelets"] as const;
 
-const sortOptions: { label: string; value: string }[] = [
-  { label: "Nyeste", value: "newest" },
-  { label: "Pris: Lav til Høj", value: "price-asc" },
-  { label: "Pris: Høj til Lav", value: "price-desc" },
-];
-
-const metals: { label: string; value: string }[] = [
-  { label: "Sølv", value: "silver" },
-  { label: "Guld", value: "gold" },
-];
+const metalValues = ["silver", "gold"] as const;
 
 // Outline gift box (Tabler shapes), drawn in the chip's text colour.
 function GiftIcon() {
@@ -64,13 +52,27 @@ export default function FilterBar({
   onMetalToggle,
   onUnderPriceToggle,
 }: FilterBarProps) {
-  const gift = giftLabels();
+  const copy = useCopy();
+  const gift = giftLabels(copy.shop.collections);
+
+  const categoryFilters = [
+    { label: copy.shop.filters.all, value: "all" },
+    ...CATEGORY_FILTER_VALUES.map((value) => ({ label: categoryLabel(copy.site, value), value })),
+  ];
+
+  const sortOptions = [
+    { label: copy.shop.filters.sortNewest, value: "newest" },
+    { label: copy.shop.filters.sortPriceAsc, value: "price-asc" },
+    { label: copy.shop.filters.sortPriceDesc, value: "price-desc" },
+  ];
+
+  const metals = metalValues.map((value) => ({ label: metalLabel(copy.site, value), value }));
 
   return (
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4 mb-6">
       {/* Category + Metal Filters */}
       <div className="flex flex-wrap items-center gap-2">
-        {CATEGORY_FILTERS.map((category) => (
+        {categoryFilters.map((category) => (
           <button
             key={category.value}
             onClick={() => onCategoryChange(category.value)}
