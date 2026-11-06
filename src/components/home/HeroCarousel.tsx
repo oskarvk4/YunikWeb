@@ -1,21 +1,30 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { useCopy } from "@/components/CopyProvider";
 import { fillText } from "@/lib/copy-text";
 
-// Each slide's alt text comes from /admin/copy (home.carousel.slideNAlt), in this order.
+// Each slide's alt text comes from /admin/copy (home.carousel.<altKey>). The keys are
+// tied to the photo, not its place, so reordering slides keeps saved alt texts right.
+type AltKey = "slide1Alt" | "slide2Alt" | "slide3Alt" | "slide4Alt" | "slide5Alt";
+
 interface Slide {
   src: string;
+  altKey: AltKey;
   srcMobile?: string;
+  // Alt text for srcMobile, when phones show a different photo.
+  altKeyMobile?: AltKey;
   position?: string;
   // Extra shading for this slide only: a soft pool of dark behind the text, for photos
   // that are light where the text sits. Tailwind classes; phone and desktop differ
   // because the text is at the bottom on phones and at the left from md.
   overlay?: string;
+  // From md, leave out the broad dark shade on the left (it fades out while this photo
+  // is showing), for a bright photo whose own `overlay` shades just behind the text.
+  ownDesktopShade?: boolean;
 }
 
 interface HeroContent {
@@ -34,12 +43,24 @@ const DEFAULT_CONTENT: HeroContent = {
 
 const SLIDES: Slide[] = [
   {
-    src: "/hero-carousel-collection.webp",
-    // Her face is at the photo's left edge; on narrow phones a centred crop cuts it off.
-    position: "object-[15%_50%] md:object-center",
+    // Desktop: hands with rings. Phones: the woman with the flower earrings.
+    src: "/hero-hands-rings.webp",
+    altKey: "slide5Alt",
+    srcMobile: "/hero-carousel-collection.webp",
+    altKeyMobile: "slide1Alt",
+    // Phones: her face is at the photo's left edge, so a centred crop cuts it off.
+    // Desktop: the file is mirrored from the original (IMG_4143) so the open hand with
+    // most of the rings is on the right, clear of the text; keeping a little more of
+    // the bottom lifts the rings away from the dots.
+    position: "object-[15%_50%] md:object-[50%_60%]",
+    // White sweater behind the text on desktop: a soft shadow there only, so the photo
+    // stays bright. Phones keep the usual shading.
+    ownDesktopShade: true,
+    overlay: "md:bg-[radial-gradient(ellipse_40%_32%_at_18%_72%,rgba(26,26,26,0.55),transparent)]",
   },
   {
     src: "/jewelry-close-up.webp",
+    altKey: "slide2Alt",
     position: "object-center",
     // Ring on pale paper: the text sits on the lightest part of the photo.
     overlay:
@@ -47,6 +68,7 @@ const SLIDES: Slide[] = [
   },
   {
     src: "/hero-bracelet.webp",
+    altKey: "slide3Alt",
     position: "object-center",
     // Gold chains cross the kicker on phones; the desktop crop is dark enough already.
     overlay:
@@ -54,6 +76,7 @@ const SLIDES: Slide[] = [
   },
   {
     src: "/hero-rings.webp",
+    altKey: "slide4Alt",
     srcMobile: "/luna-pendant.jpg",
     position: "object-center",
     // Pale skin behind the text on desktop, light grey stone on phones.
@@ -69,6 +92,14 @@ const COUNT = SLIDES.length;
 // carousel loops forward and back instead of rewinding across every photo.
 const TRACK: Slide[] = [SLIDES[COUNT - 1], ...SLIDES, SLIDES[0]];
 const SLOT_PCT = 100 / TRACK.length;
+
+const PHONE_QUERY = "(max-width: 767px)";
+
+function subscribeToPhone(onChange: () => void) {
+  const query = window.matchMedia(PHONE_QUERY);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
 
 const AUTOPLAY_MS = 5500;
 const SLIDE_MS = 550;
@@ -120,9 +151,15 @@ function SlideImage({ slide, alt, first }: { slide: Slide; alt: string; first: b
 
 export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: HeroContent }) {
   const carousel = useCopy().home.carousel;
-  const slideAlts = [carousel.slide1Alt, carousel.slide2Alt, carousel.slide3Alt, carousel.slide4Alt];
+  // Only picks the alt text for slides with a phone photo. The photo itself switches in
+  // the <picture>, so the server's guess (not a phone) never shows the wrong image.
+  const isPhone = useSyncExternalStore(
+    subscribeToPhone,
+    () => window.matchMedia(PHONE_QUERY).matches,
+    () => false
+  );
   const sectionRef = useRef<HTMLElement>(null);
-  // Position in TRACK (1 = first real photo) and whether moves are animated.
+  // Position in the track (1 = first real photo) and whether moves are animated.
   const [pos, setPos] = useState(1);
   const [animate, setAnimate] = useState(true);
   const [dragX, setDragX] = useState<number | null>(null);
@@ -308,7 +345,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
                 aria-hidden={isCopy || realIndex !== index}
               >
                 {(i === 1 || restReady) && (
-                  <SlideImage slide={slide} alt={slideAlts[realIndex]} first={i === 1} />
+                  <SlideImage slide={slide} alt={carousel[isPhone && slide.altKeyMobile ? slide.altKeyMobile : slide.altKey]} first={i === 1} />
                 )}
                 {slide.overlay && (
                   <div aria-hidden="true" className={`pointer-events-none absolute inset-0 ${slide.overlay}`} />
@@ -317,8 +354,14 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
             );
           })}
         </div>
-        {/* Overlay: phones shade the bottom, where the text sits; larger screens shade the left. */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/75 via-[#1A1A1A]/25 to-transparent md:bg-gradient-to-r md:from-[#1A1A1A]/65 md:via-[#1A1A1A]/30 md:to-transparent z-10" />
+        {/* Overlay: phones shade the bottom, where the text sits; larger screens shade the left,
+            fading out for a photo that brings its own shade. */}
+        <div
+          className={`absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/75 via-[#1A1A1A]/25 to-transparent md:bg-gradient-to-r md:from-[#1A1A1A]/65 md:via-[#1A1A1A]/30 md:to-transparent z-10 transition-opacity ${
+            SLIDES[index].ownDesktopShade ? "md:opacity-0" : ""
+          }`}
+          style={{ transitionDuration: `${SLIDE_MS}ms` }}
+        />
       </div>
 
       {/* Content: bottom of the photo on phones. pb-16 is enough to keep the buttons above
@@ -353,7 +396,7 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
         </div>
       </div>
 
-      {/* Prev / next */}
+      {/* Prev / next: solid white so they show on the bright photos too. */}
       <button
         type="button"
         onClick={() => {
@@ -361,10 +404,10 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
           step(-1);
         }}
         aria-label={carousel.prevLabel}
-        className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-sm text-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white"
+        className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-11 h-11 rounded-full bg-white/85 hover:bg-white shadow-md text-[#1A1A1A] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1A1A1A]"
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
+        <svg aria-hidden="true" className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
       <button
@@ -374,10 +417,10 @@ export default function HeroCarousel({ content = DEFAULT_CONTENT }: { content?: 
           step(1);
         }}
         aria-label={carousel.nextLabel}
-        className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-sm text-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white"
+        className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-11 h-11 rounded-full bg-white/85 hover:bg-white shadow-md text-[#1A1A1A] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1A1A1A]"
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+        <svg aria-hidden="true" className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 5l7 7-7 7" />
         </svg>
       </button>
 
