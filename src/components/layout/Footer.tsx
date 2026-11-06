@@ -58,6 +58,7 @@ export default async function Footer() {
                 <p>{text.companyLine}</p>
                 <p>{text.addressLine}</p>
                 <p>{text.contactLine}</p>
+                {text.storePhoneLine && <p>{text.storePhoneLine}</p>}
               </div>
               {/* Social Links */}
               <div className="flex space-x-4 mt-6">

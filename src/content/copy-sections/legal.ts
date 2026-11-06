@@ -115,8 +115,10 @@ export const legalCopy = {
       address: "Silkeborgvej 226, 8320 Åbyhøj",
       emailLabel: "Email:",
       email: "kontakt@yunik.dk",
-      phoneLabel: "Telefon:",
+      phoneLabel: "Telefon (webshop):",
       phone: "+45 28 57 61 57",
+      storePhoneLabel: "Telefon (butik):",
+      storePhone: "+45 86 19 98 77",
     },
     s2: {
       heading: "2. Priser og betaling",
@@ -296,6 +298,8 @@ export const legalLabels: Record<string, string> = {
   "terms.s1.email": "Email – tekst",
   "terms.s1.phoneLabel": "Telefon – fed overskrift",
   "terms.s1.phone": "Telefon – tekst",
+  "terms.s1.storePhoneLabel": "Butikkens telefon – fed overskrift",
+  "terms.s1.storePhone": "Butikkens telefon – tekst (lad stå tom for at skjule)",
 
   "terms.s2.heading": HEADING,
   "terms.s2.body": BODY,

@@ -65,7 +65,10 @@ export async function sendOrderConfirmationEmail(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const shippingCost = Math.max(0, order.total_amount - subtotal);
+  // Shipping is what the chosen option costs; anything the customer paid below
+  // items + shipping came off through a discount code.
+  const shippingCost = getShippingOption(order.shipping_option).price;
+  const discount = Math.max(0, subtotal + shippingCost - order.total_amount);
   const shippingAddress =
     (order.shipping_address as unknown as OrderEmailAddress | null) ?? null;
   const customerName = shippingAddress?.name ?? null;
@@ -87,6 +90,7 @@ export async function sendOrderConfirmationEmail(
         items,
         subtotal,
         shippingCost,
+        discount,
         total: order.total_amount,
         currency: order.currency || "DKK",
         shippingAddress,

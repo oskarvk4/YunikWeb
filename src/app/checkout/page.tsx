@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import DeliveryPicker from "@/components/checkout/DeliveryPicker";
-import StripePayment, { PaymentSkeleton } from "@/components/checkout/StripePayment";
+import StripePayment, {
+  PaymentSkeleton,
+  type SessionTotals,
+} from "@/components/checkout/StripePayment";
 import { useCart } from "@/lib/cart";
 import { formatPrice, type CartItem } from "@/types";
 import { useCopy } from "@/components/CopyProvider";
@@ -74,6 +77,13 @@ export default function CheckoutPage() {
   // Kept here, not in the payment form, because the form is rebuilt whenever a
   // new session is created.
   const [email, setEmail] = useState("");
+  // The applied discount code, re-applied by the form to each new session.
+  const [promoCode, setPromoCode] = useState("");
+  // Discount and total from the current Stripe session, tagged with the session
+  // they came from, so a stale session's numbers are never shown.
+  const [sessionTotals, setSessionTotals] = useState<(SessionTotals & { secret: string }) | null>(
+    null
+  );
   // The embedded Stripe session. `signature` is what it was priced for: if the
   // basket or delivery choice changes (the cart drawer is reachable from the
   // navbar), the session is stale and a new one is created.
@@ -108,6 +118,25 @@ export default function CheckoutPage() {
 
   // A session counts only while it matches the basket as it is now.
   const readySession = session?.signature === cartSignature ? session : null;
+  const readySecret = readySession?.clientSecret ?? null;
+
+  const handleTotals = useCallback(
+    (totals: SessionTotals) => {
+      if (!readySecret) return;
+      setSessionTotals((prev) =>
+        prev &&
+        prev.secret === readySecret &&
+        prev.discount === totals.discount &&
+        prev.total === totals.total
+          ? prev
+          : { ...totals, secret: readySecret }
+      );
+    },
+    [readySecret]
+  );
+  const liveTotals = sessionTotals?.secret === readySecret ? sessionTotals : null;
+  const discount = liveTotals?.discount ?? 0;
+  const grandTotal = liveTotals?.total ?? getTotal() + shipping.price;
   const currentFailure =
     failure?.signature === cartSignature ? failure.message : null;
   const canCreateSession =
@@ -306,6 +335,9 @@ export default function CheckoutPage() {
         pickupPointLabel={pickupPoint ? formatPickupPoint(pickupPoint) : null}
         email={email}
         onEmailChange={setEmail}
+        promoCode={promoCode}
+        onPromoCodeChange={setPromoCode}
+        onTotalsChange={handleTotals}
       />
     );
   } else {
@@ -483,12 +515,18 @@ export default function CheckoutPage() {
                       {pickupPoint.city ? `, ${pickupPoint.city}` : ""}
                     </p>
                   )}
+                  {discount > 0 && (
+                    <div className="flex justify-between font-sans text-sm">
+                      <span className="text-[#1A1A1A]/60">{text.summary.discount}</span>
+                      <span className="text-[#1A1A1A]">−{formatPrice(discount)}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex justify-between items-center">
                   <span className="font-serif text-lg text-[#1A1A1A]">{text.summary.total}</span>
                   <span className="font-serif text-2xl text-[#1A1A1A]">
-                    {formatPrice(getTotal() + shipping.price)}
+                    {formatPrice(grandTotal)}
                   </span>
                 </div>
 

@@ -64,6 +64,12 @@ export default async function TermsPage() {
               <strong>{s1.addressLabel}</strong> {s1.address}<br />
               <strong>{s1.emailLabel}</strong> {s1.email}<br />
               <strong>{s1.phoneLabel}</strong> {s1.phone}
+              {s1.storePhone && (
+                <>
+                  <br />
+                  <strong>{s1.storePhoneLabel}</strong> {s1.storePhone}
+                </>
+              )}
             </p>
 
             <Heading text={copy.s2.heading} />

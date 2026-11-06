@@ -59,6 +59,8 @@ export interface OrderConfirmationProps {
   items: OrderEmailItem[];
   subtotal: number;
   shippingCost: number;
+  /** Amount taken off by a discount code, in kroner; 0 when none was used. */
+  discount?: number;
   total: number;
   currency: string;
   shippingAddress?: OrderEmailAddress | null;
@@ -77,6 +79,7 @@ export default function OrderConfirmation({
   items,
   subtotal,
   shippingCost,
+  discount = 0,
   total,
   currency,
   shippingAddress,
@@ -163,6 +166,16 @@ export default function OrderConfirmation({
                 </Text>
               </Column>
             </Row>
+            {discount > 0 ? (
+              <Row>
+                <Column>
+                  <Text style={totalsLabel}>Rabat</Text>
+                </Column>
+                <Column style={totalsValueCol}>
+                  <Text style={totalsValue}>−{formatPrice(discount, currency)}</Text>
+                </Column>
+              </Row>
+            ) : null}
             <Hr style={hr} />
             <Row>
               <Column>

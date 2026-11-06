@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { loadStripe, type Appearance } from "@stripe/stripe-js";
 import {
   CheckoutElementsProvider,
@@ -12,6 +12,7 @@ import {
 import Button from "@/components/ui/Button";
 import { useCopy } from "@/components/CopyProvider";
 import { fillText } from "@/lib/copy-text";
+import { formatPrice } from "@/types";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -103,23 +104,60 @@ export function PaymentSkeleton() {
   );
 }
 
+/** Totals from the Stripe session, in kroner, reported up to the order summary. */
+export type SessionTotals = { discount: number; total: number };
+
 function PaymentForm({
   amountLabel,
   collectsShippingAddress,
   pickupPointLabel,
   email,
   onEmailChange,
+  promoCode,
+  onPromoCodeChange,
+  onTotalsChange,
 }: {
   amountLabel: string;
   collectsShippingAddress: boolean;
   pickupPointLabel?: string | null;
   email: string;
   onEmailChange: (email: string) => void;
+  promoCode: string;
+  onPromoCodeChange: (code: string) => void;
+  onTotalsChange: (totals: SessionTotals) => void;
 }) {
   const result = useCheckoutElements();
-  const text = useCopy().checkout.form;
+  const copy = useCopy().checkout;
+  const text = copy.form;
+  const codeText = copy.discount;
   const [error, setError] = useState<string | null>(null);
   const [isPaying, setIsPaying] = useState(false);
+  const [codeInput, setCodeInput] = useState(promoCode);
+  const [codeError, setCodeError] = useState<string | null>(null);
+  const [isApplying, setIsApplying] = useState(false);
+  const reapplied = useRef(false);
+
+  const checkout = result.type === "success" ? result.checkout : null;
+  const appliedCode = checkout?.discountAmounts?.find((d) => d.promotionCode)?.promotionCode ?? null;
+  const discountMinor = checkout?.total.discount.minorUnitsAmount ?? 0;
+  const totalMinor = checkout?.total.total.minorUnitsAmount ?? null;
+
+  // The order summary sits outside this form, so the session's totals (with
+  // any discount) are passed up whenever they change.
+  useEffect(() => {
+    if (totalMinor === null) return;
+    onTotalsChange({ discount: discountMinor / 100, total: totalMinor / 100 });
+  }, [discountMinor, totalMinor, onTotalsChange]);
+
+  // A new session is created whenever the basket or delivery changes; put the
+  // customer's code back on it once, so they don't have to type it again.
+  useEffect(() => {
+    if (!checkout || reapplied.current || !promoCode || appliedCode) return;
+    reapplied.current = true;
+    checkout.applyPromotionCode(promoCode).then((res) => {
+      if (res.type === "error") onPromoCodeChange("");
+    });
+  }, [checkout, promoCode, appliedCode, onPromoCodeChange]);
 
   if (result.type === "loading") {
     return <PaymentSkeleton />;
@@ -131,7 +169,30 @@ function PaymentForm({
     );
   }
 
-  const { checkout } = result;
+  const { checkout: session } = result;
+
+  const applyCode = async () => {
+    const code = codeInput.trim();
+    if (!code || isApplying) return;
+    setCodeError(null);
+    setIsApplying(true);
+    const res = await session.applyPromotionCode(code);
+    setIsApplying(false);
+    if (res.type === "error") {
+      setCodeError(codeText.error);
+      return;
+    }
+    onPromoCodeChange(code);
+  };
+
+  const removeCode = async () => {
+    setCodeError(null);
+    const res = await session.removePromotionCode();
+    if (res.type === "success") {
+      setCodeInput("");
+      onPromoCodeChange("");
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,14 +201,14 @@ function PaymentForm({
 
     // Surfaces field-level problems in the Elements themselves instead of
     // failing at confirm with one opaque message.
-    const validation = await checkout.validateElements();
+    const validation = await session.validateElements();
     if (validation.type === "error") {
       setError(validation.error.message);
       setIsPaying(false);
       return;
     }
 
-    const confirmation = await checkout.confirm({ email });
+    const confirmation = await session.confirm({ email });
     if (confirmation.type === "error") {
       setError(confirmation.error.message);
       setIsPaying(false);
@@ -196,6 +257,62 @@ function PaymentForm({
       </div>
 
       <div>
+        <h3 className={sectionClass}>{codeText.heading}</h3>
+        {appliedCode ? (
+          <div className="flex items-center justify-between gap-3 px-[14px] py-3 border border-[#1A1A1A]/20 bg-[#F5F0EB]/60 font-sans text-[15px] text-[#1A1A1A]">
+            <span>
+              {fillText(codeText.applied, { code: appliedCode })}
+              {discountMinor > 0 && (
+                <span className="text-[#1A1A1A]/60"> (−{formatPrice(discountMinor / 100)})</span>
+              )}
+            </span>
+            <button
+              type="button"
+              onClick={removeCode}
+              className="text-sm text-[#8D6553] underline underline-offset-4 decoration-[#8D6553]/30 hover:decoration-[#8D6553] cursor-pointer"
+            >
+              {codeText.remove}
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={codeInput}
+              onChange={(e) => {
+                setCodeInput(e.target.value.toUpperCase());
+                setCodeError(null);
+              }}
+              onKeyDown={(e) => {
+                // Enter applies the code instead of submitting the payment.
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  applyCode();
+                }
+              }}
+              placeholder={codeText.placeholder}
+              aria-label={codeText.heading}
+              autoComplete="off"
+              className="flex-1 min-w-0 px-[14px] py-3 border border-[#1A1A1A]/20 bg-white text-[15px] font-sans text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 focus:border-[#1A1A1A] focus:outline-none transition-colors"
+            />
+            <button
+              type="button"
+              onClick={applyCode}
+              disabled={!codeInput.trim() || isApplying}
+              className="shrink-0 px-5 border border-[#1A1A1A] text-sm font-sans text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-[#1A1A1A] cursor-pointer disabled:cursor-not-allowed"
+            >
+              {isApplying ? codeText.applying : codeText.apply}
+            </button>
+          </div>
+        )}
+        {codeError && (
+          <p role="alert" className="mt-2 text-sm font-sans text-red-600">
+            {codeError}
+          </p>
+        )}
+      </div>
+
+      <div>
         <h3 className={sectionClass}>{text.methodHeading}</h3>
         <PaymentElement />
       </div>
@@ -213,7 +330,12 @@ function PaymentForm({
         fullWidth
         disabled={isPaying}
       >
-        {isPaying ? text.processing : fillText(text.payButton, { amount: amountLabel })}
+        {isPaying
+          ? text.processing
+          : fillText(text.payButton, {
+              // The session's own total once Stripe has it: includes any discount.
+              amount: totalMinor !== null ? formatPrice(totalMinor / 100) : amountLabel,
+            })}
       </Button>
     </form>
   );
@@ -235,6 +357,11 @@ interface StripePaymentProps {
    */
   email: string;
   onEmailChange: (email: string) => void;
+  /** The applied discount code, held by the page so it survives a new session. */
+  promoCode: string;
+  onPromoCodeChange: (code: string) => void;
+  /** Called with the session's discount and total whenever they change. */
+  onTotalsChange: (totals: SessionTotals) => void;
 }
 
 export default function StripePayment({
@@ -244,6 +371,9 @@ export default function StripePayment({
   pickupPointLabel,
   email,
   onEmailChange,
+  promoCode,
+  onPromoCodeChange,
+  onTotalsChange,
 }: StripePaymentProps) {
   return (
     <CheckoutElementsProvider
@@ -268,6 +398,9 @@ export default function StripePayment({
         pickupPointLabel={pickupPointLabel}
         email={email}
         onEmailChange={onEmailChange}
+        promoCode={promoCode}
+        onPromoCodeChange={onPromoCodeChange}
+        onTotalsChange={onTotalsChange}
       />
     </CheckoutElementsProvider>
   );

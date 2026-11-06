@@ -135,6 +135,9 @@ export async function POST(request: NextRequest) {
       // on `card`, so they surface once the domain is registered for the key
       // in use (test done; live still pending).
       billing_address_collection: "required",
+      // Lets the customer apply a promotion code (e.g. a sign-up discount): the
+      // "Rabatkode" field in our form calls checkout.applyPromotionCode().
+      allow_promotion_codes: true,
       // A parcel-shop order is delivered to the shop, so asking for a street
       // address would only confuse — the billing address still identifies the
       // customer.
