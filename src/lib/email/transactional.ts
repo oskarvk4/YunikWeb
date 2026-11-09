@@ -35,7 +35,7 @@ function getContactEmail(): string {
   return (
     process.env.REPLY_TO_EMAIL ||
     process.env.CONTACT_EMAIL ||
-    "YunikJewelry@outlook.com"
+    "kontakt@yunik.dk"
   );
 }
 

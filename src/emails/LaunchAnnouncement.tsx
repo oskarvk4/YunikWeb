@@ -29,7 +29,7 @@ import EmailHead from "./EmailHead";
  * EarlyAccessConfirmation. Sent by scripts/send-launch-email.ts.
  */
 
-export const LAUNCH_SUBJECT = "Dørene er åbne hos Yunik";
+export const LAUNCH_SUBJECT = "Yunik er åben";
 
 export interface LaunchAnnouncementProps {
   /** Personal early-access link for this recipient. */
@@ -42,12 +42,12 @@ export function launchAnnouncementText({
   contactEmail,
 }: LaunchAnnouncementProps): string {
   return (
-    `Dørene er åbne.\n\n` +
-    `Du skrev dig op til at høre det først. Nu kan du se kollektionen, før vi åbner for alle andre.\n\n` +
+    `Yunik er åben.\n\n` +
+    `Du skrev dig op for at høre det først. Vi har ikke offentliggjort det officielt endnu, men webshoppen er åben nu, og du er blandt de første, der får besked.\n\n` +
     `Kollektionen er håndlavede smykker i sølv og forgyldt sølv, formet ét ad gangen. ` +
-    `Mange stykker findes kun i få eksemplarer, så det største udvalg er der lige nu.\n\n` +
+    `Mange stykker findes kun i få eksemplarer, og udvalget vokser langsomt, efterhånden som der kommer flere til.\n\n` +
     `Se kollektionen: ${accessUrl}\n\n` +
-    `Linket er personligt og giver adgang i 30 dage, så del det helst ikke.\n\n` +
+    `Lagerbeholdningen ændrer sig meget over tid, så det er en god idé at følge med på Instagram (https://www.instagram.com/yunik_jewelry/) og på hjemmesiden.\n\n` +
     `Gratis fragt i Danmark og 14 dages returret.\n\n` +
     `Har du spørgsmål, kan du svare direkte på denne mail eller skrive til ${contactEmail}.\n\n` +
     `Det her er den ene mail, vi lovede. Vil du ikke høre mere fra os, så svar "afmeld", så fjerner vi dig fra listen.\n\n` +
@@ -72,16 +72,17 @@ export default function LaunchAnnouncement({
 
           <Section style={card}>
             <Heading as="h2" style={h2}>
-              Dørene er åbne
+              Yunik er åben
             </Heading>
             <Text style={paragraph}>
-              Du skrev dig op til at høre det først. Nu kan du se
-              kollektionen, før vi åbner for alle andre.
+              Du skrev dig op for at høre det først. Vi har ikke offentliggjort
+              det officielt endnu, men webshoppen er åben nu, og du er blandt de
+              første, der får besked.
             </Text>
             <Text style={paragraph}>
               Kollektionen er håndlavede smykker i sølv og forgyldt sølv,
               formet ét ad gangen. Mange stykker findes kun i få eksemplarer,
-              så det største udvalg er der lige nu.
+              og udvalget vokser langsomt, efterhånden som der kommer flere til.
             </Text>
             <Section style={buttonRow}>
               <Button href={accessUrl} style={button}>
@@ -89,8 +90,12 @@ export default function LaunchAnnouncement({
               </Button>
             </Section>
             <Text style={note}>
-              Linket er personligt og giver adgang i 30 dage, så del det helst
-              ikke.
+              Lagerbeholdningen ændrer sig meget over tid, så det er en god idé
+              at følge med på Instagram (
+              <a href="https://www.instagram.com/yunik_jewelry/" style={link}>
+                @yunik_jewelry
+              </a>
+              ) og på hjemmesiden.
             </Text>
             <Text style={paragraph}>
               Gratis fragt i Danmark og 14 dages returret.

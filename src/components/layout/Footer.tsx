@@ -63,7 +63,7 @@ export default async function Footer() {
               {/* Social Links */}
               <div className="flex space-x-4 mt-6">
                 <a
-                  href="https://instagram.com/yunik"
+                  href="https://www.instagram.com/yunik_jewelry/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/60 hover:text-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/40 rounded-sm"

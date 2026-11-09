@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     const to =
       process.env.CONTACT_EMAIL ||
       process.env.REPLY_TO_EMAIL ||
-      "YunikJewelry@outlook.com";
+      "kontakt@yunik.dk";
 
     if (!resendApiKey) {
       return NextResponse.json(

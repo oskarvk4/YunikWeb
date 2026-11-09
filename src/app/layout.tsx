@@ -102,7 +102,7 @@ const organizationSchema = {
     availableLanguage: ["Danish", "English"],
   },
   sameAs: [
-    "https://instagram.com/yunik",
+    "https://www.instagram.com/yunik_jewelry/",
     "https://facebook.com/yunik",
   ],
 };
