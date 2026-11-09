@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminDataClient } from "@/lib/admin";
 import { formatPrice } from "@/types";
 import ShipOrderForm from "@/components/admin/ShipOrderForm";
 import { getFulfillmentLabel } from "@/constants/carriers";
@@ -22,7 +22,7 @@ interface OrderDetailsPageProps {
 
 export default async function OrderDetailsPage({ params }: OrderDetailsPageProps) {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = await getAdminDataClient();
 
   const { data: orderData, error } = await supabase
     .from("orders")

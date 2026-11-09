@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminDataClient } from "@/lib/admin";
 import { formatPrice } from "@/types";
 import { getFulfillmentLabel } from "@/constants/carriers";
 import type { Order } from "@/types/supabase";
@@ -9,7 +9,7 @@ export const metadata = {
 };
 
 export default async function AdminOrdersPage() {
-  const supabase = await createClient();
+  const supabase = await getAdminDataClient();
 
   const { data: ordersData } = await supabase
     .from("orders")

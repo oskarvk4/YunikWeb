@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { getAdminDataClient } from "@/lib/admin";
 import StatsCard from "@/components/admin/StatsCard";
 import { formatPrice } from "@/types";
 import type { Order, UserProfile, DbProduct } from "@/types/supabase";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
+  const adminData = await getAdminDataClient();
 
   // Fetch stats
   const [ordersResult, usersResult, productsResult] = await Promise.all([
-    supabase.from("orders").select("*").order("created_at", { ascending: false }),
+    adminData.from("orders").select("*").order("created_at", { ascending: false }),
     supabase.from("user_profiles").select("*"),
     supabase.from("products").select("*"),
   ]);
